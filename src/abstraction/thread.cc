@@ -341,6 +341,8 @@ int Thread::idle()
         if(Traits<Thread>::trace_idle)
             db<Thread>(TRC) << "Thread::idle(this=" << running() << ")" << endl;
 
+        db<Thread>(WRN) << Machine::cpu_id();  // identificando a CPU em idle.
+
         CPU::int_enable();
         CPU::halt();
     }
