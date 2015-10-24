@@ -29,3 +29,8 @@
 
 # SVN
 .svn
+
+# delay_test
+app/delay_test
+img/delay_test
+img/delay_test.img
