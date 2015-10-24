@@ -14,7 +14,7 @@ O design atual do EPOS exige que sempre exista uma `thread` para ser executada. 
 
 O programa de teste apenas causa uma espera de meio-segundo que permite cada um dos `idle threads` executarem antes do programa terminar.
 
-Para pode visualizar quais `idle threads` estão executando num determinado momento, a versão inicial do método `Thread::idle()` foi modificada para imprimir `Machine::cpu_id()` enquanto estiver no `loop`:
+Para poder visualizar quais `idle threads` estão executando num determinado momento, a versão inicial do método `Thread::idle()` foi modificada para imprimir `Machine::cpu_id()` enquanto estiver no `idle loop`:
 
 ```cpp
 while(_thread_count > 1) {
@@ -50,3 +50,5 @@ Esperando...
 The last thread has exited!
 Rebooting the machine ...
 ```
+
+Observe que os zeros são impressos dentro do `idle loop` porque existe apenas uma CPU (cpu_id = 0) executando em `idle`.
