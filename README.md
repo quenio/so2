@@ -112,8 +112,7 @@ Na saída do programa acima, existem alguns pontos importantes para se observar:
 
 As observações acima mostram os seguintes problemas com a versão do EPOS disponilizada para este trabalho:
 - A inicialização do sistema não está tomando o cuidado de iniciar a execução do programa em apenas uma CPU.
-- A GPF indica provável acesso de memória fora do seguimento, o que indica que as CPUs devem estar tendo accesso concorrente a `heap` do sistema.
-- Ambos as CPUs provavelmente estavam tentando desalocar memória ao termino da execução do programa, o que deve ter causado as PFs.
+- A GPF indica acesso de memória fora do seguimento, o que deve estar ocorrendo quando as CPUs tentam acesso concorrente a `heap` do sistema, ou a outros recursos compartilhados.
+- Ambos as CPUs provavelmente estavam tentando desalocar memória, ou outros resources, ao término da execução do programa, o que deve ter causado as PFs.
 
-As próximas versões irão fazer mudanças progressivas sobre a versão inicial do código para resolver estes problemas.
- 
+As próximas seções irão mostrar mudanças progressivas sobre a versão inicial do código para resolver estes problemas. 
