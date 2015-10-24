@@ -1,5 +1,3 @@
-// EPOS Alarm Abstraction Test Program
-
 #include <utility/ostream.h>
 #include <alarm.h>
 
@@ -9,11 +7,11 @@ OStream cout;
 
 int main()
 {
-    cout << "Delay Test" << endl;
+    cout << endl << "Esperando..." << endl;
 
-    Alarm::delay(2000000);
+    Alarm::delay(500000); // meio-segundo
 
-    cout << "I'm done, bye!" << endl;
+    cout << "...TCHAU!" << endl;
 
     return 0;
 }
