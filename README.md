@@ -115,4 +115,12 @@ As observações acima mostram os seguintes problemas com a versão do EPOS disp
 - A GPF indica acesso de memória fora do seguimento, o que deve estar ocorrendo quando as CPUs tentam acesso concorrente a `heap` do sistema, ou a outros recursos compartilhados.
 - Ambos as CPUs provavelmente estavam tentando desalocar memória, ou outros resources, ao término da execução do programa, o que deve ter causado as PFs.
 
-As próximas seções irão mostrar mudanças progressivas sobre a versão inicial do código para resolver estes problemas. 
+As próximas seções irão mostrar mudanças progressivas sobre a versão inicial do código para resolver estes problemas.
+
+Próximos passos:
+- Modificar a inicialização dos threads para executar o programa principal somente numa CPU de cada vez.
+- Modificar o scheduler para ter um `running` para cada CPU.
+- Modificar o Thread::idle para terminar a execução quando tiver apenas idle threads rodando.
+- Chamar smp_init()
+- lock/release na heap
+- bloquear acesso a standard output
