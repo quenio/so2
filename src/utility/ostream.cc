@@ -15,7 +15,8 @@ void OStream::lock()
 
 void OStream::unlock()
 {
-  _lock = -1;
+  int me = Machine::cpu_id();
+  CPU::cas(_lock, me, -1);
 }
 
 int OStream::itoa(int v, char * s)
