@@ -7,11 +7,11 @@ OStream cout;
 
 int main()
 {
-    cout << endl << "Esperando..." << endl;
+    db<Application>(WRN) << endl << "Esperando na CPU " << Machine::cpu_id() << "..." << endl;
 
     Alarm::delay(500000); // meio-segundo
 
-    cout << "...TCHAU!" << endl;
+    db<Application>(WRN) << "...TCHAU!" << endl;
 
     return 0;
 }
