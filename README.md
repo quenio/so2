@@ -125,3 +125,41 @@ Próximos passos:
 - lock/release na heap
 - bloquear acesso a standard output
 - Modificar o timer para cada CPU, para evitar contenção no escalonamento.
+
+### Impressão isolada de cada CPU
+
+Para evitar que as mensagens de depuração na saída do programa sendo impressas pelas diferentes CPUs se confundam umas com as outras, foi alterado `OStream` para evitar a impressão concorrente:
+
+```cpp
+OStream & operator<<(const Begl & begl) {
+    if(Traits<System>::multicore)
+      lock();
+    return *this;
+}
+
+OStream & operator<<(const Endl & endl) {
+    print("\n");
+    _base = 10;
+    if(Traits<System>::multicore)
+      unlock();
+    return *this;
+}
+```
+
+O método `lock()` é utilizado no início de uma linha para garantir que outra CPU não consiga escrever enquanto a CPU atual está escrevendo. O método `unlock()` vai liberar `OStream` para escrita ao final de uma linha. Veja abaixo a implementação destes métodos:
+
+```
+void OStream::lock()
+{
+    int me = Machine::cpu_id();
+    while(CPU::cas(_lock, -1, me) != me);
+}
+
+void OStream::unlock()
+{
+  int me = Machine::cpu_id();
+  CPU::cas(_lock, me, -1);
+}
+```
+
+O método `lock()` utiliza `cas()` - `compare-and-set` implementado pela CPU - que tenta atribuir o valor da CPU atual na variável `_lock` se está estiver "disponível" - ou seja, igual a `-1`. Caso contrário, ficará esperando por `_lock` ser liberada por `unlock()`.
