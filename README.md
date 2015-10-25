@@ -197,3 +197,36 @@ Além das mudanças acima, também foi colocado uma barreira em `init_first.cc` 
   first->_context->load();
 }
 ```
+
+Observe abaixo a saída do programa de teste com duas CPUs:
+
+```
+Setting up this machine as follows:
+  Processor:    IA32 at 822 MHz (BUS clock = 125 MHz)
+  Memory:       262144 Kbytes [0x00000000:0x10000000]
+  User memory:  261784 Kbytes [0x00000000:0x0ffa6000]
+  PCI aperture: 44996 Kbytes [0xfc000000:0xfebf1000]
+  Node Id:      will get from the network!
+  Setup:        21792 bytes
+  APP code:     18256 bytes	data: 544 bytes
+  CPU count:    2
+Dispatching the first thread: 0x0009ffa4 on CPU: 1
+Dispatching the first thread: 0x0009ff44 on CPU: 0
+
+Esperand1o na CPU 0...
+1
+11111111111111111111111111111111111111111111111111111111111111111111111111111111
+11111111111111111111111111111111111111111111111111111111111111111111111111111111
+11111111111111111111111111111111111111111111111111111111111111111111111111111111
+11111111111111111111111111111111111111111111111111111111111111111111111111111111
+11111111111111111111111111111111111111111111111111111111111111111111111111111111
+11111111111111111111111111111111111111111111111111111111111111111111111111111111
+111111111111111111111111111111111111111111111111111111111111111111111111111111111
+11111...
+```
+
+Assim como esperado, depois das alterações em `init_first.cc`, somente a CPU 0 está rodando a `thread` principal, como mostrado pelo texto `Esperand1o na CPU 0...`. Porém, observe que somente a CPU 1 está executando o `idle thread`. A CPU 0 também deveria estar executando em seu `idle thread`, mas esta já terminou sua execução neste ponto. A proxima seção vai cuidar desta questão.
+
+### Modificando a política de escalonamento para suportar mais de uma CPU
+
+A configuração atual do `Scheduler` utiliza a política `round-robin`, que é adequada para apenas uma CPU. Porém, no caso SMP, é preciso que `Scheduler.chosen()` retorne um `thread` diferente para cada CPU. Portanto, é necessário alterar a configuração do Scheduler para utilizar uma política adequada em SMP.
