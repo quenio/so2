@@ -348,12 +348,12 @@ int Thread::idle()
     }
 
     CPU::int_disable();
-    db<Thread>(WRN) << "The last thread has exited!" << endl;
+    db<Thread>(WRN) << "The last thread has exited on CPU " << Machine::cpu_id() << "..." << endl;
     if(reboot) {
-        db<Thread>(WRN) << "Rebooting the machine ..." << endl;
+        db<Thread>(WRN) << "Rebooting the machine on CPU " << Machine::cpu_id() << "..." << endl;
         Machine::reboot();
     } else {
-        db<Thread>(WRN) << "Halting the machine ..." << endl;
+        db<Thread>(WRN) << "Halting the machine on CPU " << Machine::cpu_id() << "..." << endl;
         CPU::halt();
     }
 
