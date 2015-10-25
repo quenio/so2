@@ -124,3 +124,4 @@ Próximos passos:
 - Chamar smp_init()
 - lock/release na heap
 - bloquear acesso a standard output
+- Modificar o timer para cada CPU, para evitar contenção no escalonamento.
