@@ -21,15 +21,19 @@ public:
     struct Err {};
 
 public:
-    OStream(): _base(10), _error(false) {}
+    OStream(): _base(10), _error(false), _lock(-1) {}
 
     OStream & operator<<(const Begl & begl) {
+        if(Traits<System>::multicore)
+          lock();
         return *this;
     }
-    
+
     OStream & operator<<(const Endl & endl) {
         print("\n");
         _base = 10;
+        if(Traits<System>::multicore)
+          unlock();
         return *this;
     }
 
@@ -63,7 +67,7 @@ public:
         print(buf);
         return *this;
     }
-    OStream & operator<<(unsigned char c) { 
+    OStream & operator<<(unsigned char c) {
         return operator<<(static_cast<unsigned int>(c));
     }
 
@@ -86,7 +90,7 @@ public:
         print(buf);
         return *this;
     }
-    OStream & operator<<(unsigned short s) { 
+    OStream & operator<<(unsigned short s) {
         return operator<<(static_cast<unsigned int>(s));
     }
     OStream & operator<<(unsigned long l) {
@@ -114,9 +118,9 @@ public:
         return *this;
     }
 
-    OStream & operator<<(const char * s) { 
+    OStream & operator<<(const char * s) {
         print(s);
-        return *this; 
+        return *this;
     }
 
     OStream & operator<<(float f) {
@@ -162,6 +166,9 @@ public:
     }
 
 private:
+    void lock();
+    void unlock();
+
     void print(const char * s) { _print(s); }
 
     int itoa(int v, char * s);
@@ -173,9 +180,10 @@ private:
 private:
     int _base;
     volatile bool _error;
+    volatile int _lock;
 
     static const char _digits[];
-}; 
+};
 
 extern OStream::Begl begl;
 extern OStream::Endl endl;
