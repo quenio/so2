@@ -148,7 +148,7 @@ OStream & operator<<(const Endl & endl) {
 
 O método `lock()` é utilizado no início de uma linha para garantir que outra CPU não consiga escrever enquanto a CPU atual está escrevendo. O método `unlock()` vai liberar `OStream` para escrita ao final de uma linha. Veja abaixo a implementação destes métodos:
 
-```
+```cpp
 void OStream::lock()
 {
     int me = Machine::cpu_id();
@@ -163,3 +163,37 @@ void OStream::unlock()
 ```
 
 O método `lock()` utiliza `cas()` - `compare-and-set` implementado pela CPU - que tenta atribuir o valor da CPU atual na variável `_lock` se está estiver "disponível" - ou seja, igual a `-1`. Caso contrário, ficará esperando por `_lock` ser liberada por `unlock()`.
+
+### Modificando a inicialização do `thread` principal e dos `idle threads`
+
+Como vimos anteriormente, amabas as CPUs estavam executando `thread` principal. As alterações abaixo em `init_frst.cc` fazem com que apenas a BSP inicie o `thread` principal. As PAs vao iniciar apenar um `idle thread`:
+
+```cpp
+Thread * first;
+if (Machine::cpu_id() == 0) {
+  // If EPOS is not a kernel, then adjust the application entry point to __epos_app_entry,
+  // which will directly call main(). In this case, _init will have already been called,
+  // before Init_Application, to construct main()'s global objects.
+  first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::MAIN), reinterpret_cast<int (*)()>(__epos_app_entry));
+
+  // Idle thread creation must succeed main, thus avoiding implicit rescheduling
+  new (SYSTEM) Thread(Thread::Configuration(Thread::READY, Thread::IDLE), &Thread::idle);
+} else {
+  first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::IDLE), &Thread::idle);
+}
+```
+
+Além das mudanças acima, também foi colocado uma barreira em `init_first.cc` logo após a instanciação dos `threads` para garantir que nenhum `thread` venha iniciar sua execução antes dos outros:
+
+```cpp
+  db<Init>(INF) << "INIT ends here!" << endl;
+
+  db<Init, Thread>(WRN) << "Dispatching the first thread: " << first << " on CPU: " << Machine::cpu_id() << endl;
+
+  This_Thread::not_booting();
+
+  Machine::smp_barrier();
+
+  first->_context->load();
+}
+```
