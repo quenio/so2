@@ -24,16 +24,16 @@ public:
     OStream(): _base(10), _error(false), _lock(-1) {}
 
     OStream & operator<<(const Begl & begl) {
-        if(Traits<System>::multicore)
-          lock();
+        // if(Traits<System>::multicore)
+        //   lock();
         return *this;
     }
 
     OStream & operator<<(const Endl & endl) {
         print("\n");
         _base = 10;
-        if(Traits<System>::multicore)
-          unlock();
+        // if(Traits<System>::multicore)
+        //   unlock();
         return *this;
     }
 
