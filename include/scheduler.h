@@ -76,12 +76,40 @@ namespace Scheduling_Criteria
     public:
         FCFS(int p = NORMAL); // Defined at Alarm
     };
-}
 
+    // Uniform Distribution
+    class UD: public Priority
+    {
+    public:
+        enum {
+            MAIN   = 0,
+            NORMAL = 1,
+            IDLE   = (unsigned(1) << (sizeof(int) * 8 - 1)) - 1
+        };
+
+        static const bool timed = false;
+        static const bool dynamic = false;
+        static const bool preemptive = true;
+
+        static const unsigned int QUEUES = Traits<Machine>::CPUS;
+
+    public:
+        UD(int p = NORMAL): Priority(p), _queue(((_priority == IDLE) || (_priority == MAIN)) ? Machine::cpu_id() : ++_next_queue %= Machine::n_cpus()) {}
+
+        const volatile unsigned int & queue() const volatile { return _queue; }
+
+        static unsigned int current_queue() { return Machine::cpu_id(); }
+
+    private:
+          volatile unsigned int _queue;
+          static volatile unsigned int _next_queue;
+    };
+
+}
 
 // Scheduling_Queue
 template<typename T, typename R = typename T::Criterion>
-class Scheduling_Queue: public Scheduling_List<T> {};
+class Scheduling_Queue: public Scheduling_Multilist<T> {};
 
 // Scheduler
 // Objects subject to scheduling by Scheduler must declare a type "Criterion"

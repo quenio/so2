@@ -117,56 +117,9 @@ As observações acima mostram os seguintes problemas com a versão do EPOS disp
 
 As próximas seções irão mostrar mudanças progressivas sobre a versão inicial do código para resolver estes problemas.
 
-Próximos passos:
-- Modificar a inicialização dos threads para executar o programa principal somente numa CPU de cada vez.
-- Modificar o scheduler para ter um `running` para cada CPU.
-- Modificar o Thread::idle para terminar a execução quando tiver apenas idle threads rodando.
-- Chamar smp_init()
-- lock/release na heap
-- bloquear acesso a standard output
-- Modificar o timer para cada CPU, para evitar contenção no escalonamento.
-
-### Impressão isolada de cada CPU
-
-Para evitar que as mensagens de depuração na saída do programa sendo impressas pelas diferentes CPUs se confundam umas com as outras, foi alterado `OStream` para evitar a impressão concorrente:
-
-```cpp
-OStream & operator<<(const Begl & begl) {
-    if(Traits<System>::multicore)
-      lock();
-    return *this;
-}
-
-OStream & operator<<(const Endl & endl) {
-    print("\n");
-    _base = 10;
-    if(Traits<System>::multicore)
-      unlock();
-    return *this;
-}
-```
-
-O método `lock()` é utilizado no início de uma linha para garantir que outra CPU não consiga escrever enquanto a CPU atual está escrevendo. O método `unlock()` vai liberar `OStream` para escrita ao final de uma linha. Veja abaixo a implementação destes métodos:
-
-```cpp
-void OStream::lock()
-{
-    int me = Machine::cpu_id();
-    while(CPU::cas(_lock, -1, me) != me);
-}
-
-void OStream::unlock()
-{
-  int me = Machine::cpu_id();
-  CPU::cas(_lock, me, -1);
-}
-```
-
-O método `lock()` utiliza `cas()` - `compare-and-set` implementado pela CPU - que tenta atribuir o valor da CPU atual na variável `_lock` se está estiver "disponível" - ou seja, igual a `-1`. Caso contrário, ficará esperando por `_lock` ser liberada por `unlock()`.
-
 ### Modificando a inicialização do `thread` principal e dos `idle threads`
 
-Como vimos anteriormente, amabas as CPUs estavam executando `thread` principal. As alterações abaixo em `init_frst.cc` fazem com que apenas a BSP inicie o `thread` principal. As PAs vao iniciar apenar um `idle thread`:
+Como vimos anteriormente, ambas as CPUs estavam executando o `thread` principal. As alterações abaixo em `init_frst.cc` fazem com que apenas a BSP inicie o `thread` principal. As PAs vão iniciar apenas um `idle thread`:
 
 ```cpp
 Thread * first;
@@ -183,7 +136,7 @@ if (Machine::cpu_id() == 0) {
 }
 ```
 
-Além das mudanças acima, também foi colocado uma barreira em `init_first.cc` logo após a instanciação dos `threads` para garantir que nenhum `thread` venha iniciar sua execução antes dos outros:
+Além das mudanças acima, também foi colocado uma barreira em `init_first.cc` logo após a instanciação dos `threads` para garantir que nenhum `thread` venha iniciar sua execução antes das outras:
 
 ```cpp
   db<Init>(INF) << "INIT ends here!" << endl;
@@ -192,7 +145,7 @@ Além das mudanças acima, também foi colocado uma barreira em `init_first.cc` 
 
   This_Thread::not_booting();
 
-  Machine::smp_barrier();
+  Machine::smp_barrier(); // todas as threads iniciarão juntas
 
   first->_context->load();
 }
@@ -210,8 +163,6 @@ Setting up this machine as follows:
   Setup:        21792 bytes
   APP code:     18256 bytes	data: 544 bytes
   CPU count:    2
-Dispatching the first thread: 0x0009ffa4 on CPU: 1
-Dispatching the first thread: 0x0009ff44 on CPU: 0
 
 Esperand1o na CPU 0...
 1
@@ -229,4 +180,161 @@ Assim como esperado, depois das alterações em `init_first.cc`, somente a CPU 0
 
 ### Modificando a política de escalonamento para suportar mais de uma CPU
 
-A configuração atual do `Scheduler` utiliza a política `round-robin`, que é adequada para apenas uma CPU. Porém, no caso SMP, é preciso que `Scheduler.chosen()` retorne um `thread` diferente para cada CPU. Portanto, é necessário alterar a configuração do Scheduler para utilizar uma política adequada em SMP.
+A configuração atual do `Scheduler` utiliza a política `round-robin`, que é adequada para apenas uma CPU. Porém, no caso SMP, é preciso que `Scheduler.chosen()` retorne um `thread` diferente para cada CPU. Portanto, é necessário alterar a configuração de `Scheduler` para utilizar uma política adequada em SMP.
+
+Para tanto, modificou-se `Schedeling_Queue` - a classe base de `Scheduler` - para usar `Scheduling_Multilist` como sua base. Esta última permite políticas que alocam uma lista de `threads` para cada CPU:
+
+```cpp
+// Scheduling_Queue
+template<typename T, typename R = typename T::Criterion>
+class Scheduling_Queue: public Scheduling_Multilist<T> {};
+```
+
+Observe que `Scheduling_Multilist` não estava disponível na versão disponilizada para o trabalho P2, mas foi copiada do EPOS 2.
+
+Também foi necessário implementar uma política nova, a qual chamamos de `uniform distribution` porque aloca um `idle thread` para cada CPU e também distribui igualmente a alocação de `threads` normais entre as CPUs:
+
+```cpp
+// Uniform Distribution
+class UD: public Priority
+{
+public:
+    enum {
+        MAIN   = 0,
+        NORMAL = 1,
+        IDLE   = (unsigned(1) << (sizeof(int) * 8 - 1)) - 1
+    };
+
+    static const bool timed = false;
+    static const bool dynamic = false;
+    static const bool preemptive = true;
+
+    static const unsigned int QUEUES = Traits<Machine>::CPUS;
+
+public:
+    UD(int p = NORMAL): Priority(p), _queue(((_priority == IDLE) || (_priority == MAIN)) ? Machine::cpu_id() : ++_next_queue %= Machine::n_cpus()) {}
+
+    const volatile unsigned int & queue() const volatile { return _queue; }
+
+    static unsigned int current_queue() { return Machine::cpu_id(); }
+
+private:
+      volatile unsigned int _queue;
+      static volatile unsigned int _next_queue;
+};
+```
+
+Como no código acima se usa `Machine::n_cpus()` para distribuir `threads` entre as várias filas, foi preciso initilizar `_n_cpus` chamando `smp_init()`, como mostrado abaixo:
+
+```cpp
+void PC::init()
+{
+    db<Init, PC>(TRC) << "PC::init()" << endl;
+
+    if(Traits<PC_IC>::enabled)
+        PC_IC::init();
+
+    if(Traits<PC_PCI>::enabled)
+        PC_PCI::init();
+
+    if(Traits<PC_Timer>::enabled)
+        PC_Timer::init();
+
+    if(Traits<PC_Scratchpad>::enabled)
+        PC_Scratchpad::init();
+
+    if(smp) {
+      System_Info<PC> * si = reinterpret_cast<System_Info<PC> *>(Memory_Map<PC>::SYS_INFO);
+      smp_init(si->bm.n_cpus);
+    }
+}
+```
+
+Observe na saida abaixo que agora ambos `idle threads` estão executando:
+
+```
+Setting up this machine as follows:
+  Processor:    IA32 at 543 MHz (BUS clock = 125 MHz)
+  Memory:       262144 Kbytes [0x00000000:0x10000000]
+  User memory:  261784 Kbytes [0x00000000:0x0ffa6000]
+  PCI aperture: 44996 Kbytes [0xfc000000:0xfebf1000]
+  Node Id:      will get from the network!
+  Setup:        21120 bytes
+  APP code:     18240 bytes	data: 544 bytes
+  CPU count:    2
+
+1Esper1ando na CPU 0...
+10101010001010101010010100101010101010101010101010101010101010101010100110101010
+10101010101010101010101001010110101010100110101010101010101010101001010101010101
+01010101001010101001010101010101010101010101001010101010101010010101010101010101
+01010101010101010101010101010101010101010101011010100101010101010101010101010101
+01010101010100110110101001010101010101001101010101010101010101011010101010100101
+01010101010101101010101010101010101010100101010101001010101001010101010101010110
+11010101010101001101010110101010010101001010101001010101101010101001010101010100
+11010101010101001010101010101001010101010101001101010101010101010101010101010101
+01010101010101001101010101010101010010101001010101011010101010101010101010101010
+10101010101010101001101010101010101010101010010101001010101010101010101001010010
+10100100101010101001010101010101010101010010101010101010101010101010100110101010
+...
+```
+
+Apesar do progresso, a execução do sistema ainda não está terminando depois de meio-segundo de espera do programa de teste. Este problema será resolvido na próxima seção.
+
+### Modificando `Thread::idle`
+
+Para que o programa termine sua execução e o sistema seja "desligado" é preciso que os `idle threads` parem de executar quando não houver mais `threads` normais para executar no sistema. Para tanto, `Thread::idle` foi modificado como mostrado abaixo:
+
+```
+int Thread::idle()
+{
+    while(_thread_count > Machine::n_cpus()) { // someone else besides idle
+        if(Traits<Thread>::trace_idle)
+            db<Thread>(TRC) << "Thread::idle(this=" << running() << ")" << endl;
+
+        db<Thread>(WRN) << Machine::cpu_id();  // identificando a CPU em idle.
+
+        CPU::int_enable();
+        CPU::halt();
+    }
+    ...
+```
+
+Observe que no código acima, verificamos se o número de `threads` em execução é maior que o número de CPUs. Neste caso, os `idle threads` continuam a executar normalmente. Caso contrário, o sistema pode desligar porque não faz sentido continuar rodando apenas `idle threads` em todas as CPUs.
+
+A saída abaixo mostra o resultado esperado:
+
+```
+Setting up this machine as follows:
+  Processor:    IA32 at 543 MHz (BUS clock = 125 MHz)
+  Memory:       262144 Kbytes [0x00000000:0x10000000]
+  User memory:  261784 Kbytes [0x00000000:0x0ffa6000]
+  PCI aperture: 44996 Kbytes [0xfc000000:0xfebf1000]
+  Node Id:      will get from the network!
+  Setup:        21120 bytes
+  APP code:     18240 bytes	data: 544 bytes
+  CPU count:    2
+
+1Esper1ando na CPU 0...
+10101010001010101010010100101010101010101010101010101010101010101010100110101010
+10101010101010101010101001010110101010100110101010101010101010101001010101010101
+01010101001010101001010101010101010101010101001010101010101010010101010101010101
+01010101010101010101010101010101010101010101011010100101010101010101010101010101
+01010101010100110110101001010101010101001101010101010101010101011010101010100101
+01010101010101101010101010101010101010100101010101001010101001010101010101010110
+11010101010101001101010110101010010101001010101001010101101010101001010101010100
+11010101010101001010101010101001010101010101001101010101010101010101010101010101
+01010101010101001101010101010101010010101001010101011010101010101010101010101010
+10101010101010101001101010101010101010101010010101001010101010101010101001010010
+10100100101010101001010101010101010101010010101010101010101010101010100110101010
+10101010100101010101010011010101010101010110101010010101010101010101010101010101
+0101010101010101...TCHAU!
+The last thread has exited on CPU 0...
+Rebooting the machine on CPU 0...
+The last thread has exited on CPU 1...
+Rebooting the machine on CPU 1...
+```
+
+### Próximos passos?
+
+- lock/release na heap
+- Modificar o timer para cada CPU, para evitar contenção no escalonamento.

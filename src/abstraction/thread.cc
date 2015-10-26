@@ -16,6 +16,8 @@ __BEGIN_SYS
 volatile unsigned int Thread::_thread_count;
 Scheduler_Timer * Thread::_timer;
 Scheduler<Thread> Thread::_scheduler;
+volatile unsigned int Scheduling_Criteria::UD::_next_queue;
+
 
 // Methods
 void Thread::constructor_prolog(unsigned int stack_size)
@@ -337,7 +339,7 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
 
 int Thread::idle()
 {
-    while(_thread_count > 1) { // someone else besides idle
+    while(_thread_count > Machine::n_cpus()) { // someone else besides idle
         if(Traits<Thread>::trace_idle)
             db<Thread>(TRC) << "Thread::idle(this=" << running() << ")" << endl;
 

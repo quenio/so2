@@ -90,6 +90,7 @@ namespace Scheduling_Criteria
     class Priority;
     class FCFS;
     class RR;
+    class UD;
 };
 
 class Address_Space;
