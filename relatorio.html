@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>README</title>
+      <style>.markdown-preview, .markdown-preview[data-use-github-style] { font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 1.6; word-wrap: break-word; overflow: scroll; box-sizing: border-box; padding: 20px; background-color: rgb(255, 255, 255); }
+.markdown-preview > :first-child, .markdown-preview[data-use-github-style] > :first-child { margin-top: 0px !important; }
+.markdown-preview > :last-child, .markdown-preview[data-use-github-style] > :last-child { margin-bottom: 0px !important; }
+.markdown-preview a:not([href]), .markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }
+.markdown-preview .absent, .markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }
+.markdown-preview .anchor, .markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }
+.markdown-preview .anchor:focus, .markdown-preview[data-use-github-style] .anchor:focus { outline: none; }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1, .markdown-preview h2, .markdown-preview[data-use-github-style] h2, .markdown-preview h3, .markdown-preview[data-use-github-style] h3, .markdown-preview h4, .markdown-preview[data-use-github-style] h4, .markdown-preview h5, .markdown-preview[data-use-github-style] h5, .markdown-preview h6, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+.markdown-preview h1 .octicon-link, .markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview h2 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview h3 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview h4 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview h5 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview h6 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }
+.markdown-preview h1:hover .anchor, .markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview h2:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview h3:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview h4:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview h5:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview h6:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }
+.markdown-preview h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview h6:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }
+.markdown-preview h1 tt, .markdown-preview[data-use-github-style] h1 tt, .markdown-preview h2 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview h3 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview h4 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview h5 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview h6 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview h1 code, .markdown-preview[data-use-github-style] h1 code, .markdown-preview h2 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview h3 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview h4 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview h5 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview h6 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview h1 .anchor, .markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }
+.markdown-preview h2, .markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview h2 .anchor, .markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }
+.markdown-preview h3, .markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }
+.markdown-preview h3 .anchor, .markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }
+.markdown-preview h4, .markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }
+.markdown-preview h4 .anchor, .markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }
+.markdown-preview h5, .markdown-preview[data-use-github-style] h5 { font-size: 1em; }
+.markdown-preview h5 .anchor, .markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }
+.markdown-preview h6, .markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }
+.markdown-preview h6 .anchor, .markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }
+.markdown-preview p, .markdown-preview[data-use-github-style] p, .markdown-preview blockquote, .markdown-preview[data-use-github-style] blockquote, .markdown-preview ul, .markdown-preview[data-use-github-style] ul, .markdown-preview ol, .markdown-preview[data-use-github-style] ol, .markdown-preview dl, .markdown-preview[data-use-github-style] dl, .markdown-preview table, .markdown-preview[data-use-github-style] table, .markdown-preview pre, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }
+.markdown-preview hr, .markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; border: 0px none; background-color: rgb(231, 231, 231); }
+.markdown-preview ul, .markdown-preview[data-use-github-style] ul, .markdown-preview ol, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }
+.markdown-preview ul.no-list, .markdown-preview[data-use-github-style] ul.no-list, .markdown-preview ol.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }
+.markdown-preview ul ul, .markdown-preview[data-use-github-style] ul ul, .markdown-preview ul ol, .markdown-preview[data-use-github-style] ul ol, .markdown-preview ol ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview ol ul, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }
+.markdown-preview li > p, .markdown-preview[data-use-github-style] li > p { margin-top: 16px; }
+.markdown-preview dl, .markdown-preview[data-use-github-style] dl { padding: 0px; }
+.markdown-preview dl dt, .markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }
+.markdown-preview dl dd, .markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }
+.markdown-preview blockquote, .markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left-width: 4px; border-left-style: solid; border-left-color: rgb(221, 221, 221); }
+.markdown-preview blockquote > :first-child, .markdown-preview[data-use-github-style] blockquote > :first-child { margin-top: 0px; }
+.markdown-preview blockquote > :last-child, .markdown-preview[data-use-github-style] blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview table, .markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: normal; }
+.markdown-preview table th, .markdown-preview[data-use-github-style] table th { font-weight: bold; }
+.markdown-preview table th, .markdown-preview[data-use-github-style] table th, .markdown-preview table td, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview table tr, .markdown-preview[data-use-github-style] table tr { border-top-width: 1px; border-top-style: solid; border-top-color: rgb(204, 204, 204); background-color: rgb(255, 255, 255); }
+.markdown-preview table tr:nth-child(2n), .markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview img, .markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }
+.markdown-preview .emoji, .markdown-preview[data-use-github-style] .emoji { max-width: none; }
+.markdown-preview span.frame, .markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }
+.markdown-preview span.frame > span, .markdown-preview[data-use-github-style] span.frame > span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview span.frame span img, .markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }
+.markdown-preview span.frame span span, .markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }
+.markdown-preview span.align-center, .markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-center > span, .markdown-preview[data-use-github-style] span.align-center > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }
+.markdown-preview span.align-center span img, .markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview span.align-right, .markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-right > span, .markdown-preview[data-use-github-style] span.align-right > span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }
+.markdown-preview span.align-right span img, .markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview span.float-left, .markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }
+.markdown-preview span.float-left span, .markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview span.float-right, .markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }
+.markdown-preview span.float-right > span, .markdown-preview[data-use-github-style] span.float-right > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }
+.markdown-preview code, .markdown-preview[data-use-github-style] code, .markdown-preview tt, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; border-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157); }
+.markdown-preview code::before, .markdown-preview[data-use-github-style] code::before, .markdown-preview tt::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview code::after, .markdown-preview[data-use-github-style] code::after, .markdown-preview tt::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: ' '; }
+.markdown-preview code br, .markdown-preview[data-use-github-style] code br, .markdown-preview tt br, .markdown-preview[data-use-github-style] tt br { display: none; }
+.markdown-preview del code, .markdown-preview[data-use-github-style] del code { text-decoration: inherit; }
+.markdown-preview pre > code, .markdown-preview[data-use-github-style] pre > code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; border: 0px; background: transparent; }
+.markdown-preview .highlight, .markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }
+.markdown-preview .highlight pre, .markdown-preview[data-use-github-style] .highlight pre, .markdown-preview pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; border-radius: 3px; background-color: rgb(247, 247, 247); }
+.markdown-preview .highlight pre, .markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }
+.markdown-preview pre, .markdown-preview[data-use-github-style] pre { word-wrap: normal; }
+.markdown-preview pre code, .markdown-preview[data-use-github-style] pre code, .markdown-preview pre tt, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; border: 0px; background-color: transparent; }
+.markdown-preview pre code::before, .markdown-preview[data-use-github-style] pre code::before, .markdown-preview pre tt::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview pre code::after, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview pre tt::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }
+.markdown-preview kbd, .markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; border-style: solid; border-width: 1px; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; background-color: rgb(252, 252, 252); }
+.markdown-preview, .markdown-preview[data-use-github-style], .markdown-preview code, .markdown-preview[data-use-github-style] code { color: rgb(51, 51, 51); }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1, .markdown-preview h2, .markdown-preview[data-use-github-style] h2, .markdown-preview h3, .markdown-preview[data-use-github-style] h3, .markdown-preview h4, .markdown-preview[data-use-github-style] h4, .markdown-preview h5, .markdown-preview[data-use-github-style] h5, .markdown-preview h6, .markdown-preview[data-use-github-style] h6 { -webkit-font-smoothing: antialiased; cursor: text; }
+.markdown-preview > h1:first-child, .markdown-preview[data-use-github-style] > h1:first-child, .markdown-preview > h1:first-child + h2, .markdown-preview[data-use-github-style] > h1:first-child + h2, .markdown-preview > h2:first-child, .markdown-preview[data-use-github-style] > h2:first-child, .markdown-preview > h3:first-child, .markdown-preview[data-use-github-style] > h3:first-child, .markdown-preview > h4:first-child, .markdown-preview[data-use-github-style] > h4:first-child, .markdown-preview > h5:first-child, .markdown-preview[data-use-github-style] > h5:first-child, .markdown-preview > h6:first-child, .markdown-preview[data-use-github-style] > h6:first-child { margin-top: 0px; padding-top: 0px; }
+.markdown-preview a, .markdown-preview[data-use-github-style] a, .markdown-preview a code, .markdown-preview[data-use-github-style] a code { color: rgb(65, 131, 196); }
+.markdown-preview a:first-child h1, .markdown-preview[data-use-github-style] a:first-child h1, .markdown-preview a:first-child h2, .markdown-preview[data-use-github-style] a:first-child h2, .markdown-preview a:first-child h3, .markdown-preview[data-use-github-style] a:first-child h3, .markdown-preview a:first-child h4, .markdown-preview[data-use-github-style] a:first-child h4, .markdown-preview a:first-child h5, .markdown-preview[data-use-github-style] a:first-child h5, .markdown-preview a:first-child h6, .markdown-preview[data-use-github-style] a:first-child h6 { margin-top: 0px; padding-top: 0px; }
+.markdown-preview h1 + p, .markdown-preview[data-use-github-style] h1 + p, .markdown-preview h2 + p, .markdown-preview[data-use-github-style] h2 + p, .markdown-preview h3 + p, .markdown-preview[data-use-github-style] h3 + p, .markdown-preview h4 + p, .markdown-preview[data-use-github-style] h4 + p, .markdown-preview h5 + p, .markdown-preview[data-use-github-style] h5 + p, .markdown-preview h6 + p, .markdown-preview[data-use-github-style] h6 + p { margin-top: 0px; }
+.markdown-preview li p.first, .markdown-preview[data-use-github-style] li p.first { display: inline-block; }
+.markdown-preview ul li > :first-child, .markdown-preview[data-use-github-style] ul li > :first-child, .markdown-preview ol li > :first-child, .markdown-preview[data-use-github-style] ol li > :first-child, .markdown-preview ul li ul:first-of-type, .markdown-preview[data-use-github-style] ul li ul:first-of-type, .markdown-preview ol li ul:first-of-type, .markdown-preview[data-use-github-style] ol li ul:first-of-type { margin-top: 0px; }
+.markdown-preview ol > li, .markdown-preview[data-use-github-style] ol > li { list-style-type: decimal; }
+.markdown-preview ul > li, .markdown-preview[data-use-github-style] ul > li { list-style-type: disc; }
+.markdown-preview dl dt:first-child, .markdown-preview[data-use-github-style] dl dt:first-child { padding: 0px; }
+.markdown-preview dl dt > :first-child, .markdown-preview[data-use-github-style] dl dt > :first-child { margin-top: 0px; }
+.markdown-preview dl dt > :last-child, .markdown-preview[data-use-github-style] dl dt > :last-child { margin-bottom: 0px; }
+.markdown-preview dl dd > :first-child, .markdown-preview[data-use-github-style] dl dd > :first-child { margin-top: 0px; }
+.markdown-preview dl dd > :last-child, .markdown-preview[data-use-github-style] dl dd > :last-child { margin-bottom: 0px; }
+.markdown-preview blockquote p, .markdown-preview[data-use-github-style] blockquote p { font-size: 16px; line-height: 1.5; }
+.markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { padding: 16px; overflow: auto; font-size: 84%; line-height: 1.45; border-radius: 3px; background-color: rgb(40, 44, 52); }
+.markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { margin-bottom: 16px; word-break: normal; }
+.markdown-preview code, .markdown-preview[data-use-github-style] code, .markdown-preview tt, .markdown-preview[data-use-github-style] tt, .markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { font-family: Consolas, 'Liberation Mono', Courier, monospace; }
+.markdown-preview .emoji, .markdown-preview[data-use-github-style] .emoji { height: 20px; width: 20px; }
+.markdown-preview { font-size: 1.25em; color: rgb(200, 204, 213); background-color: rgb(47, 51, 61); }
+.markdown-preview h1, .markdown-preview h2 { color: inherit; border-color: rgb(24, 26, 31); }
+.markdown-preview a { color: rgb(100, 148, 237); }
+.markdown-preview hr { background-color: rgb(67, 73, 86); }
+.markdown-preview blockquote { color: rgb(157, 165, 180); border-left-color: rgba(157, 165, 180, 0.6); }
+.markdown-preview table th, .markdown-preview table td { border-color: rgb(24, 26, 31); }
+.markdown-preview table th { background-color: rgb(53, 59, 69); }
+.markdown-preview table tr { background-color: rgb(47, 51, 61); }
+.markdown-preview table tr:nth-child(2n) { background-color: rgb(40, 44, 52); }
+.markdown-preview code { color: rgb(243, 244, 246); border-color: rgb(24, 26, 31); background-color: rgb(62, 68, 81); background-clip: padding-box; }
+.markdown-preview pre.editor-colors::shadow .line.cursor-line { background-color: transparent; }
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
+  position: absolute;
+}
+
+.spell-check-misspelling .region {
+  border-bottom: 1px dashed rgba(250, 128, 114, 0.5);
+}
+
+pre.editor-colors,
+.host {
+  background-color: #282c34;
+  color: #abb2bf;
+}
+pre.editor-colors .line.cursor-line,
+.host .line.cursor-line {
+  background-color: rgba(153, 187, 255, 0.04);
+}
+pre.editor-colors .invisible,
+.host .invisible {
+  color: #abb2bf;
+}
+pre.editor-colors .cursor,
+.host .cursor {
+  border-left: 2px solid #528bff;
+}
+pre.editor-colors .selection .region,
+.host .selection .region {
+  background-color: #3e4451;
+}
+pre.editor-colors .bracket-matcher .region,
+.host .bracket-matcher .region {
+  border-bottom: 1px solid #528bff;
+  box-sizing: border-box;
+  background-color: #353b45;
+}
+pre.editor-colors .invisible-character,
+.host .invisible-character {
+  color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .indent-guide,
+.host .indent-guide {
+  color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .wrap-guide,
+.host .wrap-guide {
+  background-color: rgba(171, 178, 191, 0.15);
+}
+pre.editor-colors .gutter .line-number,
+.host .gutter .line-number {
+  color: #636d83;
+  -webkit-font-smoothing: antialiased;
+}
+pre.editor-colors .gutter .line-number.git-line-removed:before,
+.host .gutter .line-number.git-line-removed:before {
+  bottom: -3px;
+}
+pre.editor-colors .gutter .line-number.git-line-removed:after,
+.host .gutter .line-number.git-line-removed:after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 25px;
+  border-bottom: 1px dotted rgba(224, 82, 82, 0.5);
+  pointer-events: none;
+}
+pre.editor-colors .gutter .line-number.cursor-line,
+.host .gutter .line-number.cursor-line {
+  color: #abb2bf;
+  background-color: #2c313a;
+}
+pre.editor-colors .gutter .line-number.cursor-line-no-selection,
+.host .gutter .line-number.cursor-line-no-selection {
+  background-color: transparent;
+}
+pre.editor-colors .gutter .line-number .icon-right,
+.host .gutter .line-number .icon-right {
+  color: #abb2bf;
+}
+pre.editor-colors .gutter .line-number .icon-right,
+.host .gutter .line-number .icon-right {
+  color: #abb2bf;
+}
+pre.editor-colors .gutter .line-number.folded,
+.host .gutter .line-number.folded,
+pre.editor-colors .gutter .line-number:after,
+.host .gutter .line-number:after,
+pre.editor-colors .fold-marker:after,
+.host .fold-marker:after {
+  color: #abb2bf;
+}
+.comment {
+  color: #5c6370;
+  font-style: italic;
+}
+.entity.name.type {
+  color: #e5c07b;
+}
+.entity.other.inherited-class {
+  color: #98c379;
+}
+.keyword {
+  color: #c678dd;
+}
+.keyword.control {
+  color: #c678dd;
+}
+.keyword.operator {
+  color: #abb2bf;
+}
+.keyword.other.special-method {
+  color: #61afef;
+}
+.keyword.other.unit {
+  color: #d19a66;
+}
+.storage {
+  color: #c678dd;
+}
+.storage.type.annotation,
+.storage.type.primitive {
+  color: #c678dd;
+}
+.storage.modifier.package,
+.storage.modifier.import {
+  color: #abb2bf;
+}
+.constant {
+  color: #d19a66;
+}
+.constant.variable {
+  color: #d19a66;
+}
+.constant.character.escape {
+  color: #56b6c2;
+}
+.constant.numeric {
+  color: #d19a66;
+}
+.constant.other.color {
+  color: #56b6c2;
+}
+.constant.other.symbol {
+  color: #56b6c2;
+}
+.variable {
+  color: #e06c75;
+}
+.variable.interpolation {
+  color: #be5046;
+}
+.variable.parameter {
+  color: #abb2bf;
+}
+.invalid.illegal {
+  background-color: #e06c75;
+  color: #282c34;
+}
+.string {
+  color: #98c379;
+}
+.string.regexp {
+  color: #56b6c2;
+}
+.string.regexp .source.ruby.embedded {
+  color: #e5c07b;
+}
+.string.other.link {
+  color: #e06c75;
+}
+.punctuation.definition.comment {
+  color: #5c6370;
+}
+.punctuation.definition.method-parameters,
+.punctuation.definition.function-parameters,
+.punctuation.definition.parameters,
+.punctuation.definition.separator,
+.punctuation.definition.seperator,
+.punctuation.definition.array {
+  color: #abb2bf;
+}
+.punctuation.definition.heading,
+.punctuation.definition.identity {
+  color: #61afef;
+}
+.punctuation.definition.bold {
+  color: #e5c07b;
+  font-weight: bold;
+}
+.punctuation.definition.italic {
+  color: #c678dd;
+  font-style: italic;
+}
+.punctuation.section.embedded {
+  color: #be5046;
+}
+.punctuation.section.method,
+.punctuation.section.class,
+.punctuation.section.inner-class {
+  color: #abb2bf;
+}
+.support.class {
+  color: #e5c07b;
+}
+.support.type {
+  color: #56b6c2;
+}
+.support.function {
+  color: #56b6c2;
+}
+.support.function.any-method {
+  color: #61afef;
+}
+.entity.name.function {
+  color: #61afef;
+}
+.entity.name.class,
+.entity.name.type.class {
+  color: #e5c07b;
+}
+.entity.name.section {
+  color: #61afef;
+}
+.entity.name.tag {
+  color: #e06c75;
+}
+.entity.other.attribute-name {
+  color: #d19a66;
+}
+.entity.other.attribute-name.id {
+  color: #61afef;
+}
+.meta.class {
+  color: #e5c07b;
+}
+.meta.class.body {
+  color: #abb2bf;
+}
+.meta.method-call,
+.meta.method {
+  color: #abb2bf;
+}
+.meta.definition.variable {
+  color: #e06c75;
+}
+.meta.link {
+  color: #d19a66;
+}
+.meta.require {
+  color: #61afef;
+}
+.meta.selector {
+  color: #c678dd;
+}
+.meta.separator {
+  background-color: #373b41;
+  color: #abb2bf;
+}
+.meta.tag {
+  color: #abb2bf;
+}
+.none {
+  color: #abb2bf;
+}
+.markup.bold {
+  color: #d19a66;
+  font-weight: bold;
+}
+.markup.changed {
+  color: #c678dd;
+}
+.markup.deleted {
+  color: #e06c75;
+}
+.markup.italic {
+  color: #c678dd;
+  font-style: italic;
+}
+.markup.heading .punctuation.definition.heading {
+  color: #61afef;
+}
+.markup.inserted {
+  color: #98c379;
+}
+.markup.list {
+  color: #e06c75;
+}
+.markup.quote {
+  color: #d19a66;
+}
+.markup.raw.inline {
+  color: #98c379;
+}
+.source.cs .keyword.operator {
+  color: #c678dd;
+}
+.source.css .property-name,
+.source.css .property-value {
+  color: #828997;
+}
+.source.css .property-name.support,
+.source.css .property-value.support {
+  color: #abb2bf;
+}
+.source.gfm .markup {
+  -webkit-font-smoothing: auto;
+}
+.source.gfm .markup.heading {
+  color: #e06c75;
+}
+.source.gfm .markup.link {
+  color: #c678dd;
+}
+.source.gfm .link .entity {
+  color: #61afef;
+}
+.source.ini .keyword.other.definition.ini {
+  color: #e06c75;
+}
+.source.java .storage.modifier.import {
+  color: #e5c07b;
+}
+.source.java .storage.type {
+  color: #e5c07b;
+}
+.source.java-properties .meta.key-pair {
+  color: #e06c75;
+}
+.source.java-properties .meta.key-pair > .punctuation {
+  color: #abb2bf;
+}
+.source.json .meta.structure.dictionary.json > .string.quoted.json {
+  color: #e06c75;
+}
+.source.json .meta.structure.dictionary.json > .string.quoted.json > .punctuation.string {
+  color: #e06c75;
+}
+.source.json .meta.structure.dictionary.json > .value.json > .string.quoted.json,
+.source.json .meta.structure.array.json > .value.json > .string.quoted.json,
+.source.json .meta.structure.dictionary.json > .value.json > .string.quoted.json > .punctuation,
+.source.json .meta.structure.array.json > .value.json > .string.quoted.json > .punctuation {
+  color: #98c379;
+}
+.source.json .meta.structure.dictionary.json > .constant.language.json,
+.source.json .meta.structure.array.json > .constant.language.json {
+  color: #56b6c2;
+}
+.source.ruby .constant.other.symbol > .punctuation {
+  color: inherit;
+}
+.source.python .keyword.operator.logical.python {
+  color: #c678dd;
+}
+.source.python .variable.parameter {
+  color: #d19a66;
+}
+</style>
+  </head>
+  <body class='markdown-preview'><h1 id="ine5424-so-ii-p2-parallel-idle-threads">INE5424 - SO II - P2: Parallel Idle Threads</h1>
+<p>Alunos:</p>
+<ul>
+<li>Glaucia de Pádua da Silva - 09232087</li>
+<li>Quenio Cesar Machado dos Santos - 14100868</li>
+</ul>
+<h2 id="tarefa">Tarefa</h2>
+<p>O design atual do EPOS exige que sempre exista uma <code>thread</code> para ser executada. Para tal, na versão <code>monocore</code>, foi criada uma <code>Thread Idle</code>. Esta <code>thread</code> é executada sempre que não há outras <code>threads</code> para serem executadas, colocando a CPU em modo de baixo consumo de energia até que um evento externo ocorra. Agora, no cenário de <code>multicore</code>, o mesmo princípio deve ser preservado ou, alternativamente, o sistema deve ser reprojetado. Esta etapa do projeto deve conduzi-lo até a função <code>main()</code> da aplicação mantendo todos os demais cores ativos. Os testes devem ser executados com o QEMU emulando 8 CPUs.</p>
+<h2 id="solu-o">Solução</h2>
+<h3 id="implementando-o-programa-de-teste">Implementando o programa de teste</h3>
+<p>O programa de teste apenas causa uma espera de meio-segundo que permite cada um dos <code>idle threads</code> executarem antes do programa terminar.</p>
+<p>Para poder visualizar quais <code>idle threads</code> estão executando num determinado momento, a versão inicial do método <code>Thread::idle()</code> foi modificada para imprimir <code>Machine::cpu_id()</code> enquanto estiver no <code>idle loop</code>:</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span class="keyword control c"><span>while</span></span><span>(_thread_count&nbsp;&gt;&nbsp;</span><span class="constant numeric c"><span>1</span></span><span>)&nbsp;</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;db&lt;Thread&gt;(WRN)&nbsp;&lt;&lt;</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>Machine::cpu_id</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);&nbsp;</span><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;identificando&nbsp;a&nbsp;CPU&nbsp;em&nbsp;idle.</span><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>CPU::int_enable</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);</span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>CPU::halt</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);</span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span></span></div></pre>
+<p>Para a execução com apenas uma CPU, a saída do programa é a seguinte:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Setting&nbsp;up&nbsp;this&nbsp;machine&nbsp;as&nbsp;follows:</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>Processor:&nbsp;&nbsp;&nbsp;&nbsp;IA32&nbsp;at&nbsp;2498&nbsp;MHz&nbsp;(BUS&nbsp;clock&nbsp;=&nbsp;125&nbsp;MHz)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Memory:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;262144&nbsp;Kbytes&nbsp;[0x00000000:0x10000000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;User&nbsp;memory:&nbsp;&nbsp;261800&nbsp;Kbytes&nbsp;[0x00000000:0x0ffaa000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;PCI&nbsp;aperture:&nbsp;44996&nbsp;Kbytes&nbsp;[0xfc000000:0xfebf1000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Node&nbsp;Id:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;get&nbsp;from&nbsp;the&nbsp;network!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Setup:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;19456&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;APP&nbsp;code:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;17536&nbsp;bytes&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;480&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;CPU&nbsp;count:&nbsp;&nbsp;&nbsp;&nbsp;1</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Esperando...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>00000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>00000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>00000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>00000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>00000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>00000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>0000000000000000000...TCHAU!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>The&nbsp;last&nbsp;thread&nbsp;has&nbsp;exited!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Rebooting&nbsp;the&nbsp;machine&nbsp;...</span></span></span></div></pre><p>Observe que os zeros são impressos dentro do <code>idle loop</code> porque existe apenas uma CPU (cpu_id = 0) executando em <code>idle</code>.</p>
+<h3 id="executando-com-duas-cpus">Executando com duas CPUs</h3>
+<p>Ainda usando a versão inicial do EPOS disponibilizada pelo professor para P2, vamos executar o programa de testes com duas CPUs:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Setting&nbsp;up&nbsp;this&nbsp;machine&nbsp;as&nbsp;follows:</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>Processor:&nbsp;&nbsp;&nbsp;&nbsp;IA32&nbsp;at&nbsp;797&nbsp;MHz&nbsp;(BUS&nbsp;clock&nbsp;=&nbsp;125&nbsp;MHz)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Memory:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;262144&nbsp;Kbytes&nbsp;[0x00000000:0x10000000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;User&nbsp;memory:&nbsp;&nbsp;261784&nbsp;Kbytes&nbsp;[0x00000000:0x0ffa6000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;PCI&nbsp;aperture:&nbsp;44996&nbsp;Kbytes&nbsp;[0xfc000000:0xfebf1000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Node&nbsp;Id:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;get&nbsp;from&nbsp;the&nbsp;network!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Setup:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20992&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;APP&nbsp;code:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;17504&nbsp;bytes&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;512&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;CPU&nbsp;count:&nbsp;&nbsp;&nbsp;&nbsp;2</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Esperando...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>1</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Esperando...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>IC::exc_gpf(cs=8,ip=0x00003f50,fl=2)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>The&nbsp;running&nbsp;thread&nbsp;will&nbsp;now&nbsp;be&nbsp;termin1ated!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10010101010101010010101010101001010010101010101010101010101011010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>00101010101010101010101010101010101010101010101010101010101010101010101010101010</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10101010110101010101010101010101010101010101010101010101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10101010101010101010101010101010101010101010101010101010101010100101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101010101010101010101010101010101010101010101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101010101010101010110010101010101010101010101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>0101010101010101010101010101...TCHAU!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>00101010101010101010101010101010101010101010101010101010100101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101010101010101010101010101010101010101010101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101010101010101010101010101010101010101010101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010100101010101010110101010101010101010101010101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>010101010101010101010101010101IC::exc_pf[address=0x66333038](cs=8,ip=0x00001b23,</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>fl=46,err=PR)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>The&nbsp;running&nbsp;thread&nbsp;will&nbsp;now&nbsp;be&nbsp;terminated!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>IC::exc_pf[address=0x53e5895d](cs=8,ip=0x00002065,fl=2,err=)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>The&nbsp;running&nbsp;thread&nbsp;will&nbsp;now&nbsp;be&nbsp;terminated!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>IC::exc_pf[address=0x53e58971](cs=8,ip=0x00002dac,fl=97,err=)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>The&nbsp;running&nbsp;thread&nbsp;will&nbsp;now&nbsp;be&nbsp;terminated!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>IC::exc_pf[address=0x53e58971](cs=8,ip=0x00002dac,fl=97,err=)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>IC::exc_pf[address=0x53e58971](cs=8,ip=0x00002dac,fl=97,err=)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>The&nbsp;running&nbsp;thread&nbsp;will&nbsp;now&nbsp;be&nbsp;terminated!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>IC::exc_pf[address=0x53e58971](cs=8,ip=0x00002dac,fl=97,err=)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>ThThe&nbsp;last&nbsp;thread&nbsp;has&nbsp;exited!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Rebooting&nbsp;the&nbsp;machine&nbsp;...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>e</span></span></span></div></pre><p>Na saída do programa acima, existem alguns pontos importantes para se observar:</p>
+<ul>
+<li>O programa foi iniciado e executado duas vezes concorrentemente, uma vez em cada CPU. Observe o texto <code>Esperando...</code> sendo impresso duas.</li>
+<li>Logo no inicio da execução do programa, abaixo do segundo <code>Esperando...</code>, ocorreu um <code>general protection fault</code> (GPF - indicado pelo texto <code>IC::exc_gpf</code>). A função do EPOS que cuida de GPFs tenta terminar a execução do programa, mas ele continua executando.</li>
+<li>Logo após o GPF, os <code>idle threads</code> das duas CPUs ficam executando em seu <code>idle loop</code>, o que é observado através da alternância entre zeros e uns impressos na saída.</li>
+<li>Dado o tempo ainda maior que o meio-segundo de espera programado, a execução do programa termina em ambas as CPUs.</li>
+<li>Antes de terminar a execução, porém, vê-se uma séria de <code>page faults</code> (PFs).</li>
+</ul>
+<p>As observações acima mostram os seguintes problemas com a versão do EPOS disponilizada para este trabalho:</p>
+<ul>
+<li>A inicialização do sistema não está tomando o cuidado de iniciar a execução do programa em apenas uma CPU.</li>
+<li>A GPF indica acesso de memória fora do seguimento, o que deve estar ocorrendo quando as CPUs tentam acesso concorrente a <code>heap</code> do sistema, ou a outros recursos compartilhados.</li>
+<li>Ambos as CPUs provavelmente estavam tentando desalocar memória, ou outros resources, ao término da execução do programa, o que deve ter causado as PFs.</li>
+</ul>
+<p>As próximas seções irão mostrar mudanças progressivas sobre a versão inicial do código para resolver estes problemas.</p>
+<h3 id="modificando-a-inicializa-o-do-thread-principal-e-dos-idle-threads-">Modificando a inicialização do <code>thread</code> principal e dos <code>idle threads</code></h3>
+<p>Como vimos anteriormente, ambas as CPUs estavam executando o <code>thread</code> principal. As alterações abaixo em <code>init_frst.cc</code> fazem com que apenas a BSP inicie o <code>thread</code> principal. As PAs vão iniciar apenas um <code>idle thread</code>:</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span>Thread&nbsp;*&nbsp;first;</span></span></div><div class="line"><span class="source cpp"><span class="keyword control c"><span>if</span></span><span>&nbsp;(Machine::cpu_id()&nbsp;==&nbsp;</span><span class="constant numeric c"><span>0</span></span><span>)&nbsp;</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="punctuation whitespace comment leading c++"><span>&nbsp;&nbsp;</span></span><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;If&nbsp;EPOS&nbsp;is&nbsp;not&nbsp;a&nbsp;kernel,&nbsp;then&nbsp;adjust&nbsp;the&nbsp;application&nbsp;entry&nbsp;point&nbsp;to&nbsp;__epos_app_entry,</span><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="punctuation whitespace comment leading c++"><span>&nbsp;&nbsp;</span></span><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;which&nbsp;will&nbsp;directly&nbsp;call&nbsp;main().&nbsp;In&nbsp;this&nbsp;case,&nbsp;_init&nbsp;will&nbsp;have&nbsp;already&nbsp;been&nbsp;called,</span><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="punctuation whitespace comment leading c++"><span>&nbsp;&nbsp;</span></span><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;before&nbsp;Init_Application,&nbsp;to&nbsp;construct&nbsp;main()&#39;s&nbsp;global&nbsp;objects.</span><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span>&nbsp;&nbsp;first&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>new</span></span><span>&nbsp;</span><span class="punctuation definition parameters c"><span>(</span></span></span><span>SYSTEM)</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>Thread</span></span><span class="punctuation definition parameters c"><span>(</span></span><span class="support function any-method c"><span>Thread::Configuration</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>Thread::RUNNING,&nbsp;Thread::MAIN),&nbsp;</span><span class="keyword operator cast cpp"><span>reinterpret_cast</span></span><span>&lt;</span><span class="meta function-call c"><span class="support function any-method c"><span>int</span></span><span>&nbsp;</span><span class="punctuation definition parameters c"><span>(</span></span></span><span>*)()&gt;(__epos_app_entry));</span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="punctuation whitespace comment leading c++"><span>&nbsp;&nbsp;</span></span><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;Idle&nbsp;thread&nbsp;creation&nbsp;must&nbsp;succeed&nbsp;main,&nbsp;thus&nbsp;avoiding&nbsp;implicit&nbsp;rescheduling</span><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>new</span></span><span>&nbsp;</span><span class="punctuation definition parameters c"><span>(</span></span></span><span>SYSTEM)</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>Thread</span></span><span class="punctuation definition parameters c"><span>(</span></span><span class="support function any-method c"><span>Thread::Configuration</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>Thread::READY,&nbsp;Thread::IDLE),&nbsp;&amp;Thread::idle);</span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span><span>&nbsp;</span><span class="keyword control c"><span>else</span></span><span>&nbsp;</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span>&nbsp;&nbsp;first&nbsp;=</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>new</span></span><span>&nbsp;</span><span class="punctuation definition parameters c"><span>(</span></span></span><span>SYSTEM)</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>Thread</span></span><span class="punctuation definition parameters c"><span>(</span></span><span class="support function any-method c"><span>Thread::Configuration</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>Thread::RUNNING,&nbsp;Thread::IDLE),&nbsp;&amp;Thread::idle);</span></span></span></div><div class="line"><span class="source cpp"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span></span></div></pre>
+<p>Além das mudanças acima, também foi colocado uma barreira em <code>init_first.cc</code> logo após a instanciação dos <code>threads</code> para garantir que nenhum <code>thread</code> venha iniciar sua execução antes das outras:</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span>&nbsp;&nbsp;db&lt;Init&gt;(INF)&nbsp;&lt;&lt;&nbsp;</span><span class="string quoted double c"><span class="punctuation definition string begin c"><span>&quot;</span></span><span>INIT&nbsp;ends&nbsp;here!</span><span class="punctuation definition string end c"><span>&quot;</span></span></span><span>&nbsp;&lt;&lt;&nbsp;endl;</span></span></div><div class="line"><span class="source cpp"><span>&nbsp;</span></span></div><div class="line"><span class="source cpp"><span>&nbsp;&nbsp;db&lt;Init,&nbsp;Thread&gt;(WRN)&nbsp;&lt;&lt;&nbsp;</span><span class="string quoted double c"><span class="punctuation definition string begin c"><span>&quot;</span></span><span>Dispatching&nbsp;the&nbsp;first&nbsp;thread:&nbsp;</span><span class="punctuation definition string end c"><span>&quot;</span></span></span><span>&nbsp;&lt;&lt;&nbsp;first&nbsp;&lt;&lt;&nbsp;</span><span class="string quoted double c"><span class="punctuation definition string begin c"><span>&quot;</span></span><span>&nbsp;on&nbsp;CPU:&nbsp;</span><span class="punctuation definition string end c"><span>&quot;</span></span></span><span>&nbsp;&lt;&lt;&nbsp;Machine::cpu_id()&nbsp;&lt;&lt;&nbsp;endl;</span></span></div><div class="line"><span class="source cpp"><span>&nbsp;</span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;&nbsp;</span></span><span class="entity name function c"><span>This_Thread::not_booting</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="punctuation section parens end c"><span>)</span></span></span><span>;</span></span></span></div><div class="line"><span class="source cpp"><span>&nbsp;</span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;&nbsp;</span></span><span class="entity name function c"><span>Machine::smp_barrier</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="punctuation section parens end c"><span>)</span></span></span><span>;</span></span><span>&nbsp;</span><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;todas&nbsp;as&nbsp;threads&nbsp;iniciarão&nbsp;juntas</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span>&nbsp;</span></span></div><div class="line"><span class="source cpp"><span>&nbsp;&nbsp;first-&gt;_context-&gt;</span><span class="meta function c"><span class="entity name function c"><span>load</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="punctuation section parens end c"><span>)</span></span></span><span>;</span></span></span></div><div class="line"><span class="source cpp"><span>}</span></span></div></pre>
+<p>Observe abaixo a saída do programa de teste com duas CPUs:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Setting&nbsp;up&nbsp;this&nbsp;machine&nbsp;as&nbsp;follows:</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>Processor:&nbsp;&nbsp;&nbsp;&nbsp;IA32&nbsp;at&nbsp;822&nbsp;MHz&nbsp;(BUS&nbsp;clock&nbsp;=&nbsp;125&nbsp;MHz)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Memory:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;262144&nbsp;Kbytes&nbsp;[0x00000000:0x10000000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;User&nbsp;memory:&nbsp;&nbsp;261784&nbsp;Kbytes&nbsp;[0x00000000:0x0ffa6000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;PCI&nbsp;aperture:&nbsp;44996&nbsp;Kbytes&nbsp;[0xfc000000:0xfebf1000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Node&nbsp;Id:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;get&nbsp;from&nbsp;the&nbsp;network!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Setup:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;21792&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;APP&nbsp;code:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18256&nbsp;bytes&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;544&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;CPU&nbsp;count:&nbsp;&nbsp;&nbsp;&nbsp;2</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Esperand1o&nbsp;na&nbsp;CPU&nbsp;0...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>1</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11111111111111111111111111111111111111111111111111111111111111111111111111111111</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11111111111111111111111111111111111111111111111111111111111111111111111111111111</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11111111111111111111111111111111111111111111111111111111111111111111111111111111</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11111111111111111111111111111111111111111111111111111111111111111111111111111111</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11111111111111111111111111111111111111111111111111111111111111111111111111111111</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11111111111111111111111111111111111111111111111111111111111111111111111111111111</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>111111111111111111111111111111111111111111111111111111111111111111111111111111111</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11111...</span></span></span></div></pre><p>Assim como esperado, depois das alterações em <code>init_first.cc</code>, somente a CPU 0 está rodando a <code>thread</code> principal, como mostrado pelo texto <code>Esperand1o na CPU 0...</code>. Porém, observe que somente a CPU 1 está executando o <code>idle thread</code>. A CPU 0 também deveria estar executando em seu <code>idle thread</code>, mas esta já terminou sua execução neste ponto. A proxima seção vai cuidar desta questão.</p>
+<h3 id="modificando-a-pol-tica-de-escalonamento-para-suportar-mais-de-uma-cpu">Modificando a política de escalonamento para suportar mais de uma CPU</h3>
+<p>A configuração atual do <code>Scheduler</code> utiliza a política <code>round-robin</code>, que é adequada para apenas uma CPU. Porém, no caso SMP, é preciso que <code>Scheduler.chosen()</code> retorne um <code>thread</code> diferente para cada CPU. Portanto, é necessário alterar a configuração de <code>Scheduler</code> para utilizar uma política adequada em SMP.</p>
+<p>Para tanto, modificou-se <code>Schedeling_Queue</code> - a classe base de <code>Scheduler</code> - para usar <code>Scheduling_Multilist</code> como sua base. Esta última permite políticas que alocam uma lista de <code>threads</code> para cada CPU:</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;Scheduling_Queue</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="storage type template cpp"><span>template</span></span><span>&lt;</span><span class="storage modifier cpp"><span>typename</span></span><span>&nbsp;T,&nbsp;</span><span class="storage modifier cpp"><span>typename</span></span><span>&nbsp;R&nbsp;=&nbsp;</span><span class="storage modifier cpp"><span>typename</span></span><span>&nbsp;T::Criterion&gt;</span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="storage type cpp"><span>class</span></span><span>&nbsp;</span><span class="entity name type cpp"><span>Scheduling_Queue</span></span><span>:&nbsp;</span><span class="storage type modifier cpp"><span>public</span></span><span>&nbsp;</span><span class="entity name type inherited cpp"><span>Scheduling_Multilist</span></span><span class="meta angle-brackets cpp"><span>&lt;</span><span>T</span><span>&gt;</span></span><span>&nbsp;</span><span class="punctuation section block begin cpp"><span>{</span></span><span class="punctuation section block end cpp"><span>}</span></span></span><span>;</span></span></div></pre>
+<p>Observe que <code>Scheduling_Multilist</code> não estava disponível na versão disponilizada para o trabalho P2, mas foi copiada do EPOS 2.</p>
+<p>Também foi necessário implementar uma política nova, a qual chamamos de <code>uniform distribution</code> porque aloca um <code>idle thread</code> para cada CPU e também distribui igualmente a alocação de <code>threads</code> normais entre as CPUs:</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;Uniform&nbsp;Distribution</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="storage type cpp"><span>class</span></span><span>&nbsp;</span><span class="entity name type cpp"><span>UD</span></span><span>:&nbsp;</span><span class="storage type modifier cpp"><span>public</span></span><span>&nbsp;</span><span class="entity name type inherited cpp"><span>Priority</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="punctuation section block begin cpp"><span>{</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="storage modifier cpp"><span>public:</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage type c"><span>enum</span></span><span>&nbsp;</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MAIN&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="constant numeric c"><span>0</span></span><span>,</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NORMAL&nbsp;=&nbsp;</span><span class="constant numeric c"><span>1</span></span><span>,</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IDLE&nbsp;&nbsp;&nbsp;=&nbsp;(</span><span class="meta function-call c"><span class="support function any-method c"><span>unsigned</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span class="constant numeric c"><span>1</span></span><span>)&nbsp;&lt;&lt;&nbsp;(</span><span class="keyword operator sizeof c"><span>sizeof</span></span><span>(</span><span class="storage type c"><span>int</span></span><span>)&nbsp;*&nbsp;</span><span class="constant numeric c"><span>8</span></span><span>&nbsp;-&nbsp;</span><span class="constant numeric c"><span>1</span></span><span>))&nbsp;-&nbsp;</span><span class="constant numeric c"><span>1</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="punctuation section block end c"><span>}</span></span></span><span>;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage modifier c"><span>static</span></span><span>&nbsp;</span><span class="storage modifier c"><span>const</span></span><span>&nbsp;</span><span class="storage type c"><span>bool</span></span><span>&nbsp;timed&nbsp;=&nbsp;</span><span class="constant language c"><span>false</span></span><span>;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage modifier c"><span>static</span></span><span>&nbsp;</span><span class="storage modifier c"><span>const</span></span><span>&nbsp;</span><span class="storage type c"><span>bool</span></span><span>&nbsp;dynamic&nbsp;=&nbsp;</span><span class="constant language c"><span>false</span></span><span>;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage modifier c"><span>static</span></span><span>&nbsp;</span><span class="storage modifier c"><span>const</span></span><span>&nbsp;</span><span class="storage type c"><span>bool</span></span><span>&nbsp;preemptive&nbsp;=&nbsp;</span><span class="constant language c"><span>true</span></span><span>;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage modifier c"><span>static</span></span><span>&nbsp;</span><span class="storage modifier c"><span>const</span></span><span>&nbsp;</span><span class="storage type c"><span>unsigned</span></span><span>&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;QUEUES&nbsp;=&nbsp;Traits&lt;Machine&gt;::CPUS;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="storage modifier cpp"><span>public:</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="meta function constructor cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="entity name function cpp"><span>UD</span></span><span class="punctuation definition parameters begin c"><span>(</span></span><span class="storage type c"><span>int</span></span><span>&nbsp;p&nbsp;=&nbsp;NORMAL</span><span class="punctuation definition parameters end c"><span>)</span></span></span><span class="meta function constructor initializer-list cpp"><span class="punctuation definition parameters c"><span>:</span></span><span>&nbsp;Priority(p),&nbsp;_queue(((_priority&nbsp;==&nbsp;IDLE)&nbsp;||&nbsp;(_priority&nbsp;==&nbsp;MAIN))&nbsp;?&nbsp;Machine::cpu_id()&nbsp;:&nbsp;++_next_queue&nbsp;%=&nbsp;Machine::n_cpus())&nbsp;</span></span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span><span class="punctuation section block end c"><span>}</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage modifier c"><span>const</span></span><span>&nbsp;</span><span class="storage modifier c"><span>volatile</span></span><span>&nbsp;</span><span class="storage type c"><span>unsigned</span></span><span>&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;&amp;</span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>queue</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="punctuation section parens end c"><span>)</span></span></span><span>&nbsp;</span><span class="storage modifier c"><span>const</span></span><span>&nbsp;volatile&nbsp;</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span><span>&nbsp;</span><span class="keyword control c"><span>return</span></span><span>&nbsp;_queue;&nbsp;</span><span class="punctuation section block end c"><span>}</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage modifier c"><span>static</span></span><span>&nbsp;</span><span class="storage type c"><span>unsigned</span></span><span>&nbsp;</span><span class="storage type c"><span>int</span></span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>current_queue</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="punctuation section parens end c"><span>)</span></span></span><span>&nbsp;</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span><span>&nbsp;</span><span class="keyword control c"><span>return</span></span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>Machine::cpu_id</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);&nbsp;</span><span class="punctuation section block end c"><span>}</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="storage modifier cpp"><span>private:</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage modifier c"><span>volatile</span></span><span>&nbsp;</span><span class="storage type c"><span>unsigned</span></span><span>&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;_queue;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="storage modifier c"><span>static</span></span><span>&nbsp;</span><span class="storage modifier c"><span>volatile</span></span><span>&nbsp;</span><span class="storage type c"><span>unsigned</span></span><span>&nbsp;</span><span class="storage type c"><span>int</span></span><span>&nbsp;_next_queue;</span></span></span></div><div class="line"><span class="source cpp"><span class="meta class-struct-block cpp"><span class="punctuation section block end cpp"><span>}</span></span></span><span>;</span></span></div></pre>
+<p>Como no código acima se usa <code>Machine::n_cpus()</code> para distribuir <code>threads</code> entre as várias filas, foi preciso inicializar <code>_n_cpus</code> chamando <code>smp_init()</code>, como mostrado abaixo:</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span class="storage type c"><span>void</span></span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>PC::init</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="punctuation section parens end c"><span>)</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;db&lt;Init,&nbsp;PC&gt;(TRC)&nbsp;&lt;&lt;&nbsp;</span><span class="string quoted double c"><span class="punctuation definition string begin c"><span>&quot;</span></span><span>PC::init()</span><span class="punctuation definition string end c"><span>&quot;</span></span></span><span>&nbsp;&lt;&lt;&nbsp;endl;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(Traits&lt;PC_IC&gt;::enabled)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>PC_IC::init</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(Traits&lt;PC_PCI&gt;::enabled)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>PC_PCI::init</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(Traits&lt;PC_Timer&gt;::enabled)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>PC_Timer::init</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(Traits&lt;PC_Scratchpad&gt;::enabled)</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>PC_Scratchpad::init</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;</span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(smp)&nbsp;</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System_Info&lt;PC&gt;&nbsp;*&nbsp;si&nbsp;=&nbsp;</span><span class="keyword operator cast cpp"><span>reinterpret_cast</span></span><span>&lt;System_Info&lt;PC&gt;&nbsp;*&gt;(Memory_Map&lt;PC&gt;::SYS_INFO);</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>smp_init</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>si-&gt;bm</span><span class="punctuation separator variable-access c"><span>.</span></span><span class="variable other dot-access c"><span>n_cpus</span></span><span>);</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="punctuation section block end c"><span>}</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="punctuation section block end c"><span>}</span></span></span></span></span></div></pre>
+<p>Observe na saida abaixo que agora ambos <code>idle threads</code> estão executando:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Setting&nbsp;up&nbsp;this&nbsp;machine&nbsp;as&nbsp;follows:</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>Processor:&nbsp;&nbsp;&nbsp;&nbsp;IA32&nbsp;at&nbsp;543&nbsp;MHz&nbsp;(BUS&nbsp;clock&nbsp;=&nbsp;125&nbsp;MHz)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Memory:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;262144&nbsp;Kbytes&nbsp;[0x00000000:0x10000000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;User&nbsp;memory:&nbsp;&nbsp;261784&nbsp;Kbytes&nbsp;[0x00000000:0x0ffa6000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;PCI&nbsp;aperture:&nbsp;44996&nbsp;Kbytes&nbsp;[0xfc000000:0xfebf1000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Node&nbsp;Id:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;get&nbsp;from&nbsp;the&nbsp;network!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Setup:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;21120&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;APP&nbsp;code:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18240&nbsp;bytes&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;544&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;CPU&nbsp;count:&nbsp;&nbsp;&nbsp;&nbsp;2</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>1Esper1ando&nbsp;na&nbsp;CPU&nbsp;0...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10101010001010101010010100101010101010101010101010101010101010101010100110101010</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10101010101010101010101001010110101010100110101010101010101010101001010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101001010101001010101010101010101010101001010101010101010010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101010101010101010101010101010101011010100101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010100110110101001010101010101001101010101010101010101011010101010100101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101101010101010101010101010100101010101001010101001010101010101010110</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11010101010101001101010110101010010101001010101001010101101010101001010101010100</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11010101010101001010101010101001010101010101001101010101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101001101010101010101010010101001010101011010101010101010101010101010</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10101010101010101001101010101010101010101010010101001010101010101010101001010010</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10100100101010101001010101010101010101010010101010101010101010101010100110101010</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>...</span></span></span></div></pre><p>Apesar do progresso, a execução do sistema ainda não está terminando depois de meio-segundo de espera do programa de teste. Este problema será resolvido na próxima seção.</p>
+<h3 id="modificando-thread-idle-">Modificando <code>Thread::idle</code></h3>
+<p>Para que o programa termine sua execução e o sistema seja &quot;desligado&quot; é preciso que os <code>idle threads</code> parem de executar quando não houver mais <code>threads</code> normais para executar no sistema. Para tanto, <code>Thread::idle</code> foi modificado como mostrado abaixo:</p>
+<pre class="editor-colors lang-cpp"><div class="line"><span class="source cpp"><span class="storage type c"><span>int</span></span><span class="meta function c"><span class="punctuation whitespace function leading c"><span>&nbsp;</span></span><span class="entity name function c"><span>Thread::idle</span></span><span class="meta parens c"><span class="punctuation section parens begin c"><span>(</span></span><span class="punctuation section parens end c"><span>)</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>while</span></span><span>(_thread_count&nbsp;&gt;</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>Machine::n_cpus</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>))&nbsp;</span><span class="meta block c"><span class="punctuation section block begin c"><span>{</span></span><span>&nbsp;</span><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;someone&nbsp;else&nbsp;besides&nbsp;idle</span><span>&nbsp;</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword control c"><span>if</span></span><span>(Traits&lt;Thread&gt;::trace_idle)</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db&lt;Thread&gt;(TRC)&nbsp;&lt;&lt;&nbsp;</span><span class="string quoted double c"><span class="punctuation definition string begin c"><span>&quot;</span></span><span>Thread::idle(this=</span><span class="punctuation definition string end c"><span>&quot;</span></span></span><span>&nbsp;&lt;&lt;</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>running</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>)&nbsp;&lt;&lt;&nbsp;</span><span class="string quoted double c"><span class="punctuation definition string begin c"><span>&quot;</span></span><span>)</span><span class="punctuation definition string end c"><span>&quot;</span></span></span><span>&nbsp;&lt;&lt;&nbsp;endl;</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;db&lt;Thread&gt;(WRN)&nbsp;&lt;&lt;</span><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;</span></span><span class="support function any-method c"><span>Machine::cpu_id</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);&nbsp;&nbsp;</span><span class="comment line double-slash c++"><span class="punctuation definition comment c++"><span>//</span></span><span>&nbsp;identificando&nbsp;a&nbsp;CPU&nbsp;em&nbsp;idle.</span><span>&nbsp;</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>CPU::int_enable</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span class="meta function-call c"><span class="punctuation whitespace function-call leading c"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="support function any-method c"><span>CPU::halt</span></span><span class="punctuation definition parameters c"><span>(</span></span></span><span>);</span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="punctuation section block end c"><span>}</span></span></span></span></span></span></div><div class="line"><span class="source cpp"><span class="meta function c"><span class="meta block c"><span>&nbsp;&nbsp;&nbsp;&nbsp;...</span></span></span></span></div></pre>
+<p>Observe que no código acima, verificamos se o número de <code>threads</code> em execução é maior que o número de CPUs. Neste caso, os <code>idle threads</code> continuam a executar normalmente. Caso contrário, o sistema pode desligar porque não faz sentido continuar rodando apenas <code>idle threads</code> em todas as CPUs.</p>
+<p>A saída abaixo mostra o resultado esperado:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Setting&nbsp;up&nbsp;this&nbsp;machine&nbsp;as&nbsp;follows:</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>Processor:&nbsp;&nbsp;&nbsp;&nbsp;IA32&nbsp;at&nbsp;543&nbsp;MHz&nbsp;(BUS&nbsp;clock&nbsp;=&nbsp;125&nbsp;MHz)</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Memory:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;262144&nbsp;Kbytes&nbsp;[0x00000000:0x10000000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;User&nbsp;memory:&nbsp;&nbsp;261784&nbsp;Kbytes&nbsp;[0x00000000:0x0ffa6000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;PCI&nbsp;aperture:&nbsp;44996&nbsp;Kbytes&nbsp;[0xfc000000:0xfebf1000]</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Node&nbsp;Id:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;get&nbsp;from&nbsp;the&nbsp;network!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;Setup:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;21120&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;APP&nbsp;code:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18240&nbsp;bytes&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;544&nbsp;bytes</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;CPU&nbsp;count:&nbsp;&nbsp;&nbsp;&nbsp;2</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;</span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>1Esper1ando&nbsp;na&nbsp;CPU&nbsp;0...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10101010001010101010010100101010101010101010101010101010101010101010100110101010</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10101010101010101010101001010110101010100110101010101010101010101001010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101001010101001010101010101010101010101001010101010101010010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101010101010101010101010101010101011010100101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010100110110101001010101010101001101010101010101010101011010101010100101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101101010101010101010101010100101010101001010101001010101010101010110</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11010101010101001101010110101010010101001010101001010101101010101001010101010100</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>11010101010101001010101010101001010101010101001101010101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>01010101010101001101010101010101010010101001010101011010101010101010101010101010</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10101010101010101001101010101010101010101010010101001010101010101010101001010010</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10100100101010101001010101010101010101010010101010101010101010101010100110101010</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>10101010100101010101010011010101010101010110101010010101010101010101010101010101</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>0101010101010101...TCHAU!</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>The&nbsp;last&nbsp;thread&nbsp;has&nbsp;exited&nbsp;on&nbsp;CPU&nbsp;0...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Rebooting&nbsp;the&nbsp;machine&nbsp;on&nbsp;CPU&nbsp;0...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>The&nbsp;last&nbsp;thread&nbsp;has&nbsp;exited&nbsp;on&nbsp;CPU&nbsp;1...</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>Rebooting&nbsp;the&nbsp;machine&nbsp;on&nbsp;CPU&nbsp;1...</span></span></span></div></pre><h3 id="pr-ximos-passos">Próximos Passos</h3>
+<ul>
+<li>Executar com 4+ CPUs; resolver problemas de inicialização.</li>
+<li>Modificar o timer para cada CPU, para evitar contenção no escalonamento.</li>
+</ul></body>
+</html>

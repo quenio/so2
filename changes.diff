@@ -1,0 +1,994 @@
+Index: include/scheduler.h
+===================================================================
+--- include/scheduler.h	(revision 3772)
++++ include/scheduler.h	(working copy)
+@@ -76,12 +76,40 @@
+     public:
+         FCFS(int p = NORMAL); // Defined at Alarm
+     };
++
++    // Uniform Distribution
++    class UD: public Priority
++    {
++    public:
++        enum {
++            MAIN   = 0,
++            NORMAL = 1,
++            IDLE   = (unsigned(1) << (sizeof(int) * 8 - 1)) - 1
++        };
++
++        static const bool timed = false;
++        static const bool dynamic = false;
++        static const bool preemptive = true;
++
++        static const unsigned int QUEUES = Traits<Machine>::CPUS;
++
++    public:
++        UD(int p = NORMAL): Priority(p), _queue(((_priority == IDLE) || (_priority == MAIN)) ? Machine::cpu_id() : ++_next_queue %= Machine::n_cpus()) {}
++
++        const volatile unsigned int & queue() const volatile { return _queue; }
++
++        static unsigned int current_queue() { return Machine::cpu_id(); }
++
++    private:
++          volatile unsigned int _queue;
++          static volatile unsigned int _next_queue;
++    };
++
+ }
+ 
+-
+ // Scheduling_Queue
+ template<typename T, typename R = typename T::Criterion>
+-class Scheduling_Queue: public Scheduling_List<T> {};
++class Scheduling_Queue: public Scheduling_Multilist<T> {};
+ 
+ // Scheduler
+ // Objects subject to scheduling by Scheduler must declare a type "Criterion"
+Index: include/system/config.h
+===================================================================
+--- include/system/config.h	(revision 3772)
++++ include/system/config.h	(working copy)
+@@ -7,15 +7,15 @@
+ // ARCHITECTURE, MACHINE, AND APPLICATION SELECTION
+ // This section is generated automatically from makedefs by $EPOS/etc/makefile
+ //============================================================================
+-#define MODE xxx
+-#define ARCH xxx
+-#define MACH xxx
+-#define MMOD xxx
+-#define APPL xxx
+-#define __mode_xxx__
+-#define __arch_xxx__
+-#define __mach_xxx__
+-#define __mmod_xxx__
++#define MODE library
++#define ARCH ia32
++#define MACH pc
++#define MMOD legacy
++#define APPL delay_test
++#define __mode_library__
++#define __arch_ia32__
++#define __mach_pc__
++#define __mmod_legacy__
+ 
+ #if defined (__arch_avr__) || defined (__mmod_lm3s811__)
+ #define __no_networking__
+Index: include/system/traits.h
+===================================================================
+--- include/system/traits.h	(revision 3772)
++++ include/system/traits.h	(working copy)
+@@ -28,7 +28,7 @@
+     enum {Legacy};
+     static const unsigned int MODEL = Legacy;
+ 
+-    static const unsigned int CPUS = 1;
++    static const unsigned int CPUS = 4;
+     static const unsigned int NODES = 1; // > 1 => NETWORKING
+ };
+ 
+@@ -119,7 +119,7 @@
+ {
+     static const bool smp = Traits<System>::multicore;
+ 
+-    typedef Scheduling_Criteria::RR Criterion;
++    typedef Scheduling_Criteria::UD Criterion;
+     static const unsigned int QUANTUM = 10000; // us
+ 
+     static const bool trace_idle = hysterically_debugged;
+Index: include/system/types.h
+===================================================================
+--- include/system/types.h	(revision 3772)
++++ include/system/types.h	(working copy)
+@@ -90,6 +90,7 @@
+     class Priority;
+     class FCFS;
+     class RR;
++    class UD;
+ };
+ 
+ class Address_Space;
+Index: include/utility/heap.h
+===================================================================
+--- include/utility/heap.h	(revision 3772)
++++ include/utility/heap.h	(working copy)
+@@ -32,6 +32,8 @@
+     void * alloc(unsigned int bytes) {
+         db<Heaps>(TRC) << "Heap::alloc(this=" << this << ",bytes=" << bytes;
+ 
++        _lock.acquire();
++
+         if(!bytes)
+             return 0;
+ 
+@@ -57,6 +59,8 @@
+             *addr++ = reinterpret_cast<int>(this);
+         *addr++ = bytes;
+ 
++        _lock.release();
++
+         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
+ 
+         return addr;
+@@ -65,11 +69,15 @@
+     void free(void * ptr, unsigned int bytes) {
+         db<Heaps>(TRC) << "Heap::free(this=" << this << ",ptr=" << ptr << ",bytes=" << bytes << ")" << endl;
+ 
++        _lock.acquire();
++
+         if(ptr && (bytes >= sizeof(Element))) {
+             Element * e = new (ptr) Element(reinterpret_cast<char *>(ptr), bytes);
+             Element * m1, * m2;
+             insert_merging(e, &m1, &m2);
+         }
++
++        _lock.release();
+     }
+ 
+     static void typed_free(void * ptr) {
+@@ -87,6 +95,8 @@
+ 
+ private:
+     void out_of_memory();
++
++    Spin _lock;
+ };
+ 
+ __END_UTIL
+Index: include/utility/list.h
+===================================================================
+--- include/utility/list.h	(revision 3772)
++++ include/utility/list.h	(working copy)
+@@ -35,7 +35,7 @@
+ 
+     public:
+         Pointer(const T * o): _object(o) {}
+-    
++
+         T * object() const { return const_cast<T *>(_object); }
+ 
+     private:
+@@ -77,12 +77,12 @@
+ 
+     public:
+         Singly_Linked(const T * o): _object(o), _next(0) {}
+-    
++
+         T * object() const { return const_cast<T *>(_object); }
+ 
+         Element * next() const { return _next; }
+         void next(Element * e) { _next = e; }
+-    
++
+     private:
+         const T * _object;
+         Element * _next;
+@@ -100,7 +100,7 @@
+ 
+     public:
+         Singly_Linked_Ordered(const T * o, const R & r = 0): _object(o), _rank(r), _next(0) {}
+-    
++
+         T * object() const { return const_cast<T *>(_object); }
+ 
+         Element * next() const { return _next; }
+@@ -138,7 +138,7 @@
+         void size(unsigned int l) { _size = l; }
+         void shrink(unsigned int n) { _size -= n; }
+         void expand(unsigned int n) { _size += n; }
+-    
++
+     private:
+         const T * _object;
+         unsigned int _size;
+@@ -155,7 +155,7 @@
+ 
+     public:
+         Doubly_Linked(const T * o): _object(o), _prev(0), _next(0) {}
+-    
++
+         T * object() const { return const_cast<T *>(_object); }
+ 
+         Element * prev() const { return _prev; }
+@@ -162,7 +162,7 @@
+         Element * next() const { return _next; }
+         void prev(Element * e) { _prev = e; }
+         void next(Element * e) { _next = e; }
+-    
++
+     private:
+         const T * _object;
+         Element * _prev;
+@@ -180,7 +180,7 @@
+ 
+     public:
+         Doubly_Linked_Ordered(const T * o,  const R & r = 0): _object(o), _rank(r), _prev(0), _next(0) {}
+-    
++
+         T * object() const { return const_cast<T *>(_object); }
+ 
+         Element * prev() const { return _prev; }
+@@ -199,7 +199,7 @@
+         Element * _prev;
+         Element * _next;
+     };
+-    
++
+     // Scheduling List Element
+     template<typename T, typename R = Rank>
+     class Doubly_Linked_Scheduling
+@@ -211,7 +211,7 @@
+ 
+     public:
+         Doubly_Linked_Scheduling(const T * o,  const R & r = 0): _object(o), _rank(r), _prev(0), _next(0) {}
+-    
++
+         T * object() const { return const_cast<T *>(_object); }
+ 
+         Element * prev() const { return _prev; }
+@@ -254,7 +254,7 @@
+         void size(unsigned int l) { _size = l; }
+         void shrink(unsigned int n) { _size -= n; }
+         void expand(unsigned int n) { _size += n; }
+-    
++
+     private:
+         const T * _object;
+         unsigned int _size;
+@@ -320,7 +320,7 @@
+ 
+         Iterator & operator--() { _current = _current->prev(); return *this; }
+         Iterator operator--(int) { Iterator tmp = *this; --*this; return tmp; }
+-        
++
+         bool operator==(const Iterator & i) const { return _current == i._current; }
+         bool operator!=(const Iterator & i) const { return _current != i._current; }
+ 
+@@ -372,7 +372,7 @@
+             _size++;
+         }
+     }
+-    
++
+     Element * remove() { return remove_head(); }
+ 
+     Element * remove(Element * e) {
+@@ -416,13 +416,13 @@
+             return remove(e);
+         return 0;
+     }
+-    
++
+     Element * search(const Object_Type * obj) {
+         Element * e = _head;
+             for(; e && (e->object() != obj); e = e->next());
+             return e;
+     }
+-    
++
+ protected:
+     bool last() const { return (_size == 1); }
+ 
+@@ -455,8 +455,8 @@
+ 
+ 
+ // Singly-Linked, Ordered List
+-template<typename T, 
+-          typename R = List_Element_Rank, 
++template<typename T,
++          typename R = List_Element_Rank,
+           typename El = List_Elements::Singly_Linked_Ordered<T, R>,
+           bool relative = false>
+ class Simple_Ordered_List: public Simple_List<T, El>
+@@ -477,7 +477,7 @@
+     using Base::begin;
+     using Base::end;
+     using Base::remove_head;
+-    
++
+     void insert(Element * e) {
+         if(empty())
+             insert_first(e);
+@@ -503,7 +503,7 @@
+             }
+         }
+     }
+-    
++
+     Element * remove() { return remove_head(); }
+ 
+     Element * remove(Element * e) {
+@@ -519,7 +519,7 @@
+             return remove(e);
+         return 0;
+     }
+-    
++
+     Element * search_rank(const Rank_Type & rank) {
+         Element * e = head();
+         for(; e && (e->rank() != rank); e = e->next());
+@@ -536,7 +536,7 @@
+ 
+ 
+ // Singly-Linked, Relative Ordered List
+-template<typename T, 
++template<typename T,
+           typename R = List_Element_Rank,
+           typename El = List_Elements::Singly_Linked_Ordered<T, R> >
+ class Simple_Relative_List: public Simple_Ordered_List<T, R, El, true> {};
+@@ -572,13 +572,13 @@
+         for(; e && (e->size() < s); e = e->next());
+         return e;
+     }
+-    
++
+     Element * search_left(const Object_Type * obj) {
+         Element * e = head();
+         for(; e && (e->object() + e->size() != obj); e = e->next());
+         return e;
+     }
+-    
++
+     void insert_merging(Element * e, Element ** m1, Element ** m2) {
+         _grouped_size += e->size();
+         *m1 = *m2 = 0;
+@@ -595,7 +595,7 @@
+         } else
+             insert_tail(e);
+     }
+-    
++
+     Element * search_decrementing(unsigned int s) {
+         Element * e = search_size(s);
+         if(e) {
+@@ -606,7 +606,7 @@
+         }
+         return e;
+     }
+-    
++
+ private:
+     unsigned int _grouped_size;
+ };
+@@ -627,10 +627,10 @@
+ 
+     bool empty() const { return (_size == 0); }
+     unsigned int size() const { return _size; }
+-    
++
+     Element * head() { return _head; }
+     Element * tail() { return _tail; }
+-    
++
+     Iterator begin() { return Iterator(_head); }
+     Iterator end() { return Iterator(0); }
+ 
+@@ -637,7 +637,7 @@
+     void insert(Element * e) { insert_tail(e); }
+ 
+     void insert_head(Element * e) {
+-        db<Lists>(TRC) << "List::insert_head(e=" << e 
++        db<Lists>(TRC) << "List::insert_head(e=" << e
+                        << ") => {p=" << (e ? e->prev() : (void *) -1)
+                        << ",o=" << (e ? e->object() : (void *) -1)
+                        << ",n=" << (e ? e->next() : (void *) -1)
+@@ -661,7 +661,7 @@
+     }
+ 
+     void insert_tail(Element * e) {
+-        db<Lists>(TRC) << "List::insert_tail(e=" << e 
++        db<Lists>(TRC) << "List::insert_tail(e=" << e
+                        << ") => {p=" << (e ? e->prev() : (void *) -1)
+                        << ",o=" << (e ? e->object() : (void *) -1)
+                        << ",n=" << (e ? e->next() : (void *) -1)
+@@ -683,11 +683,11 @@
+         print_head();
+         print_tail();
+     }
+-    
++
+     Element * remove() { return remove_head(); }
+ 
+     Element * remove(Element * e) {
+-        db<Lists>(TRC) << "List::remove(e=" << e 
++        db<Lists>(TRC) << "List::remove(e=" << e
+                        << ") => {p=" << (e ? e->prev() : (void *) -1)
+                        << ",o=" << (e ? e->object() : (void *) -1)
+                        << ",n=" << (e ? e->next() : (void *) -1)
+@@ -762,13 +762,13 @@
+             return remove(e);
+         return 0;
+     }
+-    
++
+     Element * search(const Object_Type * obj) {
+         Element * e = _head;
+         for(; e && (e->object() != obj); e = e->next());
+         return e;
+     }
+-    
++
+ protected:
+     bool last() const { return (_size == 1); }
+ 
+@@ -799,7 +799,7 @@
+     }
+ 
+     void insert_first(Element * e) {
+-        db<Lists>(TRC) << "List::insert_first(e=" << e 
++        db<Lists>(TRC) << "List::insert_first(e=" << e
+                        << ") => {p=" << (e ? e->prev() : (void *) -1)
+                        << ",o=" << (e ? e->object() : (void *) -1)
+                        << ",n=" << (e ? e->next() : (void *) -1)
+@@ -836,7 +836,7 @@
+     }
+ 
+     void print_head() {
+-        db<Lists>(INF) << "List[" << this << "]::head=" << head() 
++        db<Lists>(INF) << "List[" << this << "]::head=" << head()
+                        << " => {p=" << (head() ? head()->prev() : (void *) -1)
+                        << ",o=" << (head() ? head()->object() : (void *) -1)
+                        << ",n=" << (head() ? head()->next() : (void *) -1)
+@@ -844,7 +844,7 @@
+     }
+ 
+     void print_tail() {
+-        db<Lists>(INF) << "List[" << this << "]::tail=" << tail() 
++        db<Lists>(INF) << "List[" << this << "]::tail=" << tail()
+                        << " => {p=" << (tail() ? tail()->prev() : (void *) -1)
+                        << ",o=" << (tail() ? tail()->object() : (void *) -1)
+                        << ",n=" << (tail() ? tail()->next() : (void *) -1)
+@@ -887,7 +887,7 @@
+     using Base::search;
+ 
+     void insert(Element * e) {
+-        db<Lists>(TRC) << "Ordered_List::insert(e=" << e 
++        db<Lists>(TRC) << "Ordered_List::insert(e=" << e
+                        << ") => {p=" << (e ? e->prev() : (void *) -1)
+                        << ",o=" << (e ? e->object() : (void *) -1)
+                        << ",n=" << (e ? e->next() : (void *) -1)
+@@ -917,8 +917,8 @@
+             }
+         }
+     }
+-    
+-    Element * remove() { 
++
++    Element * remove() {
+         db<Lists>(TRC) << "Ordered_List::remove()" << endl;
+ 
+         return Base::remove_head();
+@@ -925,7 +925,7 @@
+     }
+ 
+     Element * remove(Element * e) {
+-        db<Lists>(TRC) << "Ordered_List::remove(e=" << e 
++        db<Lists>(TRC) << "Ordered_List::remove(e=" << e
+                        << ") => {p=" << (e ? e->prev() : (void *) -1)
+                        << ",o=" << (e ? e->object() : (void *) -1)
+                        << ",n=" << (e ? e->next() : (void *) -1)
+@@ -947,7 +947,7 @@
+         else
+             return 0;
+     }
+-    
++
+     Element * search_rank(const Rank_Type & rank) {
+         Element * e = head();
+         for(; e && (e->rank() != rank); e = e->next());
+@@ -1075,7 +1075,7 @@
+ 
+ 
+ // Doubly-Linked, Grouping List
+-template<typename T, 
++template<typename T,
+           typename El = List_Elements::Doubly_Linked_Grouping<T> >
+ class Grouping_List: public List<T, El>
+ {
+@@ -1103,19 +1103,19 @@
+     using Base::print_tail;
+ 
+     unsigned int grouped_size() const { return _grouped_size; }
+-    
++
+     Element * search_size(unsigned int s) {
+         Element * e = head();
+         for(; e && (e->size() < sizeof(Element) + s) && (e->size() != s); e = e->next());
+         return e;
+     }
+-    
++
+     Element * search_left(const Object_Type * obj) {
+         Element * e = head();
+         for(; e && (e->object() + e->size() != obj); e = e->next());
+         return e;
+     }
+-    
++
+     void insert_merging(Element * e, Element ** m1, Element ** m2) {
+         db<Lists>(TRC) << "Grouping_List::insert_merging(e=" << e << ")" << endl;
+ 
+@@ -1136,7 +1136,7 @@
+             *m2 = e;
+         }
+     }
+-    
++
+     Element * search_decrementing(unsigned int s) {
+         db<Lists>(TRC) << "Grouping_List::search_decrementing(s=" << s << ")" << endl;
+         print_head();
+@@ -1152,11 +1152,77 @@
+ 
+         return e;
+     }
+-    
++
+ private:
+     unsigned int _grouped_size;
+ };
+ 
++// Doubly-Linked, Scheduling Multilist
++// Besides declaring "Criterion", objects subject to scheduling policies that
++// use the Multilist must export the QUEUES constant to indicate the number of
++// sublists in the list, the current_queue() class method to designate the
++// queue to which the current operation applies, and the queue() method to
++// return the queue in which the object currently resides.
++template<typename T,
++          typename R = typename T::Criterion,
++          typename El = List_Elements::Doubly_Linked_Scheduling<T, R>,
++          typename L = Scheduling_List<T, R, El>,
++          unsigned int Q = R::QUEUES>
++class Scheduling_Multilist
++{
++public:
++    typedef T Object_Type;
++    typedef R Rank_Type;
++    typedef El Element;
++    typedef typename L::Iterator Iterator;
++
++public:
++    Scheduling_Multilist() {}
++
++    bool empty() const { return _list[R::current_queue()].empty(); }
++
++    unsigned int size() const { return _list[R::current_queue()].size(); }
++    unsigned int total_size() const {
++        unsigned int s = 0;
++        for(unsigned int i = 0; i < Q; i++)
++            s += _list[i].size();
++        return s;
++    }
++
++    Element * head() { return _list[R::current_queue()].head(); }
++    Element * tail() { return _list[R::current_queue()].tail(); }
++
++    Iterator begin() { return Iterator(_list[R::current_queue()].head()); }
++    Iterator end() { return Iterator(0); }
++
++    Element * volatile & chosen() {
++        return _list[R::current_queue()].chosen();
++    }
++
++    void insert(Element * e) {
++        _list[e->rank().queue()].insert(e);
++    }
++
++    Element * remove(Element * e) {
++         return _list[e->rank().queue()].remove(e);
++     }
++
++    Element * choose() {
++        return _list[R::current_queue()].choose();
++    }
++
++    Element * choose_another() {
++        return _list[R::current_queue()].choose_another();
++    }
++
++    Element * choose(Element * e) {
++        return _list[e->rank().queue()].choose(e);
++    }
++
++private:
++    L _list[Q];
++};
++
+ __END_UTIL
+- 
++
+ #endif
+Index: include/utility/ostream.h
+===================================================================
+--- include/utility/ostream.h	(revision 3772)
++++ include/utility/ostream.h	(working copy)
+@@ -21,15 +21,19 @@
+     struct Err {};
+ 
+ public:
+-    OStream(): _base(10), _error(false) {}
++    OStream(): _base(10), _error(false), _lock(-1) {}
+ 
+     OStream & operator<<(const Begl & begl) {
++        // if(Traits<System>::multicore)
++        //   lock();
+         return *this;
+     }
+-    
++
+     OStream & operator<<(const Endl & endl) {
+         print("\n");
+         _base = 10;
++        // if(Traits<System>::multicore)
++        //   unlock();
+         return *this;
+     }
+ 
+@@ -63,7 +67,7 @@
+         print(buf);
+         return *this;
+     }
+-    OStream & operator<<(unsigned char c) { 
++    OStream & operator<<(unsigned char c) {
+         return operator<<(static_cast<unsigned int>(c));
+     }
+ 
+@@ -86,7 +90,7 @@
+         print(buf);
+         return *this;
+     }
+-    OStream & operator<<(unsigned short s) { 
++    OStream & operator<<(unsigned short s) {
+         return operator<<(static_cast<unsigned int>(s));
+     }
+     OStream & operator<<(unsigned long l) {
+@@ -114,9 +118,9 @@
+         return *this;
+     }
+ 
+-    OStream & operator<<(const char * s) { 
++    OStream & operator<<(const char * s) {
+         print(s);
+-        return *this; 
++        return *this;
+     }
+ 
+     OStream & operator<<(float f) {
+@@ -162,6 +166,9 @@
+     }
+ 
+ private:
++    void lock();
++    void unlock();
++
+     void print(const char * s) { _print(s); }
+ 
+     int itoa(int v, char * s);
+@@ -173,9 +180,10 @@
+ private:
+     int _base;
+     volatile bool _error;
++    volatile int _lock;
+ 
+     static const char _digits[];
+-}; 
++};
+ 
+ extern OStream::Begl begl;
+ extern OStream::Endl endl;
+Index: src/abstraction/thread.cc
+===================================================================
+--- src/abstraction/thread.cc	(revision 3772)
++++ src/abstraction/thread.cc	(working copy)
+@@ -16,7 +16,9 @@
+ volatile unsigned int Thread::_thread_count;
+ Scheduler_Timer * Thread::_timer;
+ Scheduler<Thread> Thread::_scheduler;
++volatile unsigned int Scheduling_Criteria::UD::_next_queue;
+ 
++
+ // Methods
+ void Thread::constructor_prolog(unsigned int stack_size)
+ {
+@@ -337,21 +339,23 @@
+ 
+ int Thread::idle()
+ {
+-    while(_thread_count > 1) { // someone else besides idle
++    while(_thread_count > Machine::n_cpus()) { // someone else besides idle
+         if(Traits<Thread>::trace_idle)
+             db<Thread>(TRC) << "Thread::idle(this=" << running() << ")" << endl;
+ 
++        db<Thread>(WRN) << Machine::cpu_id();  // identificando a CPU em idle.
++
+         CPU::int_enable();
+         CPU::halt();
+     }
+ 
+     CPU::int_disable();
+-    db<Thread>(WRN) << "The last thread has exited!" << endl;
++    db<Thread>(WRN) << "The last thread has exited on CPU " << Machine::cpu_id() << "..." << endl;
+     if(reboot) {
+-        db<Thread>(WRN) << "Rebooting the machine ..." << endl;
++        db<Thread>(WRN) << "Rebooting the machine on CPU " << Machine::cpu_id() << "..." << endl;
+         Machine::reboot();
+     } else {
+-        db<Thread>(WRN) << "Halting the machine ..." << endl;
++        db<Thread>(WRN) << "Halting the machine on CPU " << Machine::cpu_id() << "..." << endl;
+         CPU::halt();
+     }
+ 
+Index: src/init/init_first.cc
+===================================================================
+--- src/init/init_first.cc	(revision 3772)
++++ src/init/init_first.cc	(working copy)
+@@ -24,30 +24,31 @@
+             return;
+         }
+ 
+-        db<Init>(INF) << "Initializing the first thread: " << endl;
++        Thread * first;
++        if (Machine::cpu_id() == 0) {
++          // If EPOS is not a kernel, then adjust the application entry point to __epos_app_entry,
++          // which will directly call main(). In this case, _init will have already been called,
++          // before Init_Application, to construct main()'s global objects.
++          first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::MAIN), reinterpret_cast<int (*)()>(__epos_app_entry));
+ 
+-        // If EPOS is not a kernel, then adjust the application entry point to __epos_app_entry,
+-        // which will directly call main(). In this case, _init will have already been called,
+-        // before Init_Application, to construct main()'s global objects.
+-        Thread * first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::MAIN), reinterpret_cast<int (*)()>(__epos_app_entry));
++          // Idle thread creation must succeed main, thus avoiding implicit rescheduling
++          new (SYSTEM) Thread(Thread::Configuration(Thread::READY, Thread::IDLE), &Thread::idle);
++        } else {
++          first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::IDLE), &Thread::idle);
++        }
+ 
+-        // Idle thread creation must succeed main, thus avoiding implicit rescheduling
+-        new (SYSTEM) Thread(Thread::Configuration(Thread::READY, Thread::IDLE), &Thread::idle);
++        // db<Init, Thread>(WRN) << "Dispatching the first thread: " << first << " on CPU: " << Machine::cpu_id() << " of " << Machine::n_cpus() << endl;
+ 
+-        db<Init>(INF) << "done!" << endl;
++        This_Thread::not_booting();
+ 
+-        db<Init>(INF) << "INIT ends here!" << endl;
++        Machine::smp_barrier();
+ 
+-        db<Init, Thread>(INF) << "Dispatching the first thread: " << first << endl;
+-
+-        This_Thread::not_booting();
+-
+         first->_context->load();
+     }
+ };
+ 
+ // Global object "init_first" must be constructed last in the context of the
+-// OS, for it activates the first application thread (usually main()) 
++// OS, for it activates the first application thread (usually main())
+ Init_First init_first;
+ 
+ __END_SYS
+Index: src/machine/pc/machine_init.cc
+===================================================================
+--- src/machine/pc/machine_init.cc	(revision 3772)
++++ src/machine/pc/machine_init.cc	(working copy)
+@@ -19,6 +19,11 @@
+ 
+     if(Traits<PC_Scratchpad>::enabled)
+         PC_Scratchpad::init();
++
++    if(smp) {
++      System_Info<PC> * si = reinterpret_cast<System_Info<PC> *>(Memory_Map<PC>::SYS_INFO);
++      smp_init(si->bm.n_cpus);
++    }
+ }
+ 
+ __END_SYS
+Index: src/setup/pc_setup.cc
+===================================================================
+--- src/setup/pc_setup.cc	(revision 3772)
++++ src/setup/pc_setup.cc	(working copy)
+@@ -59,7 +59,7 @@
+ // PC_Setup is responsible for bringing the machine into a usable state. It
+ // sets up several IA32 data structures (IDT, GDT, etc), builds a basic
+ // memory model (flat) and a basic thread model (exclusive task/exclusive
+-// thread). 
++// thread).
+ //------------------------------------------------------------------------
+ class PC_Setup
+ {
+@@ -178,7 +178,7 @@
+         setup_sys_pt();
+         setup_sys_pd();
+ 
+-        // Enable paging 
++        // Enable paging
+         // We won't be able to print anything before the remap() bellow
+         db<Setup>(INF) << "IP=" << CPU::ip() << endl;
+         db<Setup>(INF) << "SP=" << reinterpret_cast<void *>(CPU::sp()) << endl;
+@@ -207,7 +207,7 @@
+         // Wait for the Boot CPU to setup page tables
+         while(!Paging_Ready);
+ 
+-        // Enable paging 
++        // Enable paging
+         enable_paging();
+     }
+ 
+@@ -406,7 +406,7 @@
+     // System Page Table (1 x sizeof(Page))
+     top_page -= 1;
+     si->pmm.sys_pt = top_page * sizeof(Page);
+-    
++
+     // System Page Directory (1 x sizeof(Page))
+     top_page -= 1;
+     si->pmm.sys_pd = top_page * sizeof(Page);
+@@ -470,7 +470,7 @@
+     } else {
+         si->pmm.ext_base = 0;
+         si->pmm.ext_top = 0;
+-    }	
++    }
+ }
+ 
+ //========================================================================
+@@ -526,6 +526,7 @@
+         kout << "  APP code:     " << si->lm.app_code_size << " bytes"
+              << "\tdata: " << si->lm.app_data_size << " bytes" << endl;
+     }
++    kout << "  CPU count:    " << si->bm.n_cpus << endl;
+     if(si->lm.has_ext) {
+         kout << "  Extras:       " << si->lm.app_extra_size << " bytes" << endl;
+     }
+@@ -539,7 +540,7 @@
+ }
+ 
+ //========================================================================
+-void PC_Setup::enable_paging() 
++void PC_Setup::enable_paging()
+ {
+     // Set IDTR (limit = 1 x sizeof(Page))
+     CPU::idtr(sizeof(Page) - 1, IDT);
+@@ -635,7 +636,7 @@
+         	   << ",pt="   << (void *)si->pmm.sys_pt
+         	   << ",pd="   << (void *)si->pmm.sys_pd
+         	   << ",info=" << (void *)si->pmm.sys_info
+-        	   << ",tss0=" << Phy_Addr(si->pmm.tss0) 
++        	   << ",tss0=" << Phy_Addr(si->pmm.tss0)
+         	   << ",mem="  << (void *)si->pmm.phy_mem_pts
+         	   << ",io="   << (void *)si->pmm.io_pts
+         	   << ",sysc=" << (void *)si->pmm.sys_code
+@@ -1006,10 +1007,10 @@
+ extern "C" { void setup(char * bi); }
+ 
+ //========================================================================
+-// _start		  
++// _start
+ //
+-// "_start" MUST BE PC_SETUP's first function, since PC_BOOT assumes 
+-// offset "0" to be the entry point. It is a kind of bridge between the 
++// "_start" MUST BE PC_SETUP's first function, since PC_BOOT assumes
++// offset "0" to be the entry point. It is a kind of bridge between the
+ // assembly world of PC_BOOT and the C++ world of PC_SETUP. It's main
+ // tasks are:
+ //
+@@ -1052,7 +1053,7 @@
+ 
+         // Broadcast INIT IPI to all APs excluding self
+         APIC::ipi_init(si->bm.cpu_status);
+-        
++
+         // Broadcast STARTUP IPI to all APs excluding self
+         // Non-boot CPUs will run a simplified boot strap just to
+         // trampoline them into protected mode
+@@ -1077,7 +1078,7 @@
+ 
+         // Load SETUP considering the address in the ELF header
+         // Be careful: by reloading SETUP, global variables have been reset to
+-        // the values stored in the ELF data segment 
++        // the values stored in the ELF data segment
+         // Also check if this wouldn't destroy the boot image
+         char * addr = reinterpret_cast<char *>(elf->segment_address(0));
+         int size = elf->segment_size(0);
+@@ -1097,7 +1098,7 @@
+         // Passes a pointer to the just allocated stack pool to other CPUs
+         Stacks = dst;
+         Stacks_Ready = true;
+-        
++
+     } else { // Additional CPUs (APs)
+ 
+         // Inform BSP that this AP has been initialized
+@@ -1133,7 +1134,7 @@
+ 
+     // Pass the boot image to SETUP
+     ASM("pushl %0" : : "r" (Stacks));
+-    
++
+     // Call setup()
+     // the assembly is necessary because the compiler generates
+     // relative calls and we need an absolute one
+@@ -1140,7 +1141,7 @@
+     ASM("call *%0" : : "r" (&setup));
+ }
+ 
+-void setup(char * bi) 
++void setup(char * bi)
+ {
+     if(!Traits<System>::multicore || (APIC::id() == 0)) {
+         kerr  << endl;
+Index: src/utility/ostream.cc
+===================================================================
+--- src/utility/ostream.cc	(revision 3772)
++++ src/utility/ostream.cc	(working copy)
+@@ -1,11 +1,24 @@
+ // EPOS OStream Implementation
+ 
+ #include <utility/ostream.h>
++#include <machine.h>
+ 
+ __BEGIN_UTIL
+ 
+ const char OStream::_digits[] = "0123456789abcdef";
+ 
++void OStream::lock()
++{
++    int me = Machine::cpu_id();
++    while(CPU::cas(_lock, -1, me) != me);
++}
++
++void OStream::unlock()
++{
++  int me = Machine::cpu_id();
++  CPU::cas(_lock, me, -1);
++}
++
+ int OStream::itoa(int v, char * s)
+ {
+     unsigned int i = 0;
+@@ -16,7 +29,7 @@
+     }
+ 
+     return utoa(static_cast<unsigned int>(v), s, i);
+-} 
++}
+ 
+ 
+ int OStream::utoa(unsigned int v, char * s, unsigned int i)
+@@ -53,7 +66,7 @@
+     }
+ 
+     return llutoa(static_cast<unsigned long long int>(v), s, i);
+-} 
++}
+ 
+ 
+ int OStream::llutoa(unsigned long long int v, char * s, unsigned int i)
+@@ -92,6 +105,6 @@
+             = _digits[v & 0xf];
+ 
+     return j + 2;
+-}    
++}
+ 
+ __END_UTIL
