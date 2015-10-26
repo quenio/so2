@@ -37,9 +37,7 @@ public:
           first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::IDLE), &Thread::idle);
         }
 
-        db<Init>(INF) << "INIT ends here!" << endl;
-
-        db<Init, Thread>(WRN) << "Dispatching the first thread: " << first << " on CPU: " << Machine::cpu_id() << endl;
+        // db<Init, Thread>(WRN) << "Dispatching the first thread: " << first << " on CPU: " << Machine::cpu_id() << " of " << Machine::n_cpus() << endl;
 
         This_Thread::not_booting();
 
