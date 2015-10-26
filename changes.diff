@@ -83,7 +83,7 @@ Index: include/system/traits.h
      static const unsigned int MODEL = Legacy;
  
 -    static const unsigned int CPUS = 1;
-+    static const unsigned int CPUS = 4;
++    static const unsigned int CPUS = 3;
      static const unsigned int NODES = 1; // > 1 => NETWORKING
  };
  
@@ -787,6 +787,33 @@ Index: src/init/init_first.cc
  Init_First init_first;
  
  __END_SYS
+Index: src/init/init_system.cc
+===================================================================
+--- src/init/init_system.cc	(revision 3772)
++++ src/init/init_system.cc	(working copy)
+@@ -17,6 +17,14 @@
+     Init_System() {
+         db<Init>(TRC) << "Init_System()" << endl;
+ 
++        System_Info<Machine> * si = reinterpret_cast<System_Info<Machine> *>(Memory_Map<Machine>::SYS_INFO);
++
++        if (Machine::cpu_id() == 0) {
++          db<Init>(WRN) << "n_cpus=" << si->bm.n_cpus;
++          Machine::smp_barrier(si->bm.n_cpus);
++          return;
++        }
++
+         // Initialize the processor
+         db<Init>(INF) << "Initializing the CPU: " << endl;
+         CPU::init();
+@@ -53,6 +61,7 @@
+         }
+ 
+         // Initialization continues at init_first
++        Machine::smp_barrier(si->bm.n_cpus);
+     }
+ };
+ 
 Index: src/machine/pc/machine_init.cc
 ===================================================================
 --- src/machine/pc/machine_init.cc	(revision 3772)

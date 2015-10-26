@@ -1,4 +1,4 @@
-Setting up this machine as follows: 
+Setting up this machine as follows:
   Processor:    IA32 at 2278 MHz (BUS clock = 125 MHz)
   Memory:       262144 Kbytes [0x00000000:0x10000000]
   User memory:  261688 Kbytes [0x00000000:0x0ff8e000]
@@ -7,7 +7,8 @@ Setting up this machine as follows:
   Setup:        21216 bytes
   APP code:     19024 bytes	data: 672 bytes
   CPU count:    8
-1234567
+
+1234567
 Esp12356723467e12357rando na CPU 0...
 00123456701234567012345670123456701246701235601234567012345674012345671234560123
 45670123456701234567012345670123560123456701234567012346750123456703512467012345
