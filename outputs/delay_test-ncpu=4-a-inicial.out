@@ -1,0 +1,14 @@
+Setting up this machine as follows:
+  Processor:    IA32 at 2497 MHz (BUS clock = 415 MHz)
+  Memory:       262144 Kbytes [0x00000000:0x10000000]
+  User memory:  261752 Kbytes [0x00000000:0x0ff9e000]
+  PCI aperture: 44996 Kbytes [0xfc000000:0xfebf1000]
+  Node Id:      will get from the network!
+  Setup:        21184 bytes
+  APP code:     18224 bytes	data: 576 bytes
+  CPU count:    4
+1IC::exIC::exc_gpf(cs=8,ip=0x000042f5,fl=0x246)
+The running thread will now be terminated!
+IC::exc_pf[address=0x53e58
+Esperando na The last thread has exited on CPU 1...
+Rebooting the machine on c9CPU 0...CPU 1...
