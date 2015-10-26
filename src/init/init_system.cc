@@ -17,6 +17,14 @@ public:
     Init_System() {
         db<Init>(TRC) << "Init_System()" << endl;
 
+        System_Info<Machine> * si = reinterpret_cast<System_Info<Machine> *>(Memory_Map<Machine>::SYS_INFO);
+
+        if (Machine::cpu_id() == 0) {
+          db<Init>(WRN) << "n_cpus=" << si->bm.n_cpus;
+          Machine::smp_barrier(si->bm.n_cpus);
+          return;
+        }
+
         // Initialize the processor
         db<Init>(INF) << "Initializing the CPU: " << endl;
         CPU::init();
@@ -53,6 +61,7 @@ public:
         }
 
         // Initialization continues at init_first
+        Machine::smp_barrier(si->bm.n_cpus);
     }
 };
 
