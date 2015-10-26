@@ -334,7 +334,7 @@ The last thread has exited on CPU 1...
 Rebooting the machine on CPU 1...
 ```
 
-### Próximos passos?
+### Próximos Passos
 
-- lock/release na heap
+- Executar com 4+ CPUs; resolver problemas de inicialização.
 - Modificar o timer para cada CPU, para evitar contenção no escalonamento.
