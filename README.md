@@ -224,7 +224,7 @@ private:
 };
 ```
 
-Como no código acima se usa `Machine::n_cpus()` para distribuir `threads` entre as várias filas, foi preciso initilizar `_n_cpus` chamando `smp_init()`, como mostrado abaixo:
+Como no código acima se usa `Machine::n_cpus()` para distribuir `threads` entre as várias filas, foi preciso inicializar `_n_cpus` chamando `smp_init()`, como mostrado abaixo:
 
 ```cpp
 void PC::init()
@@ -284,7 +284,7 @@ Apesar do progresso, a execução do sistema ainda não está terminando depois 
 
 Para que o programa termine sua execução e o sistema seja "desligado" é preciso que os `idle threads` parem de executar quando não houver mais `threads` normais para executar no sistema. Para tanto, `Thread::idle` foi modificado como mostrado abaixo:
 
-```
+```cpp
 int Thread::idle()
 {
     while(_thread_count > Machine::n_cpus()) { // someone else besides idle
