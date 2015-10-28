@@ -83,7 +83,7 @@ Index: include/system/traits.h
      static const unsigned int MODEL = Legacy;
  
 -    static const unsigned int CPUS = 1;
-+    static const unsigned int CPUS = 3;
++    static const unsigned int CPUS = 8;
      static const unsigned int NODES = 1; // > 1 => NETWORKING
  };
  
@@ -791,14 +791,15 @@ Index: src/init/init_system.cc
 ===================================================================
 --- src/init/init_system.cc	(revision 3772)
 +++ src/init/init_system.cc	(working copy)
-@@ -17,6 +17,14 @@
+@@ -17,6 +17,15 @@
      Init_System() {
          db<Init>(TRC) << "Init_System()" << endl;
  
 +        System_Info<Machine> * si = reinterpret_cast<System_Info<Machine> *>(Memory_Map<Machine>::SYS_INFO);
++        Machine::smp_init(si->bm.n_cpus);
 +
-+        if (Machine::cpu_id() == 0) {
-+          db<Init>(WRN) << "n_cpus=" << si->bm.n_cpus;
++        if (Machine::cpu_id() != 0) {
++          Timer::init();
 +          Machine::smp_barrier(si->bm.n_cpus);
 +          return;
 +        }
@@ -806,7 +807,7 @@ Index: src/init/init_system.cc
          // Initialize the processor
          db<Init>(INF) << "Initializing the CPU: " << endl;
          CPU::init();
-@@ -53,6 +61,7 @@
+@@ -53,6 +62,7 @@
          }
  
          // Initialization continues at init_first
@@ -814,22 +815,6 @@ Index: src/init/init_system.cc
      }
  };
  
-Index: src/machine/pc/machine_init.cc
-===================================================================
---- src/machine/pc/machine_init.cc	(revision 3772)
-+++ src/machine/pc/machine_init.cc	(working copy)
-@@ -19,6 +19,11 @@
- 
-     if(Traits<PC_Scratchpad>::enabled)
-         PC_Scratchpad::init();
-+
-+    if(smp) {
-+      System_Info<PC> * si = reinterpret_cast<System_Info<PC> *>(Memory_Map<PC>::SYS_INFO);
-+      smp_init(si->bm.n_cpus);
-+    }
- }
- 
- __END_SYS
 Index: src/setup/pc_setup.cc
 ===================================================================
 --- src/setup/pc_setup.cc	(revision 3772)
