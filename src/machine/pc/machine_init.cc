@@ -19,11 +19,6 @@ void PC::init()
 
     if(Traits<PC_Scratchpad>::enabled)
         PC_Scratchpad::init();
-
-    if(smp) {
-      System_Info<PC> * si = reinterpret_cast<System_Info<PC> *>(Memory_Map<PC>::SYS_INFO);
-      smp_init(si->bm.n_cpus);
-    }
 }
 
 __END_SYS
