@@ -344,8 +344,9 @@ Init_System() {
 
     System_Info<Machine> * si = reinterpret_cast<System_Info<Machine> *>(Memory_Map<Machine>::SYS_INFO);
 
-    if (Machine::cpu_id() == 0) {
-      db<Init>(WRN) << "n_cpus=" << si->bm.n_cpus;
+    if (Machine::cpu_id() != 0) {
+      Timer::init();
+
       Machine::smp_barrier(si->bm.n_cpus);
       return;
     }
