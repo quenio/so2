@@ -17,13 +17,16 @@ public:
     Init_System() {
         db<Init>(TRC) << "Init_System()" << endl;
 
-        System_Info<Machine> * si = reinterpret_cast<System_Info<Machine> *>(Memory_Map<Machine>::SYS_INFO);
-        Machine::smp_init(si->bm.n_cpus);
+        Machine::smp_barrier();
 
-        if (Machine::cpu_id() != 0) {
-          Timer::init();
-          Machine::smp_barrier(si->bm.n_cpus);
-          return;
+        // Only the boot CPU runs INIT_SYSTEM fully
+        if(Machine::cpu_id() != 0) {
+            // Wait until the boot CPU has initialized the machine
+            Machine::smp_barrier(); // TODO Se não estiver funcionando, verificar se ncpus está realmente inicializado.
+            // For IA-32, timer is CPU-local. What about other SMPs?
+            Timer::init();
+            Machine::smp_barrier();
+            return;
         }
 
         // Initialize the processor
@@ -44,6 +47,8 @@ public:
         db<Init>(INF) << "Initializing the machine: " << endl;
         Machine::init();
         db<Init>(INF) << "done!" << endl;
+
+        Machine::smp_barrier(); // signalizes "machine ready" to other CPUs
 
         // Initialize system abstractions
         db<Init>(INF) << "Initializing system abstractions: " << endl;

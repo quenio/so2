@@ -19,6 +19,12 @@ public:
     Init_Application() {
         db<Init>(TRC) << "Init_Application()" << endl;
 
+        // TODO Verificar se existem aspectos da inicialização da heap que precisam ser feitos em todas as CPUs. A priori, somente a CPU principal precisa inicializar a heap.
+        // Only the boot CPU runs INIT_APPLICATION
+        Machine::smp_barrier();
+        if(Machine::cpu_id() != 0)
+            return;
+
         // Initialize Application's heap
         db<Init>(INF) << "Initializing application's heap: " << endl;
         if(Traits<System>::multiheap) { // Heap in data segment arranged by SETUP

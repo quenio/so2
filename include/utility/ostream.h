@@ -21,15 +21,17 @@ public:
     struct Err {};
 
 public:
-    OStream(): _base(10), _error(false), _lock(-1) {}
+    OStream(): _base(10), _lock(-1), _error(false) {}
 
     OStream & operator<<(const Begl & begl) {
-        // if(Traits<System>::multicore)
-        //   lock();
+        if(Traits<System>::multicore)
+            preamble();
         return *this;
     }
 
     OStream & operator<<(const Endl & endl) {
+        if(Traits<System>::multicore)
+            trailler();
         print("\n");
         _base = 10;
         // if(Traits<System>::multicore)
@@ -166,8 +168,8 @@ public:
     }
 
 private:
-    void lock();
-    void unlock();
+    void preamble();
+    void trailler();
 
     void print(const char * s) { _print(s); }
 

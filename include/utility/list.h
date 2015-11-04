@@ -1074,6 +1074,179 @@ private:
 };
 
 
+// TODO Estudar a implementação desta classe, comparar com a implementação do EPOS.
+// Doubly-Linked, Multihead Scheduling List
+// Besides declaring "Criterion", objects subject to scheduling policies that
+// use the Multihead list must export the HEADS constant to indicate the
+// number of heads in the list and the current_head() class method to designate
+// the head to which the current operation applies.
+template<typename T,
+          typename R = typename T::Criterion,
+          typename El = List_Elements::Doubly_Linked_Scheduling<T, R>,
+          unsigned int H = R::HEADS>
+class Multihead_Scheduling_List: private Ordered_List<T, R, El>
+{
+private:
+    typedef Ordered_List<T, R, El> Base;
+
+public:
+    typedef T Object_Type;
+    typedef R Rank_Type;
+    typedef El Element;
+    typedef typename Base::Iterator Iterator;
+
+public:
+    Multihead_Scheduling_List() {
+        for(unsigned int i = 0; i < H; i++)
+            _chosen[i] = 0;
+    }
+
+    using Base::empty;
+    using Base::size;
+    using Base::head;
+    using Base::tail;
+    using Base::begin;
+    using Base::end;
+
+    Element * volatile & chosen() { return _chosen[R::current_head()]; }
+
+    void insert(Element * e) {
+        db<Lists>(TRC) << "Scheduling_List::insert(e=" << e
+                       << ") => {p=" << (e ? e->prev() : (void *) -1)
+                       << ",o=" << (e ? e->object() : (void *) -1)
+                       << ",n=" << (e ? e->next() : (void *) -1)
+                       << "}" << endl;
+
+        if(_chosen[R::current_head()])
+            Base::insert(e);
+        else
+            _chosen[R::current_head()] = e;
+    }
+
+    Element * remove(Element * e) {
+        db<Lists>(TRC) << "Scheduling_List::remove(e=" << e
+                       << ") => {p=" << (e ? e->prev() : (void *) -1)
+                       << ",o=" << (e ? e->object() : (void *) -1)
+                       << ",n=" << (e ? e->next() : (void *) -1)
+                       << "}" << endl;
+
+        if(e == _chosen[R::current_head()])
+            _chosen[R::current_head()] = Base::remove_head();
+        else
+            e = Base::remove(e);
+
+        return e;
+    }
+
+    Element * choose() {
+        db<Lists>(TRC) << "Scheduling_List::choose()" << endl;
+
+        if(!empty()) {
+            Base::insert(_chosen[R::current_head()]);
+            _chosen[R::current_head()] = Base::remove_head();
+        }
+
+        return _chosen[R::current_head()];
+    }
+
+    Element * choose_another() {
+        db<Lists>(TRC) << "Scheduling_List::choose_another()" << endl;
+
+        if(!empty() && head()->rank() != R::IDLE) {
+            Element * tmp = _chosen[R::current_head()];
+            _chosen[R::current_head()] = Base::remove_head();
+            Base::insert(tmp);
+        }
+
+        return _chosen[R::current_head()];
+    }
+
+    Element * choose(Element * e) {
+        db<Lists>(TRC) << "Scheduling_List::choose(e=" << e
+                       << ") => {p=" << (e ? e->prev() : (void *) -1)
+                       << ",o=" << (e ? e->object() : (void *) -1)
+                       << ",n=" << (e ? e->next() : (void *) -1)
+                       << "}" << endl;
+
+        if(e != _chosen[R::current_head()]) {
+            Base::insert(_chosen[R::current_head()]);
+            _chosen[R::current_head()] = Base::remove(e);
+        }
+
+        return _chosen[R::current_head()];
+    }
+
+private:
+    Element * volatile _chosen[H];
+};
+
+
+// Doubly-Linked, Scheduling Multilist
+// Besides declaring "Criterion", objects subject to scheduling policies that
+// use the Multilist must export the QUEUES constant to indicate the number of
+// sublists in the list, the current_queue() class method to designate the
+// queue to which the current operation applies, and the queue() method to
+// return the queue in which the object currently resides.
+template<typename T,
+          typename R = typename T::Criterion,
+          typename El = List_Elements::Doubly_Linked_Scheduling<T, R>,
+          typename L = Scheduling_List<T, R, El>,
+          unsigned int Q = R::QUEUES>
+class Scheduling_Multilist
+{
+public:
+    typedef T Object_Type;
+    typedef R Rank_Type;
+    typedef El Element;
+    typedef typename L::Iterator Iterator;
+
+public:
+    Scheduling_Multilist() {}
+
+    bool empty() const { return _list[R::current_queue()].empty(); }
+
+    unsigned int size() const { return _list[R::current_queue()].size(); }
+    unsigned int total_size() const {
+        unsigned int s = 0;
+        for(unsigned int i = 0; i < Q; i++)
+            s += _list[i].size();
+        return s;
+    }
+
+    Element * head() { return _list[R::current_queue()].head(); }
+    Element * tail() { return _list[R::current_queue()].tail(); }
+
+    Iterator begin() { return Iterator(_list[R::current_queue()].head()); }
+    Iterator end() { return Iterator(0); }
+
+    Element * volatile & chosen() {
+        return _list[R::current_queue()].chosen();
+    }
+
+    void insert(Element * e) {
+        _list[e->rank().queue()].insert(e);
+    }
+
+    Element * remove(Element * e) {
+         return _list[e->rank().queue()].remove(e);
+     }
+
+    Element * choose() {
+        return _list[R::current_queue()].choose();
+    }
+
+    Element * choose_another() {
+        return _list[R::current_queue()].choose_another();
+    }
+
+    Element * choose(Element * e) {
+        return _list[e->rank().queue()].choose(e);
+    }
+
+private:
+    L _list[Q];
+};
+
 // Doubly-Linked, Grouping List
 template<typename T,
           typename El = List_Elements::Doubly_Linked_Grouping<T> >
