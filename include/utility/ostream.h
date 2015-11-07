@@ -34,8 +34,6 @@ public:
             trailler();
         print("\n");
         _base = 10;
-        // if(Traits<System>::multicore)
-        //   unlock();
         return *this;
     }
 
