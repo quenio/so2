@@ -101,6 +101,8 @@ protected:
 
     Criterion & criterion() { return const_cast<Criterion &>(_link.rank()); }
 
+    // TODO Implementar lock()/unlock() usando Spin.
+    // TODO Depois da modificação, verificar usos de lock() / unlock() fora de Thread. Precisam de Spin?
     static void lock() { CPU::int_disable(); }
     static void unlock() { CPU::int_enable(); }
     static bool locked() { return CPU::int_disabled(); }
