@@ -32,8 +32,6 @@ public:
     void * alloc(unsigned int bytes) {
         db<Heaps>(TRC) << "Heap::alloc(this=" << this << ",bytes=" << bytes;
 
-        _lock.acquire();
-
         if(!bytes)
             return 0;
 
@@ -59,8 +57,6 @@ public:
             *addr++ = reinterpret_cast<int>(this);
         *addr++ = bytes;
 
-        _lock.release();
-
         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
 
         return addr;
@@ -69,15 +65,11 @@ public:
     void free(void * ptr, unsigned int bytes) {
         db<Heaps>(TRC) << "Heap::free(this=" << this << ",ptr=" << ptr << ",bytes=" << bytes << ")" << endl;
 
-        _lock.acquire();
-
         if(ptr && (bytes >= sizeof(Element))) {
             Element * e = new (ptr) Element(reinterpret_cast<char *>(ptr), bytes);
             Element * m1, * m2;
             insert_merging(e, &m1, &m2);
         }
-
-        _lock.release();
     }
 
     static void typed_free(void * ptr) {
@@ -95,8 +87,6 @@ public:
 
 private:
     void out_of_memory();
-
-    Spin _lock;
 };
 
 
@@ -133,28 +123,28 @@ public:
     }
 
     void * alloc(unsigned int bytes) {
-	enter();
-	void * tmp = T::alloc(bytes);
-	leave();
-	return tmp;
+        enter();
+        void * tmp = T::alloc(bytes);
+        leave();
+        return tmp;
     }
 
     void free(void * ptr) {
-	enter();
-	T::free(ptr);
-	leave();
+        enter();
+        T::free(ptr);
+        leave();
     }
 
     void free(void * ptr, unsigned int bytes) {
-	enter();
-	T::free(ptr, bytes);
-	leave();
+        enter();
+        T::free(ptr, bytes);
+        leave();
     }
 
 private:
     void enter() {
-        CPU::int_disable();
         _lock.acquire();
+        CPU::int_disable();
     }
 
     void leave() {
@@ -165,7 +155,6 @@ private:
 private:
     Spin _lock;
 };
-
 
 // Heap
 class Heap: public Heap_Wrapper<Simple_Heap, Traits<System>::multicore>
