@@ -16,7 +16,6 @@ __BEGIN_SYS
 volatile unsigned int Thread::_thread_count;
 Scheduler_Timer * Thread::_timer;
 Scheduler<Thread> Thread::_scheduler;
-volatile unsigned int Scheduling_Criteria::UD::_next_queue;
 
 
 // Methods
