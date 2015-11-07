@@ -11,7 +11,6 @@ const char OStream::_digits[] = "0123456789abcdef";
 
 void OStream::preamble()
 {
-    // TODO Usar o cpu_id()
     static char tag[] = "<0>: ";
 
     int me = Machine::cpu_id();

@@ -168,12 +168,11 @@ public:
     };
 
     // Default mapping addresses
-    // TODO Estudar APIC no manual da Intel. Entender diferença entre APIC local e de IO e o mapeamento dos endereços fisicos para os logicos. Também confirmar os enderecos fisicos no manual da Intel.
     enum {
         LOCAL_APIC_PHY_ADDR	= 0xfee00000,
         LOCAL_APIC_LOG_ADDR	= Memory_Map<PC>::APIC,
-        LOCAL_APIC_SIZE         = Memory_Map<PC>::VGA - Memory_Map<PC>::APIC,
-        IO_APIC_PHY_ADDR	= 0xfec00000
+        LOCAL_APIC_SIZE     = Memory_Map<PC>::VGA - Memory_Map<PC>::APIC,
+        IO_APIC_PHY_ADD     = 0xfec00000
     };
 
     // Memory-mapped registers

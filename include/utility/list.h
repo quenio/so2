@@ -1074,7 +1074,6 @@ private:
 };
 
 
-// TODO Estudar a implementação desta classe, comparar com a implementação do EPOS.
 // Doubly-Linked, Multihead Scheduling List
 // Besides declaring "Criterion", objects subject to scheduling policies that
 // use the Multihead list must export the HEADS constant to indicate the

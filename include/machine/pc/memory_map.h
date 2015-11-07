@@ -27,7 +27,6 @@ struct Memory_Map<PC>
         IO =            Traits<PC>::IO_BASE,
         APIC =          IO,
         VGA =           IO +  4 * 1024,
-        // TODO Verificar no manual da Intel o endereço do PCI.
         PCI =           IO + Traits<PC_Display>::FRAME_BUFFER_SIZE,
 
         SYS =           Traits<PC>::SYS,

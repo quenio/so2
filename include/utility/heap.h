@@ -153,9 +153,8 @@ public:
 
 private:
     void enter() {
-        // TODO Interrupção deve ser desabilitada antes do lock.acquire()
-        _lock.acquire();
         CPU::int_disable();
+        _lock.acquire();
     }
 
     void leave() {

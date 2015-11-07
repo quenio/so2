@@ -69,7 +69,6 @@ private:
     static const unsigned int MEM_BASE = Memory_Map<PC>::MEM_BASE;
     static const unsigned int MEM_TOP = Memory_Map<PC>::MEM_TOP;
     static const unsigned int APIC_PHY = APIC::LOCAL_APIC_PHY_ADDR;
-    // Verificar no manual da Intel se tamanho da APIC está correto.
     static const unsigned int APIC_SIZE = APIC::LOCAL_APIC_SIZE;
     static const unsigned int VGA_PHY = Traits<PC_Display>::FRAME_BUFFER_ADDRESS;
     static const unsigned int VGA_SIZE = Traits<PC_Display>::FRAME_BUFFER_SIZE;
@@ -434,7 +433,6 @@ void PC_Setup::build_pmm()
     // NPTE_PT = number of page table entries per page table
     detect_pci(&si->pmm.io_base, &si->pmm.io_top);
     unsigned int io_size = MMU::pages(si->pmm.io_top - si->pmm.io_base);
-    // TODO O tamanho é em numero de paginas ou bytes?
     io_size += APIC_SIZE / sizeof(Page); // Add room for APIC (4 kB, 1 page)
     io_size += VGA_SIZE / sizeof(Page); // Add room for VGA (64 kB, 16 pages)
     top_page -= (io_size + MMU::PT_ENTRIES - 1) / MMU::PT_ENTRIES;
@@ -735,13 +733,11 @@ void PC_Setup::setup_sys_pd()
 
     // Calculate the number of page tables needed to map the IO address space
     unsigned int io_size = MMU::pages(si->pmm.io_top - si->pmm.io_base);
-    // TODO Tamanho em paginas ou bytes?
     io_size += APIC_SIZE / sizeof(Page); // Add room for APIC (4 kB, 1 page)
     io_size += VGA_SIZE / sizeof(Page); // Add room for VGA (64 kB, 16 pages)
     n_pts = (io_size + MMU::PT_ENTRIES - 1) / MMU::PT_ENTRIES;
 
     // Map IO address space into the page tables pointed by io_pts
-    // TODO O que representa pts? Porque está sendo initizalizado aqui?
     pts = reinterpret_cast<PT_Entry *>((void *)si->pmm.io_pts);
     unsigned int i = 0;
     for(; i < (APIC_SIZE / sizeof(Page)); i++)

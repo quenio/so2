@@ -41,7 +41,6 @@ public:
 
         // db<Init, Thread>(WRN) << "Dispatching the first thread: " << first << " on CPU: " << Machine::cpu_id() << " of " << Machine::n_cpus() << endl;
 
-        // TODO Verificar se not_booting() está sendo chamado em outra parte da inicialização.
         This_Thread::not_booting();
 
         Machine::smp_barrier();
