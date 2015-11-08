@@ -79,7 +79,7 @@ namespace Scheduling_Criteria
 
 // Scheduling_Queue
 template<typename T, typename R = typename T::Criterion>
-class Scheduling_Queue: public Scheduling_Multilist<T> {};
+class Scheduling_Queue: public Scheduling_List<T> {};
 
 // Scheduler
 // Objects subject to scheduling by Scheduler must declare a type "Criterion"
