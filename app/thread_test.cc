@@ -32,7 +32,7 @@ int main()
     int status_a = a->join();
     int status_b = b->join();
 
-    cout << "Thread A exited with status " << status_a
+    cout << "Thread A exited with status " << status_a 
          << " and thread B exited with status " << status_b << "" << endl;
 
     delete a;
@@ -52,7 +52,7 @@ int func_a(void)
         Alarm::delay(500000);
     }
 
-    return 'A';
+    return 'A';   
 }
 
 int func_b(void)
@@ -64,5 +64,5 @@ int func_b(void)
         Alarm::delay(500000);
     }
 
-    return 'B';
+    return 'B';   
 }

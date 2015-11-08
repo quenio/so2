@@ -76,6 +76,8 @@ namespace Scheduling_Criteria
     public:
         FCFS(int p = NORMAL); // Defined at Alarm
     };
+}
+
 
 // Scheduling_Queue
 template<typename T, typename R = typename T::Criterion>

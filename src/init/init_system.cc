@@ -66,8 +66,9 @@ public:
             db<Init>(INF) << "done!" << endl;
         }
 
+        Machine::smp_barrier();
+
         // Initialization continues at init_first
-        Machine::smp_barrier(si->bm.n_cpus);
     }
 };
 

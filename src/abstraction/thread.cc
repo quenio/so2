@@ -17,7 +17,6 @@ volatile unsigned int Thread::_thread_count;
 Scheduler_Timer * Thread::_timer;
 Scheduler<Thread> Thread::_scheduler;
 
-
 // Methods
 void Thread::constructor_prolog(unsigned int stack_size)
 {
