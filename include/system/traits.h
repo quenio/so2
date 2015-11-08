@@ -28,7 +28,7 @@ template<> struct Traits<Build>
     enum {Legacy};
     static const unsigned int MODEL = Legacy;
 
-    static const unsigned int CPUS = 2;
+    static const unsigned int CPUS = 4;
     static const unsigned int NODES = 1; // > 1 => NETWORKING
 };
 
@@ -124,7 +124,7 @@ template<> struct Traits<Thread>: public Traits<void>
     typedef Scheduling_Criteria::RR Criterion;
     static const unsigned int QUANTUM = 10000; // us
 
-    static const bool trace_idle = hysterically_debugged;
+    static const bool trace_idle = false;
 };
 
 template<> struct Traits<Scheduler<Thread> >: public Traits<void>
