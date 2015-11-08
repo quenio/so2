@@ -143,9 +143,8 @@ public:
 
 private:
     void enter() {
-        // WARNING: Se houver algum deadlock, verificar se não é porque acquire() está antes de int_disable()
-        _lock.acquire();
         CPU::int_disable();
+        _lock.acquire();
     }
 
     void leave() {

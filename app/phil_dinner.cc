@@ -30,11 +30,17 @@ bool is_even(int n)
 
 int count_odd_numbers()
 {
-  int n = 0;
+  int *n = new (SYSTEM) int;
+  *n = 0;
   for(int i = 0; i < 20000; i++) {
-    if (!is_even(i)) n++;
+    if (!is_even(i)) (*n)++;
   }
-  return n;
+
+  int result = *n;
+
+  delete n;
+
+  return result;
 }
 
 int count_even_numbers()
