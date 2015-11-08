@@ -40,7 +40,7 @@ int main()
     int status_c = c->join();
     int status_d = d->join();
 
-    cout << "Thread A exited with status " << status_a
+    cout << endl << "Thread A exited with status " << status_a
          << " and thread B exited with status " << status_b
          << " and thread C exited with status " << status_c
          << " and thread D exited with status " << status_d << "" << endl;
@@ -55,15 +55,29 @@ int main()
     return 0;
 }
 
+bool is_even(int n)
+{
+  bool result = true;
+  while (n > 0) {
+      n--;
+      result = !result;
+  }
+  return result;
+}
+
+int count_even_numbers()
+{
+  int n = 0;
+  for(int i = 0; i < 14000; i++) {
+    if (is_even(i)) n++;
+  }
+  return n;
+}
+
 int func_a(void)
 {
     for(int i = iterations; i > 0; i--) {
-        for(int i = 0; i < 19; i++)
-            cout << "a" << Machine::cpu_id();
-        cout << "" << endl;
-        for(int i = 0; i < 50000; i++) {
-          Alarm::delay(10);
-        }
+        cout << "a" << Machine::cpu_id() << "<" << count_even_numbers() << "> ";
     }
 
     return 'A';
@@ -71,42 +85,27 @@ int func_a(void)
 
 int func_b(void)
 {
-    for(int i = iterations; i > 0; i--) {
-        for(int i = 0; i < 19; i++)
-            cout << "b" << Machine::cpu_id();
-        cout << "" << endl;
-        for(int i = 0; i < 50000; i++) {
-          Alarm::delay(10);
-        }
-    }
+  for(int i = iterations; i > 0; i--) {
+      cout << "b" << Machine::cpu_id() << "<" << count_even_numbers() << "> ";
+  }
 
     return 'B';
 }
 
 int func_c(void)
 {
-    for(int i = iterations; i > 0; i--) {
-        for(int i = 0; i < 19; i++)
-            cout << "c" << Machine::cpu_id();
-        cout << "" << endl;
-        for(int i = 0; i < 50000; i++) {
-          Alarm::delay(10);
-        }
-    }
+  for(int i = iterations; i > 0; i--) {
+      cout << "c" << Machine::cpu_id() << "<" << count_even_numbers() << "> ";
+  }
 
     return 'C';
 }
 
 int func_d(void)
 {
-    for(int i = iterations; i > 0; i--) {
-        for(int i = 0; i < 19; i++)
-            cout << "d" << Machine::cpu_id();
-        cout << "" << endl;
-        for(int i = 0; i < 50000; i++) {
-          Alarm::delay(10);
-        }
-    }
+  for(int i = iterations; i > 0; i--) {
+      cout << "d" << Machine::cpu_id() << "<" << count_even_numbers() << "> ";
+  }
 
     return 'D';
 }
