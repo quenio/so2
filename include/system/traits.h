@@ -28,7 +28,7 @@ template<> struct Traits<Build>
     enum {Legacy};
     static const unsigned int MODEL = Legacy;
 
-    static const unsigned int CPUS = 1;
+    static const unsigned int CPUS = 2;
     static const unsigned int NODES = 1; // > 1 => NETWORKING
 };
 
@@ -113,6 +113,8 @@ template<> struct Traits<System>: public Traits<void>
 
     static const unsigned int STACK_SIZE = Traits<Machine>::STACK_SIZE;
     static const unsigned int HEAP_SIZE = (Traits<Application>::MAX_THREADS + 1) * Traits<Application>::STACK_SIZE;
+
+    static const bool cpu_id_tagging = false;
 };
 
 template<> struct Traits<Thread>: public Traits<void>
