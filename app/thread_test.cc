@@ -12,12 +12,20 @@ int func_a(void);
 int func_b(void);
 int func_c(void);
 int func_d(void);
+int func_e(void);
+int func_f(void);
+int func_g(void);
+int func_h(void);
 
+Thread * m;
 Thread * a;
 Thread * b;
 Thread * c;
 Thread * d;
-Thread * m;
+Thread * e;
+Thread * f;
+Thread * g;
+Thread * h;
 
 OStream cout;
 
@@ -34,21 +42,37 @@ int main()
     b = new Thread(&func_b);
     c = new Thread(&func_c);
     d = new Thread(&func_d);
+    e = new Thread(&func_e);
+    f = new Thread(&func_f);
+    g = new Thread(&func_g);
+    h = new Thread(&func_h);
 
     int status_a = a->join();
     int status_b = b->join();
     int status_c = c->join();
     int status_d = d->join();
+    int status_e = e->join();
+    int status_f = f->join();
+    int status_g = h->join();
+    int status_h = h->join();
 
     cout << endl << "Thread A exited with status " << status_a
          << " and thread B exited with status " << status_b
          << " and thread C exited with status " << status_c
-         << " and thread D exited with status " << status_d << "" << endl;
+         << " and thread D exited with status " << status_d
+         << " and thread E exited with status " << status_e
+         << " and thread F exited with status " << status_f
+         << " and thread G exited with status " << status_g
+         << " and thread H exited with status " << status_h << "" << endl;
 
     delete a;
     delete b;
     delete c;
     delete d;
+    delete e;
+    delete f;
+    delete g;
+    delete h;
 
     cout << "It should not be shown on the display!" << endl;
 
@@ -108,4 +132,40 @@ int func_d(void)
   }
 
     return 'D';
+}
+
+int func_e(void)
+{
+    for(int i = iterations; i > 0; i--) {
+        cout << "e" << Machine::cpu_id() << "<" << count_even_numbers() << "> ";
+    }
+
+    return 'E';
+}
+
+int func_f(void)
+{
+  for(int i = iterations; i > 0; i--) {
+      cout << "f" << Machine::cpu_id() << "<" << count_even_numbers() << "> ";
+  }
+
+    return 'F';
+}
+
+int func_g(void)
+{
+  for(int i = iterations; i > 0; i--) {
+      cout << "g" << Machine::cpu_id() << "<" << count_even_numbers() << "> ";
+  }
+
+    return 'G';
+}
+
+int func_h(void)
+{
+  for(int i = iterations; i > 0; i--) {
+      cout << "h" << Machine::cpu_id() << "<" << count_even_numbers() << "> ";
+  }
+
+    return 'H';
 }
