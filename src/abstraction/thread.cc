@@ -329,10 +329,14 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
         db<Thread>(INF) << "prev={" << prev << ",ctx=" << *prev->_context << "}" << endl;
         db<Thread>(INF) << "next={" << next << ",ctx=" << *next->_context << "}" << endl;
 
+        spinUnlock();
+
         CPU::switch_context(&prev->_context, next->_context);
+    } else {
+      spinUnlock();
     }
 
-    unlock();
+    CPU::int_enable();
 }
 
 
@@ -340,7 +344,7 @@ int Thread::idle()
 {
     while(_thread_count > Machine::n_cpus()) { // someone else besides idles
         if(Traits<Thread>::trace_idle)
-            db<Thread>(TRC) << "Thread::idle(CPU=" << Machine::cpu_id() << ",this=" << running() << ")" << endl;
+          db<Thread>(WRN) << Machine::cpu_id();
 
         CPU::int_enable();
         CPU::halt();

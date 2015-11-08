@@ -105,12 +105,12 @@ protected:
     static void lock()
     {
       CPU::int_disable();
-      if (smp) _spinLock.acquire();
+      spinLock();
     }
 
     static void unlock()
     {
-      if (smp) _spinLock.release();
+      spinUnlock();
       CPU::int_enable();
     }
 
@@ -131,6 +131,9 @@ protected:
 
 private:
     static void init();
+
+    static void spinLock() { if (smp) _spinLock.acquire(); }
+    static void spinUnlock() { if (smp) _spinLock.release(); }
 
 protected:
     char * _stack;
