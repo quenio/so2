@@ -1,53 +1,188 @@
+Index: include/machine/pc/ic.h
+===================================================================
+--- include/machine/pc/ic.h	(revision 3782)
++++ include/machine/pc/ic.h	(working copy)
+@@ -171,59 +171,59 @@
+     enum {
+         LOCAL_APIC_PHY_ADDR	= 0xfee00000,
+         LOCAL_APIC_LOG_ADDR	= Memory_Map<PC>::APIC,
+-        LOCAL_APIC_SIZE         = Memory_Map<PC>::VGA - Memory_Map<PC>::APIC,
+-        IO_APIC_PHY_ADDR	= 0xfec00000
++        LOCAL_APIC_SIZE     = Memory_Map<PC>::VGA - Memory_Map<PC>::APIC,
++        IO_APIC_PHY_ADD     = 0xfec00000
+     };
+ 
+     // Memory-mapped registers
+     enum {
+-        ID =			0x020,	// Task priority 
+-        VERSION =		0x030,	// Task priority 
+-        TPR =			0x080,	// Task priority 
+-        APR =			0x090,	// Arbitration priority 
+-        PPR =			0x0a0,	// Processor priority 
+-        EOI =			0x0b0,	// End of interrupt 
+-        RRR =			0x0c0,	// Remote read 
+-        LDR =			0x0d0,	// Logical destination 
+-        DFR =			0x0e0,	// Destination format 
+-        SVR =			0x0f0,	// Spurious interrupt vector 
+-        ISR0_32 =		0x100,	// In-service 
+-        ISR32_63 =		0x110,	// In-service 
+-        ISR64_95 =		0x120,	// In-service 
+-        ISR96_127 =		0x130,	// In-service 
+-        ISR128_159 =		0x140,	// In-service 
+-        ISR160_191 =		0x150,	// In-service 
+-        ISR192_223 =		0x160,	// In-service 
+-        ISR224_255 =		0x170,	// In-service 
+-        TMR0_32 =		0x180,	// Trigger mode 
+-        TMR32_63 =		0x190,	// Trigger mode 
+-        TMR64_95 =		0x1a0,	// Trigger mode 
+-        TMR96_127 =		0x1b0,	// Trigger mode 
+-        TMR128_159 =		0x1c0,	// Trigger mode 
+-        TMR160_191 =		0x1d0,	// Trigger mode 
+-        TMR192_223 =		0x1e0,	// Trigger mode 
+-        TMR224_255 =		0x1f0,	// Trigger mode 
+-        IRR0_32 =		0x200,	// Interrupt request 
+-        IRR32_63 =		0x210,	// Interrupt request 
+-        IRR64_95 =		0x220,	// Interrupt request 
+-        IRR96_127 =		0x230,	// Interrupt request 
+-        IRR128_159 =		0x240,	// Interrupt request 
+-        IRR160_191 =		0x250,	// Interrupt request 
+-        IRR192_223 =		0x260,	// Interrupt request 
+-        IRR224_255 =		0x270,	// Interrupt request 
+-        ESR =			0x280,	// Error status 
+-        LVT_CMCI =		0x2f0,	// LVT CMCI 
+-        ICR0_31 =		0x300,	// Interrupt command 
+-        ICR32_63 =		0x310,	// Interrupt command 
+-        LVT_TIMER =		0x320,	// LVT timer 
+-        LVT_THERMAL =		0x330,	// LVT thermal sensor 
+-        LVT_PERF =		0x340,	// LVT performance monitor 
+-        LVT_LINT0 =		0x350,	// LVT interrupt line 0 
+-        LVT_LINT1 =		0x360,	// LVT interrupt line 1 
+-        LVT_ERROR =		0x370,	// LVT error 
+-        TIMER_INITIAL =		0x380,	// Timer's initial count 
+-        TIMER_CURRENT =		0x390,	// Timer's current count 
+-        TIMER_PRESCALE =	0x3e0	// Timer's BUS CLOCK prescaler 
++        ID =			0x020,	// Task priority
++        VERSION =		0x030,	// Task priority
++        TPR =			0x080,	// Task priority
++        APR =			0x090,	// Arbitration priority
++        PPR =			0x0a0,	// Processor priority
++        EOI =			0x0b0,	// End of interrupt
++        RRR =			0x0c0,	// Remote read
++        LDR =			0x0d0,	// Logical destination
++        DFR =			0x0e0,	// Destination format
++        SVR =			0x0f0,	// Spurious interrupt vector
++        ISR0_32 =		0x100,	// In-service
++        ISR32_63 =		0x110,	// In-service
++        ISR64_95 =		0x120,	// In-service
++        ISR96_127 =		0x130,	// In-service
++        ISR128_159 =		0x140,	// In-service
++        ISR160_191 =		0x150,	// In-service
++        ISR192_223 =		0x160,	// In-service
++        ISR224_255 =		0x170,	// In-service
++        TMR0_32 =		0x180,	// Trigger mode
++        TMR32_63 =		0x190,	// Trigger mode
++        TMR64_95 =		0x1a0,	// Trigger mode
++        TMR96_127 =		0x1b0,	// Trigger mode
++        TMR128_159 =		0x1c0,	// Trigger mode
++        TMR160_191 =		0x1d0,	// Trigger mode
++        TMR192_223 =		0x1e0,	// Trigger mode
++        TMR224_255 =		0x1f0,	// Trigger mode
++        IRR0_32 =		0x200,	// Interrupt request
++        IRR32_63 =		0x210,	// Interrupt request
++        IRR64_95 =		0x220,	// Interrupt request
++        IRR96_127 =		0x230,	// Interrupt request
++        IRR128_159 =		0x240,	// Interrupt request
++        IRR160_191 =		0x250,	// Interrupt request
++        IRR192_223 =		0x260,	// Interrupt request
++        IRR224_255 =		0x270,	// Interrupt request
++        ESR =			0x280,	// Error status
++        LVT_CMCI =		0x2f0,	// LVT CMCI
++        ICR0_31 =		0x300,	// Interrupt command
++        ICR32_63 =		0x310,	// Interrupt command
++        LVT_TIMER =		0x320,	// LVT timer
++        LVT_THERMAL =		0x330,	// LVT thermal sensor
++        LVT_PERF =		0x340,	// LVT performance monitor
++        LVT_LINT0 =		0x350,	// LVT interrupt line 0
++        LVT_LINT1 =		0x360,	// LVT interrupt line 1
++        LVT_ERROR =		0x370,	// LVT error
++        TIMER_INITIAL =		0x380,	// Timer's initial count
++        TIMER_CURRENT =		0x390,	// Timer's current count
++        TIMER_PRESCALE =	0x3e0	// Timer's BUS CLOCK prescaler
+     };
+ 
+     // Flags
+@@ -339,7 +339,7 @@
+ 
+     static void reset(Log_Addr addr = LOCAL_APIC_LOG_ADDR) {
+         // APIC must be on very early in the boot process, so it is
+-        // subject to memory remappings. We also cannot be sure about 
++        // subject to memory remappings. We also cannot be sure about
+         // global constructors here
+         remap(addr);
+         if(Traits<System>::multicore) {
+@@ -365,10 +365,10 @@
+         write(LVT_TIMER, v);
+     }
+ 
+-    static void enable_timer() { 
++    static void enable_timer() {
+         write(LVT_TIMER, read(LVT_TIMER) & ~TIMER_MASKED);
+     }
+-    static void disable_timer() { 
++    static void disable_timer() {
+         write(LVT_TIMER, read(LVT_TIMER) | TIMER_MASKED);
+     }
+ 
+@@ -375,7 +375,7 @@
+     static Reg32 read_timer() {
+         return read(TIMER_CURRENT);
+     }
+-    
++
+     static void reset_timer() {
+         disable();
+         write(TIMER_CURRENT, read(TIMER_INITIAL));
+Index: include/machine/pc/info.h
+===================================================================
+--- include/machine/pc/info.h	(revision 3782)
++++ include/machine/pc/info.h	(working copy)
+@@ -43,8 +43,8 @@
+         PAddr mem_top;          // Memory top address
+         PAddr io_base;          // I/O Memory base address
+         PAddr io_top;           // I/O Memory top address
+- 	PAddr ext_base;         // Boot Image EXTRA segment base address
+- 	PAddr ext_top;          // Boot Image EXTRA segment top address
++ 	      PAddr ext_base;         // Boot Image EXTRA segment base address
++ 	      PAddr ext_top;          // Boot Image EXTRA segment top address
+         PAddr idt;              // IDT
+         PAddr gdt;              // GDT
+         PAddr tss0;             // TSS0 (only for system call)
+@@ -110,7 +110,7 @@
+         unsigned int cpu_clock;
+         unsigned int bus_clock;
+     };
+-        
++
+ public:
+     friend Debug & operator<<(Debug & db, const System_Info<PC> & si);
+ 
 Index: include/scheduler.h
 ===================================================================
---- include/scheduler.h	(revision 3772)
+--- include/scheduler.h	(revision 3782)
 +++ include/scheduler.h	(working copy)
-@@ -76,12 +76,40 @@
+@@ -76,9 +76,7 @@
      public:
          FCFS(int p = NORMAL); // Defined at Alarm
      };
-+
-+    // Uniform Distribution
-+    class UD: public Priority
-+    {
-+    public:
-+        enum {
-+            MAIN   = 0,
-+            NORMAL = 1,
-+            IDLE   = (unsigned(1) << (sizeof(int) * 8 - 1)) - 1
-+        };
-+
-+        static const bool timed = false;
-+        static const bool dynamic = false;
-+        static const bool preemptive = true;
-+
-+        static const unsigned int QUEUES = Traits<Machine>::CPUS;
-+
-+    public:
-+        UD(int p = NORMAL): Priority(p), _queue(((_priority == IDLE) || (_priority == MAIN)) ? Machine::cpu_id() : ++_next_queue %= Machine::n_cpus()) {}
-+
-+        const volatile unsigned int & queue() const volatile { return _queue; }
-+
-+        static unsigned int current_queue() { return Machine::cpu_id(); }
-+
-+    private:
-+          volatile unsigned int _queue;
-+          static volatile unsigned int _next_queue;
-+    };
-+
- }
+-}
  
 -
  // Scheduling_Queue
  template<typename T, typename R = typename T::Criterion>
--class Scheduling_Queue: public Scheduling_List<T> {};
-+class Scheduling_Queue: public Scheduling_Multilist<T> {};
- 
- // Scheduler
- // Objects subject to scheduling by Scheduler must declare a type "Criterion"
+ class Scheduling_Queue: public Scheduling_List<T> {};
 Index: include/system/config.h
 ===================================================================
---- include/system/config.h	(revision 3772)
+--- include/system/config.h	(revision 3782)
 +++ include/system/config.h	(working copy)
 @@ -7,15 +7,15 @@
  // ARCHITECTURE, MACHINE, AND APPLICATION SELECTION
@@ -76,7 +211,7 @@ Index: include/system/config.h
  #define __no_networking__
 Index: include/system/traits.h
 ===================================================================
---- include/system/traits.h	(revision 3772)
+--- include/system/traits.h	(revision 3782)
 +++ include/system/traits.h	(working copy)
 @@ -28,7 +28,7 @@
      enum {Legacy};
@@ -87,77 +222,72 @@ Index: include/system/traits.h
      static const unsigned int NODES = 1; // > 1 => NETWORKING
  };
  
-@@ -119,7 +119,7 @@
- {
-     static const bool smp = Traits<System>::multicore;
- 
--    typedef Scheduling_Criteria::RR Criterion;
-+    typedef Scheduling_Criteria::UD Criterion;
-     static const unsigned int QUANTUM = 10000; // us
- 
-     static const bool trace_idle = hysterically_debugged;
-Index: include/system/types.h
+Index: include/thread.h
 ===================================================================
---- include/system/types.h	(revision 3772)
-+++ include/system/types.h	(working copy)
-@@ -90,6 +90,7 @@
-     class Priority;
-     class FCFS;
-     class RR;
-+    class UD;
- };
+--- include/thread.h	(revision 3782)
++++ include/thread.h	(working copy)
+@@ -101,6 +101,8 @@
  
- class Address_Space;
+     Criterion & criterion() { return const_cast<Criterion &>(_link.rank()); }
+ 
++    // TODO Implementar lock()/unlock() usando Spin.
++    // TODO Depois da modificação, verificar usos de lock() / unlock() fora de Thread. Precisam de Spin?
+     static void lock() { CPU::int_disable(); }
+     static void unlock() { CPU::int_enable(); }
+     static bool locked() { return CPU::int_disabled(); }
 Index: include/utility/heap.h
 ===================================================================
---- include/utility/heap.h	(revision 3772)
+--- include/utility/heap.h	(revision 3782)
 +++ include/utility/heap.h	(working copy)
-@@ -32,6 +32,8 @@
-     void * alloc(unsigned int bytes) {
-         db<Heaps>(TRC) << "Heap::alloc(this=" << this << ",bytes=" << bytes;
- 
-+        _lock.acquire();
-+
-         if(!bytes)
-             return 0;
- 
-@@ -57,6 +59,8 @@
-             *addr++ = reinterpret_cast<int>(this);
-         *addr++ = bytes;
- 
-+        _lock.release();
-+
-         db<Heaps>(TRC) << ") => " << reinterpret_cast<void *>(addr) << endl;
- 
-         return addr;
-@@ -65,11 +69,15 @@
-     void free(void * ptr, unsigned int bytes) {
-         db<Heaps>(TRC) << "Heap::free(this=" << this << ",ptr=" << ptr << ",bytes=" << bytes << ")" << endl;
- 
-+        _lock.acquire();
-+
-         if(ptr && (bytes >= sizeof(Element))) {
-             Element * e = new (ptr) Element(reinterpret_cast<char *>(ptr), bytes);
-             Element * m1, * m2;
-             insert_merging(e, &m1, &m2);
-         }
-+
-+        _lock.release();
+@@ -123,26 +123,27 @@
      }
  
-     static void typed_free(void * ptr) {
-@@ -87,6 +95,8 @@
+     void * alloc(unsigned int bytes) {
+-	enter();
+-	void * tmp = T::alloc(bytes);
+-	leave();
+-	return tmp;
++        enter();
++        void * tmp = T::alloc(bytes);
++        leave();
++        return tmp;
+     }
+ 
+     void free(void * ptr) {
+-	enter();
+-	T::free(ptr);
+-	leave();
++        enter();
++        T::free(ptr);
++        leave();
+     }
+ 
+     void free(void * ptr, unsigned int bytes) {
+-	enter();
+-	T::free(ptr, bytes);
+-	leave();
++        enter();
++        T::free(ptr, bytes);
++        leave();
+     }
  
  private:
-     void out_of_memory();
-+
-+    Spin _lock;
+     void enter() {
++        // WARNING: Se houver algum deadlock, verificar se não é porque acquire() está antes de int_disable()
+         _lock.acquire();
+         CPU::int_disable();
+     }
+@@ -156,7 +157,6 @@
+     Spin _lock;
  };
  
- __END_UTIL
+-
+ // Heap
+ class Heap: public Heap_Wrapper<Simple_Heap, Traits<System>::multicore>
+ {
 Index: include/utility/list.h
 ===================================================================
---- include/utility/list.h	(revision 3772)
+--- include/utility/list.h	(revision 3782)
 +++ include/utility/list.h	(working copy)
 @@ -35,7 +35,7 @@
  
@@ -496,8 +626,8 @@ Index: include/utility/list.h
      Element * search_rank(const Rank_Type & rank) {
          Element * e = head();
          for(; e && (e->rank() != rank); e = e->next());
-@@ -1075,7 +1075,7 @@
- 
+@@ -1247,7 +1247,7 @@
+ };
  
  // Doubly-Linked, Grouping List
 -template<typename T, 
@@ -505,7 +635,7 @@ Index: include/utility/list.h
            typename El = List_Elements::Doubly_Linked_Grouping<T> >
  class Grouping_List: public List<T, El>
  {
-@@ -1103,19 +1103,19 @@
+@@ -1275,19 +1275,19 @@
      using Base::print_tail;
  
      unsigned int grouped_size() const { return _grouped_size; }
@@ -528,7 +658,7 @@ Index: include/utility/list.h
      void insert_merging(Element * e, Element ** m1, Element ** m2) {
          db<Lists>(TRC) << "Grouping_List::insert_merging(e=" << e << ")" << endl;
  
-@@ -1136,7 +1136,7 @@
+@@ -1308,7 +1308,7 @@
              *m2 = e;
          }
      }
@@ -537,7 +667,7 @@ Index: include/utility/list.h
      Element * search_decrementing(unsigned int s) {
          db<Lists>(TRC) << "Grouping_List::search_decrementing(s=" << s << ")" << endl;
          print_head();
-@@ -1152,11 +1152,77 @@
+@@ -1324,11 +1324,11 @@
  
          return e;
      }
@@ -547,103 +677,24 @@ Index: include/utility/list.h
      unsigned int _grouped_size;
  };
  
-+// Doubly-Linked, Scheduling Multilist
-+// Besides declaring "Criterion", objects subject to scheduling policies that
-+// use the Multilist must export the QUEUES constant to indicate the number of
-+// sublists in the list, the current_queue() class method to designate the
-+// queue to which the current operation applies, and the queue() method to
-+// return the queue in which the object currently resides.
-+template<typename T,
-+          typename R = typename T::Criterion,
-+          typename El = List_Elements::Doubly_Linked_Scheduling<T, R>,
-+          typename L = Scheduling_List<T, R, El>,
-+          unsigned int Q = R::QUEUES>
-+class Scheduling_Multilist
-+{
-+public:
-+    typedef T Object_Type;
-+    typedef R Rank_Type;
-+    typedef El Element;
-+    typedef typename L::Iterator Iterator;
-+
-+public:
-+    Scheduling_Multilist() {}
-+
-+    bool empty() const { return _list[R::current_queue()].empty(); }
-+
-+    unsigned int size() const { return _list[R::current_queue()].size(); }
-+    unsigned int total_size() const {
-+        unsigned int s = 0;
-+        for(unsigned int i = 0; i < Q; i++)
-+            s += _list[i].size();
-+        return s;
-+    }
-+
-+    Element * head() { return _list[R::current_queue()].head(); }
-+    Element * tail() { return _list[R::current_queue()].tail(); }
-+
-+    Iterator begin() { return Iterator(_list[R::current_queue()].head()); }
-+    Iterator end() { return Iterator(0); }
-+
-+    Element * volatile & chosen() {
-+        return _list[R::current_queue()].chosen();
-+    }
-+
-+    void insert(Element * e) {
-+        _list[e->rank().queue()].insert(e);
-+    }
-+
-+    Element * remove(Element * e) {
-+         return _list[e->rank().queue()].remove(e);
-+     }
-+
-+    Element * choose() {
-+        return _list[R::current_queue()].choose();
-+    }
-+
-+    Element * choose_another() {
-+        return _list[R::current_queue()].choose_another();
-+    }
-+
-+    Element * choose(Element * e) {
-+        return _list[e->rank().queue()].choose(e);
-+    }
-+
-+private:
-+    L _list[Q];
-+};
-+
  __END_UTIL
 - 
 +
  #endif
 Index: include/utility/ostream.h
 ===================================================================
---- include/utility/ostream.h	(revision 3772)
+--- include/utility/ostream.h	(revision 3782)
 +++ include/utility/ostream.h	(working copy)
-@@ -21,15 +21,19 @@
-     struct Err {};
- 
- public:
--    OStream(): _base(10), _error(false) {}
-+    OStream(): _base(10), _error(false), _lock(-1) {}
- 
-     OStream & operator<<(const Begl & begl) {
-+        // if(Traits<System>::multicore)
-+        //   lock();
+@@ -28,7 +28,7 @@
+             preamble();
          return *this;
      }
 -    
 +
      OStream & operator<<(const Endl & endl) {
-         print("\n");
-         _base = 10;
-+        // if(Traits<System>::multicore)
-+        //   unlock();
-         return *this;
-     }
- 
-@@ -63,7 +67,7 @@
+         if(Traits<System>::multicore)
+             trailler();
+@@ -67,7 +67,7 @@
          print(buf);
          return *this;
      }
@@ -652,7 +703,7 @@ Index: include/utility/ostream.h
          return operator<<(static_cast<unsigned int>(c));
      }
  
-@@ -86,7 +90,7 @@
+@@ -90,7 +90,7 @@
          print(buf);
          return *this;
      }
@@ -661,7 +712,7 @@ Index: include/utility/ostream.h
          return operator<<(static_cast<unsigned int>(s));
      }
      OStream & operator<<(unsigned long l) {
-@@ -114,9 +118,9 @@
+@@ -118,9 +118,9 @@
          return *this;
      }
  
@@ -673,21 +724,13 @@ Index: include/utility/ostream.h
      }
  
      OStream & operator<<(float f) {
-@@ -162,6 +166,9 @@
-     }
+@@ -179,11 +179,11 @@
  
- private:
-+    void lock();
-+    void unlock();
-+
-     void print(const char * s) { _print(s); }
- 
-     int itoa(int v, char * s);
-@@ -173,9 +180,10 @@
  private:
      int _base;
-     volatile bool _error;
-+    volatile int _lock;
++    volatile bool _error;
+     volatile int _lock;
+-    volatile bool _error;
  
      static const char _digits[];
 -}; 
@@ -697,88 +740,66 @@ Index: include/utility/ostream.h
  extern OStream::Endl endl;
 Index: src/abstraction/thread.cc
 ===================================================================
---- src/abstraction/thread.cc	(revision 3772)
+--- src/abstraction/thread.cc	(revision 3782)
 +++ src/abstraction/thread.cc	(working copy)
-@@ -16,7 +16,9 @@
- volatile unsigned int Thread::_thread_count;
+@@ -17,6 +17,7 @@
  Scheduler_Timer * Thread::_timer;
  Scheduler<Thread> Thread::_scheduler;
-+volatile unsigned int Scheduling_Criteria::UD::_next_queue;
  
 +
  // Methods
  void Thread::constructor_prolog(unsigned int stack_size)
  {
-@@ -337,21 +339,23 @@
- 
- int Thread::idle()
- {
--    while(_thread_count > 1) { // someone else besides idle
-+    while(_thread_count > Machine::n_cpus()) { // someone else besides idle
-         if(Traits<Thread>::trace_idle)
-             db<Thread>(TRC) << "Thread::idle(this=" << running() << ")" << endl;
- 
-+        db<Thread>(WRN) << Machine::cpu_id();  // identificando a CPU em idle.
-+
-         CPU::int_enable();
-         CPU::halt();
-     }
- 
-     CPU::int_disable();
--    db<Thread>(WRN) << "The last thread has exited!" << endl;
-+    db<Thread>(WRN) << "The last thread has exited on CPU " << Machine::cpu_id() << "..." << endl;
-     if(reboot) {
--        db<Thread>(WRN) << "Rebooting the machine ..." << endl;
-+        db<Thread>(WRN) << "Rebooting the machine on CPU " << Machine::cpu_id() << "..." << endl;
-         Machine::reboot();
-     } else {
--        db<Thread>(WRN) << "Halting the machine ..." << endl;
-+        db<Thread>(WRN) << "Halting the machine on CPU " << Machine::cpu_id() << "..." << endl;
-         CPU::halt();
-     }
- 
 Index: src/init/init_first.cc
 ===================================================================
---- src/init/init_first.cc	(revision 3772)
+--- src/init/init_first.cc	(revision 3782)
 +++ src/init/init_first.cc	(working copy)
-@@ -24,30 +24,31 @@
+@@ -26,33 +26,23 @@
              return;
          }
  
 -        db<Init>(INF) << "Initializing the first thread: " << endl;
-+        Thread * first;
+-
+         Thread * first;
+-        if(Machine::cpu_id() == 0) {
+-            // If EPOS is a library, then adjust the application entry point to __epos_app_entry,
+-            // which will directly call main(). In this case, _init will have already been called,
+-            // before Init_Application, to construct main()'s global objects.
+-            first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::MAIN), reinterpret_cast<int (*)()>(__epos_app_entry));
 +        if (Machine::cpu_id() == 0) {
 +          // If EPOS is not a kernel, then adjust the application entry point to __epos_app_entry,
 +          // which will directly call main(). In this case, _init will have already been called,
 +          // before Init_Application, to construct main()'s global objects.
 +          first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::MAIN), reinterpret_cast<int (*)()>(__epos_app_entry));
  
--        // If EPOS is not a kernel, then adjust the application entry point to __epos_app_entry,
--        // which will directly call main(). In this case, _init will have already been called,
--        // before Init_Application, to construct main()'s global objects.
--        Thread * first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::MAIN), reinterpret_cast<int (*)()>(__epos_app_entry));
+-            // Idle thread creation must succeed main, thus avoiding implicit rescheduling.
+-            new (SYSTEM) Thread(Thread::Configuration(Thread::READY, Thread::IDLE), &Thread::idle);
+-        } else
+-            first = new (SYSTEM) Thread(Thread::Configuration(Thread::READY, Thread::IDLE), &Thread::idle);
 +          // Idle thread creation must succeed main, thus avoiding implicit rescheduling
 +          new (SYSTEM) Thread(Thread::Configuration(Thread::READY, Thread::IDLE), &Thread::idle);
 +        } else {
 +          first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::IDLE), &Thread::idle);
 +        }
  
--        // Idle thread creation must succeed main, thus avoiding implicit rescheduling
--        new (SYSTEM) Thread(Thread::Configuration(Thread::READY, Thread::IDLE), &Thread::idle);
+-        Machine::smp_barrier();
 +        // db<Init, Thread>(WRN) << "Dispatching the first thread: " << first << " on CPU: " << Machine::cpu_id() << " of " << Machine::n_cpus() << endl;
  
 -        db<Init>(INF) << "done!" << endl;
-+        This_Thread::not_booting();
- 
+-
 -        db<Init>(INF) << "INIT ends here!" << endl;
-+        Machine::smp_barrier();
- 
+-
 -        db<Init, Thread>(INF) << "Dispatching the first thread: " << first << endl;
 -
--        This_Thread::not_booting();
--
+         This_Thread::not_booting();
+ 
+-        // This barrier is particularly important, since afterwards the temporary stacks
+-        // and data structures established by SETUP and announced as "free memory" will indeed be
+-        // available to user threads
+         Machine::smp_barrier();
+ 
          first->_context->load();
-     }
+@@ -60,7 +50,7 @@
  };
  
  // Global object "init_first" must be constructed last in the context of the
@@ -789,25 +810,18 @@ Index: src/init/init_first.cc
  __END_SYS
 Index: src/init/init_system.cc
 ===================================================================
---- src/init/init_system.cc	(revision 3772)
+--- src/init/init_system.cc	(revision 3782)
 +++ src/init/init_system.cc	(working copy)
-@@ -17,6 +17,15 @@
-     Init_System() {
-         db<Init>(TRC) << "Init_System()" << endl;
- 
-+        System_Info<Machine> * si = reinterpret_cast<System_Info<Machine> *>(Memory_Map<Machine>::SYS_INFO);
-+        Machine::smp_init(si->bm.n_cpus);
-+
-+        if (Machine::cpu_id() != 0) {
-+          Timer::init();
-+          Machine::smp_barrier(si->bm.n_cpus);
-+          return;
-+        }
-+
-         // Initialize the processor
-         db<Init>(INF) << "Initializing the CPU: " << endl;
-         CPU::init();
-@@ -53,6 +62,7 @@
+@@ -22,7 +22,7 @@
+         // Only the boot CPU runs INIT_SYSTEM fully
+         if(Machine::cpu_id() != 0) {
+             // Wait until the boot CPU has initialized the machine
+-            Machine::smp_barrier();
++            Machine::smp_barrier(); // WARNING: Se não estiver funcionando, verificar se ncpus está realmente inicializado.
+             // For IA-32, timer is CPU-local. What about other SMPs?
+             Timer::init();
+             Machine::smp_barrier();
+@@ -67,6 +67,7 @@
          }
  
          // Initialization continues at init_first
@@ -817,7 +831,7 @@ Index: src/init/init_system.cc
  
 Index: src/setup/pc_setup.cc
 ===================================================================
---- src/setup/pc_setup.cc	(revision 3772)
+--- src/setup/pc_setup.cc	(revision 3782)
 +++ src/setup/pc_setup.cc	(working copy)
 @@ -59,7 +59,7 @@
  // PC_Setup is responsible for bringing the machine into a usable state. It
@@ -890,7 +904,7 @@ Index: src/setup/pc_setup.cc
          	   << ",mem="  << (void *)si->pmm.phy_mem_pts
          	   << ",io="   << (void *)si->pmm.io_pts
          	   << ",sysc=" << (void *)si->pmm.sys_code
-@@ -1006,10 +1007,10 @@
+@@ -1008,10 +1009,10 @@
  extern "C" { void setup(char * bi); }
  
  //========================================================================
@@ -904,7 +918,7 @@ Index: src/setup/pc_setup.cc
  // assembly world of PC_BOOT and the C++ world of PC_SETUP. It's main
  // tasks are:
  //
-@@ -1052,7 +1053,7 @@
+@@ -1054,7 +1055,7 @@
  
          // Broadcast INIT IPI to all APs excluding self
          APIC::ipi_init(si->bm.cpu_status);
@@ -913,7 +927,7 @@ Index: src/setup/pc_setup.cc
          // Broadcast STARTUP IPI to all APs excluding self
          // Non-boot CPUs will run a simplified boot strap just to
          // trampoline them into protected mode
-@@ -1077,7 +1078,7 @@
+@@ -1079,7 +1080,7 @@
  
          // Load SETUP considering the address in the ELF header
          // Be careful: by reloading SETUP, global variables have been reset to
@@ -922,7 +936,7 @@ Index: src/setup/pc_setup.cc
          // Also check if this wouldn't destroy the boot image
          char * addr = reinterpret_cast<char *>(elf->segment_address(0));
          int size = elf->segment_size(0);
-@@ -1097,7 +1098,7 @@
+@@ -1099,7 +1100,7 @@
          // Passes a pointer to the just allocated stack pool to other CPUs
          Stacks = dst;
          Stacks_Ready = true;
@@ -931,7 +945,7 @@ Index: src/setup/pc_setup.cc
      } else { // Additional CPUs (APs)
  
          // Inform BSP that this AP has been initialized
-@@ -1133,7 +1134,7 @@
+@@ -1135,7 +1136,7 @@
  
      // Pass the boot image to SETUP
      ASM("pushl %0" : : "r" (Stacks));
@@ -940,7 +954,7 @@ Index: src/setup/pc_setup.cc
      // Call setup()
      // the assembly is necessary because the compiler generates
      // relative calls and we need an absolute one
-@@ -1140,7 +1141,7 @@
+@@ -1142,7 +1143,7 @@
      ASM("call *%0" : : "r" (&setup));
  }
  
@@ -951,34 +965,9 @@ Index: src/setup/pc_setup.cc
          kerr  << endl;
 Index: src/utility/ostream.cc
 ===================================================================
---- src/utility/ostream.cc	(revision 3772)
+--- src/utility/ostream.cc	(revision 3782)
 +++ src/utility/ostream.cc	(working copy)
-@@ -1,11 +1,24 @@
- // EPOS OStream Implementation
- 
- #include <utility/ostream.h>
-+#include <machine.h>
- 
- __BEGIN_UTIL
- 
- const char OStream::_digits[] = "0123456789abcdef";
- 
-+void OStream::lock()
-+{
-+    int me = Machine::cpu_id();
-+    while(CPU::cas(_lock, -1, me) != me);
-+}
-+
-+void OStream::unlock()
-+{
-+  int me = Machine::cpu_id();
-+  CPU::cas(_lock, me, -1);
-+}
-+
- int OStream::itoa(int v, char * s)
- {
-     unsigned int i = 0;
-@@ -16,7 +29,7 @@
+@@ -47,7 +47,7 @@
      }
  
      return utoa(static_cast<unsigned int>(v), s, i);
@@ -987,7 +976,7 @@ Index: src/utility/ostream.cc
  
  
  int OStream::utoa(unsigned int v, char * s, unsigned int i)
-@@ -53,7 +66,7 @@
+@@ -84,7 +84,7 @@
      }
  
      return llutoa(static_cast<unsigned long long int>(v), s, i);
@@ -996,7 +985,7 @@ Index: src/utility/ostream.cc
  
  
  int OStream::llutoa(unsigned long long int v, char * s, unsigned int i)
-@@ -92,6 +105,6 @@
+@@ -123,6 +123,6 @@
              = _digits[v & 0xf];
  
      return j + 2;
