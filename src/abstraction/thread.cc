@@ -344,7 +344,7 @@ int Thread::idle()
 {
     while(_thread_count > Machine::n_cpus()) { // someone else besides idles
         if(Traits<Thread>::trace_idle)
-          db<Thread>(WRN) << Machine::cpu_id();
+          db<Thread>(WRN) << 'i' << Machine::cpu_id();
 
         CPU::int_enable();
         CPU::halt();
