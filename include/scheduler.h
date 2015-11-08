@@ -55,6 +55,10 @@ namespace Scheduling_Criteria
         static const bool dynamic = false;
         static const bool preemptive = true;
 
+        static const unsigned int HEADS = Traits<Build>::CPUS;
+
+        static int current_head() { return Machine::cpu_id(); }
+
     public:
         RR(int p = NORMAL): Priority(p) {}
     };
@@ -81,7 +85,7 @@ namespace Scheduling_Criteria
 
 // Scheduling_Queue
 template<typename T, typename R = typename T::Criterion>
-class Scheduling_Queue: public Scheduling_List<T> {};
+class Scheduling_Queue: public Multihead_Scheduling_List<T> {};
 
 // Scheduler
 // Objects subject to scheduling by Scheduler must declare a type "Criterion"
