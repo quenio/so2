@@ -1,3 +1,27 @@
+Index: include/scheduler.h
+===================================================================
+--- include/scheduler.h	(revision 3782)
++++ include/scheduler.h	(working copy)
+@@ -55,6 +55,10 @@
+         static const bool dynamic = false;
+         static const bool preemptive = true;
+ 
++        static const unsigned int HEADS = Traits<Build>::CPUS;
++
++        static int current_head() { return Machine::cpu_id(); }
++
+     public:
+         RR(int p = NORMAL): Priority(p) {}
+     };
+@@ -81,7 +85,7 @@
+ 
+ // Scheduling_Queue
+ template<typename T, typename R = typename T::Criterion>
+-class Scheduling_Queue: public Scheduling_List<T> {};
++class Scheduling_Queue: public Multihead_Scheduling_List<T> {};
+ 
+ // Scheduler
+ // Objects subject to scheduling by Scheduler must declare a type "Criterion"
 Index: include/system/config.h
 ===================================================================
 --- include/system/config.h	(revision 3782)
@@ -19,7 +43,7 @@ Index: include/system/config.h
 +#define ARCH ia32
 +#define MACH pc
 +#define MMOD legacy
-+#define APPL philosophers_dinner
++#define APPL phil_dinner
 +#define __mode_library__
 +#define __arch_ia32__
 +#define __mach_pc__
@@ -27,19 +51,81 @@ Index: include/system/config.h
  
  #if defined (__arch_avr__) || defined (__mmod_lm3s811__)
  #define __no_networking__
+Index: include/system/traits.h
+===================================================================
+--- include/system/traits.h	(revision 3782)
++++ include/system/traits.h	(working copy)
+@@ -28,7 +28,7 @@
+     enum {Legacy};
+     static const unsigned int MODEL = Legacy;
+ 
+-    static const unsigned int CPUS = 1;
++    static const unsigned int CPUS = 8;
+     static const unsigned int NODES = 1; // > 1 => NETWORKING
+ };
+ 
+@@ -113,6 +113,8 @@
+ 
+     static const unsigned int STACK_SIZE = Traits<Machine>::STACK_SIZE;
+     static const unsigned int HEAP_SIZE = (Traits<Application>::MAX_THREADS + 1) * Traits<Application>::STACK_SIZE;
++
++    static const bool cpu_id_tagging = false;
+ };
+ 
+ template<> struct Traits<Thread>: public Traits<void>
+@@ -122,7 +124,7 @@
+     typedef Scheduling_Criteria::RR Criterion;
+     static const unsigned int QUANTUM = 10000; // us
+ 
+-    static const bool trace_idle = hysterically_debugged;
++    static const bool trace_idle = false;
+ };
+ 
+ template<> struct Traits<Scheduler<Thread> >: public Traits<void>
 Index: include/thread.h
 ===================================================================
 --- include/thread.h	(revision 3782)
 +++ include/thread.h	(working copy)
-@@ -101,6 +101,8 @@
+@@ -101,8 +101,19 @@
  
      Criterion & criterion() { return const_cast<Criterion &>(_link.rank()); }
  
-+    // TODO Implementar lock()/unlock() usando Spin.
+-    static void lock() { CPU::int_disable(); }
+-    static void unlock() { CPU::int_enable(); }
 +    // TODO Depois da modificação, verificar usos de lock() / unlock() fora de Thread. Precisam de Spin?
-     static void lock() { CPU::int_disable(); }
-     static void unlock() { CPU::int_enable(); }
++    static void lock()
++    {
++      CPU::int_disable();
++      spinLock();
++    }
++
++    static void unlock()
++    {
++      spinUnlock();
++      CPU::int_enable();
++    }
++
      static bool locked() { return CPU::int_disabled(); }
+ 
+     void suspend(bool locked);
+@@ -121,6 +132,9 @@
+ private:
+     static void init();
+ 
++    static void spinLock() { if (smp) _spinLock.acquire(); }
++    static void spinUnlock() { if (smp) _spinLock.release(); }
++
+ protected:
+     char * _stack;
+     Context * volatile _context;
+@@ -132,6 +146,7 @@
+     static volatile unsigned int _thread_count;
+     static Scheduler_Timer * _timer;
+     static Scheduler<Thread> _scheduler;
++    static Spin _spinLock;
+ };
+ 
+ 
 Index: include/utility/heap.h
 ===================================================================
 --- include/utility/heap.h	(revision 3782)
@@ -52,6 +138,103 @@ Index: include/utility/heap.h
          _lock.acquire();
          CPU::int_disable();
      }
+Index: include/utility/ostream.h
+===================================================================
+--- include/utility/ostream.h	(revision 3782)
++++ include/utility/ostream.h	(working copy)
+@@ -24,13 +24,13 @@
+     OStream(): _base(10), _lock(-1), _error(false) {}
+ 
+     OStream & operator<<(const Begl & begl) {
+-        if(Traits<System>::multicore)
++        if(Traits<System>::multicore && Traits<System>::cpu_id_tagging)
+             preamble();
+         return *this;
+     }
+-    
++
+     OStream & operator<<(const Endl & endl) {
+-        if(Traits<System>::multicore)
++        if(Traits<System>::multicore && Traits<System>::cpu_id_tagging)
+             trailler();
+         print("\n");
+         _base = 10;
+@@ -67,7 +67,7 @@
+         print(buf);
+         return *this;
+     }
+-    OStream & operator<<(unsigned char c) { 
++    OStream & operator<<(unsigned char c) {
+         return operator<<(static_cast<unsigned int>(c));
+     }
+ 
+@@ -90,7 +90,7 @@
+         print(buf);
+         return *this;
+     }
+-    OStream & operator<<(unsigned short s) { 
++    OStream & operator<<(unsigned short s) {
+         return operator<<(static_cast<unsigned int>(s));
+     }
+     OStream & operator<<(unsigned long l) {
+@@ -118,9 +118,9 @@
+         return *this;
+     }
+ 
+-    OStream & operator<<(const char * s) { 
++    OStream & operator<<(const char * s) {
+         print(s);
+-        return *this; 
++        return *this;
+     }
+ 
+     OStream & operator<<(float f) {
+@@ -183,7 +183,7 @@
+     volatile bool _error;
+ 
+     static const char _digits[];
+-}; 
++};
+ 
+ extern OStream::Begl begl;
+ extern OStream::Endl endl;
+Index: src/abstraction/thread.cc
+===================================================================
+--- src/abstraction/thread.cc	(revision 3782)
++++ src/abstraction/thread.cc	(working copy)
+@@ -16,6 +16,7 @@
+ volatile unsigned int Thread::_thread_count;
+ Scheduler_Timer * Thread::_timer;
+ Scheduler<Thread> Thread::_scheduler;
++Spin Thread::_spinLock;
+ 
+ // Methods
+ void Thread::constructor_prolog(unsigned int stack_size)
+@@ -328,10 +329,14 @@
+         db<Thread>(INF) << "prev={" << prev << ",ctx=" << *prev->_context << "}" << endl;
+         db<Thread>(INF) << "next={" << next << ",ctx=" << *next->_context << "}" << endl;
+ 
++        spinUnlock();
++
+         CPU::switch_context(&prev->_context, next->_context);
++    } else {
++      spinUnlock();
+     }
+ 
+-    unlock();
++    CPU::int_enable();
+ }
+ 
+ 
+@@ -339,7 +344,7 @@
+ {
+     while(_thread_count > Machine::n_cpus()) { // someone else besides idles
+         if(Traits<Thread>::trace_idle)
+-            db<Thread>(TRC) << "Thread::idle(CPU=" << Machine::cpu_id() << ",this=" << running() << ")" << endl;
++          db<Thread>(WRN) << 'i' << Machine::cpu_id();
+ 
+         CPU::int_enable();
+         CPU::halt();
 Index: src/init/init_first.cc
 ===================================================================
 --- src/init/init_first.cc	(revision 3782)
