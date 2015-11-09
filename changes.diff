@@ -43,7 +43,7 @@ Index: include/system/config.h
 +#define ARCH ia32
 +#define MACH pc
 +#define MMOD legacy
-+#define APPL phil_dinner
++#define APPL philosophers_dinner
 +#define __mode_library__
 +#define __arch_ia32__
 +#define __mach_pc__
@@ -86,13 +86,12 @@ Index: include/thread.h
 ===================================================================
 --- include/thread.h	(revision 3782)
 +++ include/thread.h	(working copy)
-@@ -101,8 +101,19 @@
+@@ -101,8 +101,18 @@
  
      Criterion & criterion() { return const_cast<Criterion &>(_link.rank()); }
  
 -    static void lock() { CPU::int_disable(); }
 -    static void unlock() { CPU::int_enable(); }
-+    // TODO Depois da modificação, verificar usos de lock() / unlock() fora de Thread. Precisam de Spin?
 +    static void lock()
 +    {
 +      CPU::int_disable();
@@ -108,7 +107,7 @@ Index: include/thread.h
      static bool locked() { return CPU::int_disabled(); }
  
      void suspend(bool locked);
-@@ -121,6 +132,9 @@
+@@ -121,6 +131,9 @@
  private:
      static void init();
  
@@ -118,7 +117,7 @@ Index: include/thread.h
  protected:
      char * _stack;
      Context * volatile _context;
-@@ -132,6 +146,7 @@
+@@ -132,6 +145,7 @@
      static volatile unsigned int _thread_count;
      static Scheduler_Timer * _timer;
      static Scheduler<Thread> _scheduler;
@@ -130,14 +129,16 @@ Index: include/utility/heap.h
 ===================================================================
 --- include/utility/heap.h	(revision 3782)
 +++ include/utility/heap.h	(working copy)
-@@ -143,6 +143,7 @@
+@@ -143,8 +143,8 @@
  
  private:
      void enter() {
-+        // WARNING: Se houver algum deadlock, verificar se não é porque acquire() está antes de int_disable()
++        CPU::int_disable();
          _lock.acquire();
-         CPU::int_disable();
+-        CPU::int_disable();
      }
+ 
+     void leave() {
 Index: include/utility/ostream.h
 ===================================================================
 --- include/utility/ostream.h	(revision 3782)
@@ -198,6 +199,19 @@ Index: include/utility/ostream.h
  
  extern OStream::Begl begl;
  extern OStream::Endl endl;
+Index: include/utility/queue.h
+===================================================================
+--- include/utility/queue.h	(revision 3782)
++++ include/utility/queue.h	(working copy)
+@@ -179,7 +179,7 @@
+ 
+     void leave() {
+         _lock.release();
+-        CPU::int_disable();
++        CPU::int_enable();
+     }
+ 
+ private:
 Index: src/abstraction/thread.cc
 ===================================================================
 --- src/abstraction/thread.cc	(revision 3782)
