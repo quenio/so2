@@ -1,20 +1,20 @@
 Setting up this machine as follows: 
-  Processor:    IA32 at 3161 MHz (BUS clock = 125 MHz)
+  Processor:    IA32 at 3098 MHz (BUS clock = 125 MHz)
   Memory:       262144 Kbytes [0x00000000:0x10000000]
   User memory:  261688 Kbytes [0x00000000:0x0ff8e000]
   PCI aperture: 44996 Kbytes [0xfc000000:0xfebf1000]
   Node Id:      will get from the network!
   Setup:        21376 bytes
-  APP code:     31232 bytes	data: 672 bytes
+  APP code:     31536 bytes	data: 672 bytes
   CPU count:    8
 [2J[000;000HThe Philosopher's Dinner:
 Philosophers are alive and hungry!
 [007;044H/[013;044H\[016;035H|[013;027H/[007;027H\[019;000HThe dinner is served ...
-[005;032Hthinking 0[010;044Hthinking 0[016;039Hthinking 3[016;024Hthinking 3[010;020Hthinking 3[003;000H odd numbers: 10000-0[005;032H eating  0[003;000H odd numbers: 10000-3[003;000H odd numbers: 10000-3[016;039H eating  3[003;000H odd numbers: 10000-5[003;000H odd numbers: 10000-4[003;000Heven numbers: 15000-0[010;020H eating  0[005;032Hthinking 7[003;000Heven numbers: 15000-3[010;044H eating  3[016;039Hthinking 4[003;000H odd numbers: 10000-7[003;000H odd numbers: 10000-4[003;000Heven numbers: 15000-0[016;024H eating  0[010;020Hthinking 5[003;000Heven numbers: 15000-3[005;032H eating  3[010;044Hthinking 7[003;000H odd numbers: 10000-5[003;000H odd numbers: 10000-7[003;000Heven numbers: 15000-0[016;039H eating  0[016;024Hthinking 0[003;000Heven numbers: 15000-3[010;020H eating  3[005;032Hthinking 3[003;000H odd numbers: 10000-0[003;000H odd numbers: 10000-3[003;000Heven numbers: 15000-6[010;044H eating  6[016;039Hthinking 6[003;000Heven numbers: 15000-1[016;024H eating  1[010;020Hthinking 1[003;000H odd numbers: 10000-6[003;000H odd numbers: 10000-1[003;000Heven numbers: 15000-2[005;032H eating  2[010;044Hthinking 6[003;000Heven numbers: 15000-0[016;039H eating  0[016;024Hthinking 0[003;000H odd numbers: 10000-6[003;000H odd numbers: 10000-0[003;000Heven numbers: 15000-4[003;000Heven numbers: 15000-4[010;020H eating  4[016;039Hthinking 3[010;044H eating  3[005;032Hthinking 2[003;000H odd numbers: 10000-2[003;000H odd numbers: 10000-2[003;000Heven numbers: 15000-4[016;024H eating  4[010;020Hthinking 3[003;000Heven numbers: 15000-6[005;032H eating  6[010;044Hthinking 7[003;000H odd numbers: 10000-3[003;000H odd numbers: 10000-7[003;000Heven numbers: 15000-4[003;000Heven numbers: 15000-4[016;039H eating  4[005;032H  done   7[010;020H eating  7[016;024Hthinking 1[020;000HPhilosopher 0 ate 4 times 
-[003;000H odd numbers: 10000-2[003;000Heven numbers: 15000-4[010;044H eating  4[016;039H  done   4[003;000Heven numbers: 15000-7[016;024H eating  7[010;020H  done   7[003;000Heven numbers: 15000-4[010;044H  done   4[021;000HPhilosopher 1 ate 4 times 
+[005;032Hthinking 0[010;044Hthinking 0[016;039Hthinking 0[016;024Hthinking 2[010;020Hthinking 1[003;000H odd numbers: 10000-5[005;032H eating  5[003;000H odd numbers: 10000-2[016;039H eating  2[003;000H odd numbers: 10000-0[003;000H odd numbers: 10000-1[003;000H odd numbers: 10000-3[003;000Heven numbers: 15000-2[016;024H eating  2[016;039Hthinking 7[003;000Heven numbers: 15000-5[010;044H eating  5[005;032Hthinking 5[003;000H odd numbers: 10000-7[003;000H odd numbers: 10000-5[003;000Heven numbers: 15000-2[010;020H eating  2[016;024Hthinking 7[003;000Heven numbers: 15000-4[016;039H eating  4[010;044Hthinking 4[003;000H odd numbers: 10000-4[003;000H odd numbers: 10000-7[003;000Heven numbers: 15000-2[010;020Hthinking 2[003;000Heven numbers: 15000-0[010;044H eating  0[016;024H eating  5[016;039Hthinking 1[003;000H odd numbers: 10000-1[003;000H odd numbers: 10000-2[003;000Heven numbers: 15000-0[005;032H eating  0[010;044Hthinking 0[003;000Heven numbers: 15000-5[016;039H eating  5[016;024Hthinking 4[003;000H odd numbers: 10000-0[003;000H odd numbers: 10000-4[003;000Heven numbers: 15000-2[010;020H eating  2[005;032Hthinking 2[003;000Heven numbers: 15000-5[010;044H eating  5[016;039Hthinking 5[003;000H odd numbers: 10000-2[003;000H odd numbers: 10000-5[003;000Heven numbers: 15000-3[016;024H eating  3[010;020Hthinking 6[003;000Heven numbers: 15000-0[005;032H eating  0[010;044Hthinking 0[003;000H odd numbers: 10000-6[003;000H odd numbers: 10000-0[003;000Heven numbers: 15000-3[016;039H eating  3[016;024Hthinking 6[003;000Heven numbers: 15000-1[010;020H eating  1[005;032Hthinking 4[003;000H odd numbers: 10000-6[003;000H odd numbers: 10000-4[003;000Heven numbers: 15000-3[010;044H eating  3[016;039H  done   4[003;000Heven numbers: 15000-1[016;024H eating  1[010;020Hthinking 6[003;000H odd numbers: 10000-6[003;000Heven numbers: 15000-3[005;032H eating  3[010;044H  done   5[003;000Heven numbers: 15000-1[016;024H  done   1[003;000Heven numbers: 15000-3[010;020H eating  3[005;032H  done   6[020;000HPhilosopher 0 ate 4 times 
+[021;000HPhilosopher 1 ate 4 times 
 [022;000HPhilosopher 2 ate 4 times 
-[003;000Heven numbers: 15000-7[016;024H  done   7[023;000HPhilosopher 3 ate 4 times 
-[024;000HPhilosopher 4 ate 4 times 
+[023;000HPhilosopher 3 ate 4 times 
+[003;000Heven numbers: 15000-3[010;020H  done   3[024;000HPhilosopher 4 ate 4 times 
 The end!
 The last thread has exited!
 Rebooting the machine ...
