@@ -22,7 +22,7 @@ public:
         // Only the boot CPU runs INIT_SYSTEM fully
         if(Machine::cpu_id() != 0) {
             // Wait until the boot CPU has initialized the machine
-            Machine::smp_barrier(); // WARNING: Se não estiver funcionando, verificar se ncpus está realmente inicializado.
+            Machine::smp_barrier(); 
             // For IA-32, timer is CPU-local. What about other SMPs?
             Timer::init();
             Machine::smp_barrier();
