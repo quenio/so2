@@ -8,10 +8,12 @@ __BEGIN_SYS
 
 // Class attributes
 PC_Timer * PC_Timer::_channels[CHANNELS];
+Timer::Tick PC_Timer::_tick_count[Traits<Build>::CPUS];
 
 // Class methods
 void PC_Timer::int_handler(const Interrupt_Id & i)
 {
+    _tick_count[Machine::cpu_id()]++;
     if(_channels[SCHEDULER] && (--_channels[SCHEDULER]->_current[Machine::cpu_id()] <= 0)) {
         _channels[SCHEDULER]->_current[Machine::cpu_id()] = _channels[SCHEDULER]->_initial;
         _channels[SCHEDULER]->_handler(i);

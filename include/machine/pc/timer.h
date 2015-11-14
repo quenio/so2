@@ -248,9 +248,10 @@ public:
         USER
     };
 
-protected:
     typedef IF<Traits<System>::multicore, APIC_Timer, i8253>::Result Engine;
     typedef Engine::Count Count;
+
+protected:
     typedef IC::Interrupt_Id Interrupt_Id;
 
     static const unsigned int CHANNELS = 3;
@@ -281,7 +282,7 @@ public:
     Hertz frequency() const { return (FREQUENCY / _initial); }
     void frequency(const Hertz & f) { _initial = FREQUENCY / f; reset(); }
 
-    Tick read() { return _current[Machine::cpu_id()]; }
+    Timer::Tick read() { return _current[Machine::cpu_id()]; }
 
     int reset() {
         db<Timer>(TRC) << "Timer::reset() => {f=" << frequency()
@@ -295,6 +296,8 @@ public:
     }
 
     void handler(const Handler & handler) { _handler = handler; }
+
+    static Timer::Tick tick_count() { return _tick_count[Machine::cpu_id()]; }
 
     static void enable() { IC::enable(IC::INT_TIMER); }
     static void disable() { IC::disable(IC::INT_TIMER); }
@@ -315,6 +318,9 @@ protected:
     Handler _handler;
 
     static PC_Timer * _channels[CHANNELS];
+
+private:
+    static Tick _tick_count[Traits<Build>::CPUS];
 };
 
 
