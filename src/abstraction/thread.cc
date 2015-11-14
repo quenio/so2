@@ -309,7 +309,18 @@ void Thread::time_slicer(const IC::Interrupt_Id & i)
 {
     lock();
 
-    reschedule();
+    if (_scheduler.schedulables()) {
+      // Prevents switching from one idle to another one.
+      // That might occur while Init_First is running.
+      Thread * chosen = _scheduler.chosen();
+      Scheduler<Thread>::Element * head = _scheduler.head();
+      if (chosen->_link.rank() != Criterion::IDLE || head->rank() != Criterion::IDLE) {
+        reschedule(); // implicit unlock
+        return;
+      }
+    }
+
+    unlock();
 }
 
 
