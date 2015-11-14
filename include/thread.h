@@ -70,6 +70,8 @@ public:
     // Thread Queue
     typedef Ordered_Queue<Thread, Criterion, Scheduler<Thread>::Element> Queue;
 
+    typedef Scheduler_Timer Timer;
+
 public:
     template<typename ... Tn>
     Thread(int (* entry)(Tn ...), Tn ... an);
@@ -86,6 +88,8 @@ public:
     void pass();
     void suspend() { suspend(false); }
     void resume();
+
+    int total_tick(int cpu_id) { return _total_tick[cpu_id]; }
 
     static Thread * volatile self() { return running(); }
     static void yield();
@@ -141,6 +145,7 @@ protected:
     Queue * _waiting;
     Thread * volatile _joining;
     Queue::Element _link;
+    Timer::Tick _tick_count, _total_tick[Traits<Build>::CPUS];
 
     static volatile unsigned int _thread_count;
     static Scheduler_Timer * _timer;

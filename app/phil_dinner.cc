@@ -129,13 +129,33 @@ int main()
     cout << "The dinner is served ..." << endl;
     table.unlock();
 
+    Timer::Tick total_cpu_tick[Traits<Build>::CPUS];
     for(int i = 0; i < 5; i++) {
         int ret = phil[i]->join();
         table.lock();
         Display::position(20 + i, 0);
-        cout << "Philosopher " << i << " ate " << ret << " times " << endl;
+        cout << "Philosopher " << i << " ate " << ret << " times";
+        Timer::Tick total_thread_tick = 0;
+        for (int cpu_id = 0; cpu_id < Traits<Build>::CPUS; cpu_id++) {
+          Timer::Tick tick_per_cpu = phil[i]->total_tick(cpu_id);
+          cout << " | " << cpu_id << ": " << tick_per_cpu;
+          total_thread_tick += tick_per_cpu;
+          total_cpu_tick[cpu_id] += tick_per_cpu;
+        }
+        cout << " | T: " << total_thread_tick << endl;
         table.unlock();
     }
+    table.lock();
+    Display::position(25, 0);
+    cout << "CPU Totals               ";
+    Timer::Tick total_tick = 0;
+    for (int cpu_id = 0; cpu_id < Traits<Build>::CPUS; cpu_id++) {
+      Timer::Tick tick_per_cpu = total_cpu_tick[cpu_id];
+      cout << " | " << cpu_id << ": " << tick_per_cpu;
+      total_tick += tick_per_cpu;
+    }
+    cout << " | T: " << total_tick << endl;
+    table.unlock();
 
     for(int i = 0; i < 5; i++)
         delete chopstick[i];

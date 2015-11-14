@@ -23,6 +23,10 @@ void Thread::constructor_prolog(unsigned int stack_size)
 {
     lock();
 
+    for (unsigned int cpu_id = 0; cpu_id < Traits<Build>::CPUS; cpu_id++) {
+      _total_tick[cpu_id] = 0;
+    }
+
     _thread_count++;
     _scheduler.insert(this);
 
@@ -332,8 +336,11 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
     }
 
     if(prev != next) {
-        if(prev->_state == RUNNING)
+        next->_tick_count = Timer::tick_count();
+        if(prev->_state == RUNNING) {
             prev->_state = READY;
+            prev->_total_tick[Machine::cpu_id()] += (next->_tick_count - prev->_tick_count);
+        }
         next->_state = RUNNING;
 
         db<Thread>(TRC) << "Thread::dispatch(prev=" << prev << ",next=" << next << ")" << endl;
