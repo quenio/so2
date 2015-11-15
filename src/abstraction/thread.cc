@@ -337,9 +337,12 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
 
     if(prev != next) {
         next->_tick_count = Timer::tick_count();
+        if (prev->_state == RUNNING || prev->_state == FINISHING) {
+          prev->_total_tick[Machine::cpu_id()] += (next->_tick_count - prev->_tick_count);
+        }
+
         if(prev->_state == RUNNING) {
             prev->_state = READY;
-            prev->_total_tick[Machine::cpu_id()] += (next->_tick_count - prev->_tick_count);
         }
         next->_state = RUNNING;
 
