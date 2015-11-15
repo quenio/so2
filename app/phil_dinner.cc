@@ -13,6 +13,7 @@ const int iterations = 4;
 
 Mutex table;
 
+Timer::Tick s[5];
 Thread * phil[5];
 Semaphore * chopstick[5];
 
@@ -54,6 +55,8 @@ int count_even_numbers()
 
 int philosopher(int n, int l, int c)
 {
+    s[n] = (Timer::tick_count() - s[n]);
+
     int first = (n < 4)? n : 0;
     int second = (n < 4)? n + 1 : 4;
 
@@ -125,10 +128,19 @@ int main()
     for(int i = 0; i < 5; i++)
         chopstick[i] = new Semaphore;
 
+    s[0] = Timer::tick_count();
     phil[0] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 0)), &philosopher, 0,  5, 32);
+
+    s[1] = Timer::tick_count();
     phil[1] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 1)), &philosopher, 1, 10, 44);
+
+    s[2] = Timer::tick_count();
     phil[2] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 2)), &philosopher, 2, 16, 39);
+
+    s[3] = Timer::tick_count();
     phil[3] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 3)), &philosopher, 3, 16, 24);
+
+    s[4] = Timer::tick_count();
     phil[4] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 3)), &philosopher, 4, 10, 20);
 
     cout << "Philosophers are alive and hungry!" << endl;
@@ -153,7 +165,7 @@ int main()
         int ret = phil[i]->join();
         table.lock();
         Display::position(20 + i, 0);
-        cout << "Philosopher " << i << " ate " << ret << "x ";
+        cout << "Philosopher " << i;
         Timer::Tick total_thread_tick = 0;
         for (int cpu_id = 0; cpu_id < Machine::n_cpus(); cpu_id++) {
           Timer::Tick tick_per_cpu = phil[i]->total_tick(cpu_id);
@@ -161,12 +173,13 @@ int main()
           total_cpu_tick[cpu_id] += tick_per_cpu;
           cout << " | " << cpu_id << ": " << Spaced(tick_per_cpu);
         }
-        cout << " | T: " << Spaced(total_thread_tick) << endl;
+        cout << " | T: " << Spaced(total_thread_tick);
+        cout << " | S: " << s[i] << endl;
         table.unlock();
     }
     table.lock();
     Display::position(25, 0);
-    cout << "CPU Totals           ";
+    cout << "CPU Totals   ";
     Timer::Tick total_tick = 0;
     for (int cpu_id = 0; cpu_id < Machine::n_cpus(); cpu_id++) {
       Timer::Tick tick_per_cpu = total_cpu_tick[cpu_id];

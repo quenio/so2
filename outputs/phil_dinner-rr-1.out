@@ -28,12 +28,12 @@ even numbers: 15000-3
 
 
 The dinner is served ...
-Philosopher 0 ate 4x | 0:  1235 | 1:   190 | 2:  4096 | 3:   110 | T:  5631
-Philosopher 1 ate 4x | 0:  1364 | 1:   138 | 2:  3862 | 3:   241 | T:  5605
-Philosopher 2 ate 4x | 0:  3359 | 1:   110 | 2:  2598 | 3:   110 | T:  6177
-Philosopher 3 ate 4x | 0:  1495 | 1:   107 | 2:  1292 | 3:  1480 | T:  4374
-Philosopher 4 ate 4x | 0:  1200 | 1:   290 | 2:  1358 | 3:  2028 | T:  4876
-CPU Totals           | 0:  8653 | 1:   835 | 2: 13206 | 3:  3969 | T: 26663
+Philosopher 0 | 0:  1235 | 1:   190 | 2:  4096 | 3:   110 | T:  5631
+Philosopher 1 | 0:  1364 | 1:   138 | 2:  3862 | 3:   241 | T:  5605
+Philosopher 2 | 0:  3359 | 1:   110 | 2:  2598 | 3:   110 | T:  6177
+Philosopher 3 | 0:  1495 | 1:   107 | 2:  1292 | 3:  1480 | T:  4374
+Philosopher 4 | 0:  1200 | 1:   290 | 2:  1358 | 3:  2028 | T:  4876
+CPU Totals    | 0:  8653 | 1:   835 | 2: 13206 | 3:  3969 | T: 26663
 
 The end!
 The last thread has exited!
