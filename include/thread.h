@@ -133,6 +133,12 @@ protected:
     static int idle();
 
 private:
+    void load()
+    {
+      _tick_count = Timer::tick_count();
+      _context->load();
+    }
+
     static void init();
 
     static void spinLock() { if (smp) _spinLock.acquire(); }

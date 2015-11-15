@@ -55,8 +55,7 @@ public:
         // available to user threads
         Machine::smp_barrier();
 
-        first->_tick_count = Timer::Engine::read(Timer::SCHEDULER);
-        first->_context->load();
+        first->load();
     }
 };
 

@@ -23,7 +23,7 @@ void Thread::constructor_prolog(unsigned int stack_size)
 {
     lock();
 
-    for (unsigned int cpu_id = 0; cpu_id < Traits<Build>::CPUS; cpu_id++) {
+    for (unsigned int cpu_id = 0; cpu_id < Machine::n_cpus(); cpu_id++) {
       _total_tick[cpu_id] = 0;
     }
 
