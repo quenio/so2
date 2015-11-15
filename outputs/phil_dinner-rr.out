@@ -1,35 +1,40 @@
-Memory:       262144 Kbytes [0x00000000:0x10000000]
-User memory:  261752 Kbytes [0x00000000:0x0ff9e000]
-PCI aperture: 44996 Kbytes [0xfc000000:0xfebf1000]
-Node Id:      will get from the network!
-Setup:        21344 bytes
-APP code:     32560 bytes	data: 640 bytes
-CPU count:    4
+qemu-system-i386 -smp 4 -m 262144k -nographic -no-reboot -fda  phil_dinner.img | tee phil_dinner.out
+Setting up this machine as follows:
+  Processor:    IA32 at 4002 MHz (BUS clock = 125 MHz)
+  Memory:       262144 Kbytes [0x00000000:0x10000000]
+  User memory:  261752 Kbytes [0x00000000:0x0ff9e000]
+  PCI aperture: 44996 Kbytes [0xfc000000:0xfebf1000]
+  Node Id:      will get from the network!
+  Setup:        21344 bytes
+  APP code:     32608 bytes	data: 640 bytes
+  CPU count:    4
 
 The Philosopher's Dinner:
 Philosophers are alive and hungry!
-even numbers: 15000-1
+even numbers: 15000-3
 
-                               done   0
+                                 done   2
 
-                        \                /
-
-
-                   done   1                done   0
+                          \                /
 
 
-                        /                \
+                     done   3                done   3
 
 
-                       done   3 |     done   2
+                          /                \
+
+
+                         done   0 |     done   1
 
 
 The dinner is served ...
-Philosopher 0 ate 4 times | 0: 2247 | 1: 1301 | 2: 80 | 3: 90 | T: 3718
-Philosopher 1 ate 4 times | 0: 843 | 1: 419 | 2: 400 | 3: 2004 | T: 3666
-Philosopher 2 ate 4 times | 0: 789 | 1: 76 | 2: 404 | 3: 1594 | T: 2863
-Philosopher 3 ate 4 times | 0: 80 | 1: 87 | 2: 2310 | 3: 798 | T: 3275
-Philosopher 4 ate 4 times | 0: 1220 | 1: 997 | 2: 503 | 3: 90 | T: 2810
-CPU Totals                | 0: 5179 | 1: 2880 | 2: 3697 | 3: 4576 | T: 16332
+Philosopher 0 ate 4 times | 0: 1235 | 1: 190 | 2: 4096 | 3: 110 | T: 5631
+Philosopher 1 ate 4 times | 0: 1364 | 1: 138 | 2: 3862 | 3: 241 | T: 5605
+Philosopher 2 ate 4 times | 0: 3359 | 1: 110 | 2: 2598 | 3: 110 | T: 6177
+Philosopher 3 ate 4 times | 0: 1495 | 1: 107 | 2: 1292 | 3: 1480 | T: 4374
+Philosopher 4 ate 4 times | 0: 1200 | 1: 290 | 2: 1358 | 3: 2028 | T: 4876
+CPU Totals                | 0: 8653 | 1: 835 | 2: 13206 | 3: 3969 | T: 26663
+
 The end!
 The last thread has exited!
+Rebooting the machine ...
