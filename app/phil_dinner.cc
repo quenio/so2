@@ -96,6 +96,25 @@ int philosopher(int n, int l, int c)
     return iterations;
 }
 
+struct Spaced
+{
+public:
+  Spaced(const unsigned long & number): _number(number) {}
+
+  unsigned long number() const { return _number; }
+
+private:
+  unsigned long _number;
+};
+
+OStream & operator << (OStream & os, const Spaced & spaced)
+{
+  unsigned long n = spaced.number();
+  int space_count = (n >= 10000 ? 0 : (n >= 1000 ? 1 : (n >= 100 ? 2 : (n >= 10 ? 3 : 4))));
+  for (int i = 0; i < space_count; i++) cout << " ";
+  os << n;
+}
+
 int main()
 {
     table.lock();
@@ -134,27 +153,27 @@ int main()
         int ret = phil[i]->join();
         table.lock();
         Display::position(20 + i, 0);
-        cout << "Philosopher " << i << " ate " << ret << " times";
+        cout << "Philosopher " << i << " ate " << ret << "x ";
         Timer::Tick total_thread_tick = 0;
         for (int cpu_id = 0; cpu_id < Machine::n_cpus(); cpu_id++) {
           Timer::Tick tick_per_cpu = phil[i]->total_tick(cpu_id);
           total_thread_tick += tick_per_cpu;
           total_cpu_tick[cpu_id] += tick_per_cpu;
-          cout << " | " << cpu_id << ": " << tick_per_cpu;
+          cout << " | " << cpu_id << ": " << Spaced(tick_per_cpu);
         }
-        cout << " | T: " << total_thread_tick << endl;
+        cout << " | T: " << Spaced(total_thread_tick) << endl;
         table.unlock();
     }
     table.lock();
     Display::position(25, 0);
-    cout << "CPU Totals               ";
+    cout << "CPU Totals           ";
     Timer::Tick total_tick = 0;
     for (int cpu_id = 0; cpu_id < Machine::n_cpus(); cpu_id++) {
       Timer::Tick tick_per_cpu = total_cpu_tick[cpu_id];
       total_tick += tick_per_cpu;
-      cout << " | " << cpu_id << ": " << tick_per_cpu;
+      cout << " | " << cpu_id << ": " << Spaced(tick_per_cpu);
     }
-    cout << " | T: " << total_tick << endl << endl;
+    cout << " | T: " << Spaced(total_tick) << endl << endl;
     table.unlock();
 
     for(int i = 0; i < 5; i++)
