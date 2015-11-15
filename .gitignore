@@ -31,5 +31,29 @@
 
 # delay_test
 app/delay_test
+app/delay_test_traits.h
 img/delay_test
 img/delay_test.img
+img/delay_test.out
+
+# thread_test
+app/thread_test
+app/thread_test_traits.h
+img/thread_test
+img/thread_test.img
+img/thread_test.out
+
+# phil_dinner
+app/phil_dinner
+app/phil_dinner_traits.h
+img/phil_dinner
+img/phil_dinner.img
+img/phil_dinner.out
+
+# pc_setup
+img/pc_setup
+src/setup/pc_setup
+
+# eposmkbi
+bin/eposmkbi
+tools/eposmkbi
