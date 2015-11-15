@@ -47,10 +47,16 @@ void Thread::constructor_epilog(const Log_Addr & entry, unsigned int stack_size)
     if((_state != READY) && (_state != RUNNING))
         _scheduler.suspend(this);
 
-    if(preemptive && (_state == READY) && (_link.rank() != IDLE))
-        reschedule();
-    else
-        unlock();
+    if(preemptive && (_state == READY) && (_link.rank() != IDLE)) {
+        if (_link.rank().queue() != Machine::cpu_id())
+          reschedule_cpu(_link.rank().queue());
+        else {
+          reschedule(); // implicit unlock
+          return;
+        }
+    }
+
+    unlock();
 }
 
 
@@ -294,6 +300,10 @@ void Thread::wakeup_all(Queue * q)
         unlock();
 }
 
+void Thread::reschedule_cpu(int cpu_id)
+{
+  IC::ipi_send(cpu_id, IC::INT_RESCHEDULER);
+}
 
 void Thread::reschedule()
 {
@@ -312,6 +322,12 @@ void Thread::reschedule()
 void Thread::time_slicer(const IC::Interrupt_Id & i)
 {
     lock();
+
+    static bool ack[Traits<Build>::CPUS];
+    if (i == IC::INT_RESCHEDULER && !ack[Machine::cpu_id()]) {
+      db<Thread>(TRC) << endl << 't' << Machine::cpu_id() << endl;
+      ack[Machine::cpu_id()] = true;
+    }
 
     if (_scheduler.schedulables()) {
       // Prevents switching from one idle to another one.

@@ -14,4 +14,13 @@ void System::init()
         Thread::init();
 }
 
+void System::init_rescheduler()
+{
+  // Deve ser chamado somente pelas APs.
+  assert(Machine::cpu_id() > 0);
+
+  if(Traits<Thread>::enabled)
+    Thread::init_rescheduler();
+}
+
 __END_SYS

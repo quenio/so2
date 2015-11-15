@@ -22,9 +22,14 @@ public:
         // Only the boot CPU runs INIT_SYSTEM fully
         if(Machine::cpu_id() != 0) {
             // Wait until the boot CPU has initialized the machine
-            Machine::smp_barrier(); 
+            Machine::smp_barrier();
+
             // For IA-32, timer is CPU-local. What about other SMPs?
             Timer::init();
+
+            if(Traits<Thread>::enabled)
+              System::init_rescheduler();
+
             Machine::smp_barrier();
             return;
         }

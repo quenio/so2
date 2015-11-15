@@ -126,6 +126,7 @@ protected:
     static void wakeup_all(Queue * q);
 
     static void reschedule();
+    static void reschedule_cpu(int cpu_id);
     static void time_slicer(const IC::Interrupt_Id & interrupt);
 
     static void dispatch(Thread * prev, Thread * next, bool charge = true);
@@ -140,6 +141,7 @@ private:
     }
 
     static void init();
+    static void init_rescheduler();
 
     static void spinLock() { if (smp) _spinLock.acquire(); }
     static void spinUnlock() { if (smp) _spinLock.release(); }

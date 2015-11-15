@@ -297,7 +297,7 @@ public:
 
     void handler(const Handler & handler) { _handler = handler; }
 
-    static Timer::Tick tick_count() { return _tick_count[Machine::cpu_id()]; }
+    static Timer::Tick tick_count(unsigned int cpu_id = Machine::cpu_id()) { return _tick_count[cpu_id]; }
 
     static void enable() { IC::enable(IC::INT_TIMER); }
     static void disable() { IC::disable(IC::INT_TIMER); }
@@ -320,7 +320,7 @@ protected:
     static PC_Timer * _channels[CHANNELS];
 
 private:
-    static Tick _tick_count[Traits<Build>::CPUS];
+    static volatile Tick _tick_count[Traits<Build>::CPUS];
 };
 
 

@@ -25,6 +25,7 @@ public:
 
 private:
     static void init();
+    static void init_rescheduler();
 
 private:
     static System_Info<Machine> * _si;
