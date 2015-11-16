@@ -91,6 +91,7 @@ namespace Scheduling_Criteria
     class FCFS;
     class RR;
     class CPU_Bound_RR;
+    class CPU_Distribution_RR;
 };
 
 class Address_Space;

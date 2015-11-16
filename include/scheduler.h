@@ -79,11 +79,34 @@ namespace Scheduling_Criteria
       volatile unsigned int _queue;
     };
 
+    class CPU_Distribution: public CPU_Bound
+    {
+    public:
+      CPU_Distribution(unsigned int queue = next_queue()): CPU_Bound(queue) {}
+
+    protected:
+      static unsigned int next_queue()
+      {
+        CPU::finc(_next_queue);
+        return (_next_queue-1) % Machine::n_cpus();
+      }
+
+    private:
+      static volatile unsigned int _next_queue;
+    };
+
     class CPU_Bound_RR: public RR, public CPU_Bound
     {
     public:
       CPU_Bound_RR(int p = NORMAL, unsigned int queue = current_queue())
         : RR(p), CPU_Bound(queue) {}
+    };
+
+    class CPU_Distribution_RR: public RR, public CPU_Distribution
+    {
+    public:
+      CPU_Distribution_RR(int p = NORMAL)
+        : RR(p), CPU_Distribution(p == MAIN || p == IDLE ? Machine::cpu_id() : next_queue()) {}
     };
 
     // First-Come, First-Served (FIFO)

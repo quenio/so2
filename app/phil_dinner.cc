@@ -129,19 +129,19 @@ int main()
         chopstick[i] = new Semaphore;
 
     s[0] = Timer::tick_count(0);
-    phil[0] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 0)), &philosopher, 0,  5, 32);
+    phil[0] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 0,  5, 32);
 
     s[1] = Timer::tick_count(1);
-    phil[1] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 1)), &philosopher, 1, 10, 44);
+    phil[1] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 1, 10, 44);
 
     s[2] = Timer::tick_count(2);
-    phil[2] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 2)), &philosopher, 2, 16, 39);
+    phil[2] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 2, 16, 39);
 
     s[3] = Timer::tick_count(3);
-    phil[3] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 3)), &philosopher, 3, 16, 24);
+    phil[3] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 3, 16, 24);
 
-    s[4] = Timer::tick_count(3);
-    phil[4] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL, 3)), &philosopher, 4, 10, 20);
+    s[4] = Timer::tick_count(0);
+    phil[4] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 4, 10, 20);
 
     cout << "Philosophers are alive and hungry!" << endl;
 

@@ -17,6 +17,7 @@ volatile unsigned int Thread::_thread_count;
 Scheduler_Timer * Thread::_timer;
 Scheduler<Thread> Thread::_scheduler;
 Spin Thread::_spinLock;
+volatile unsigned int Scheduling_Criteria::CPU_Distribution::_next_queue;
 
 // Methods
 void Thread::constructor_prolog(unsigned int stack_size)
