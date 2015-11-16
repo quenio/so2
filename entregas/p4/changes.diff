@@ -1,0 +1,645 @@
+Index: include/machine/pc/timer.h
+===================================================================
+--- include/machine/pc/timer.h	(revision 3782)
++++ include/machine/pc/timer.h	(working copy)
+@@ -248,9 +248,10 @@
+         USER
+     };
+ 
+-protected:
+     typedef IF<Traits<System>::multicore, APIC_Timer, i8253>::Result Engine;
+     typedef Engine::Count Count;
++
++protected:
+     typedef IC::Interrupt_Id Interrupt_Id;
+ 
+     static const unsigned int CHANNELS = 3;
+@@ -281,7 +282,7 @@
+     Hertz frequency() const { return (FREQUENCY / _initial); }
+     void frequency(const Hertz & f) { _initial = FREQUENCY / f; reset(); }
+ 
+-    Tick read() { return _current[Machine::cpu_id()]; }
++    Timer::Tick read() { return _current[Machine::cpu_id()]; }
+ 
+     int reset() {
+         db<Timer>(TRC) << "Timer::reset() => {f=" << frequency()
+@@ -296,6 +297,8 @@
+ 
+     void handler(const Handler & handler) { _handler = handler; }
+ 
++    static Timer::Tick tick_count(unsigned int cpu_id = Machine::cpu_id()) { return _tick_count[cpu_id]; }
++
+     static void enable() { IC::enable(IC::INT_TIMER); }
+     static void disable() { IC::disable(IC::INT_TIMER); }
+ 
+@@ -315,6 +318,9 @@
+     Handler _handler;
+ 
+     static PC_Timer * _channels[CHANNELS];
++
++private:
++    static volatile Tick _tick_count[Traits<Build>::CPUS];
+ };
+ 
+ 
+Index: include/scheduler.h
+===================================================================
+--- include/scheduler.h	(revision 3782)
++++ include/scheduler.h	(working copy)
+@@ -55,10 +55,60 @@
+         static const bool dynamic = false;
+         static const bool preemptive = true;
+ 
++        static const unsigned int HEADS = Traits<Build>::CPUS;
++
++        static int current_head() { return Machine::cpu_id(); }
++
+     public:
+         RR(int p = NORMAL): Priority(p) {}
+     };
+ 
++    class CPU_Bound
++    {
++    public:
++      static const unsigned int QUEUES = Traits<Machine>::CPUS;
++
++      static unsigned int current_queue() { return Machine::cpu_id(); }
++
++    public:
++      CPU_Bound(unsigned int queue = current_queue()): _queue(queue) {}
++
++      const volatile unsigned int & queue() const volatile { return _queue; }
++
++    private:
++      volatile unsigned int _queue;
++    };
++
++    class CPU_Distribution: public CPU_Bound
++    {
++    public:
++      CPU_Distribution(unsigned int queue = next_queue()): CPU_Bound(queue) {}
++
++    protected:
++      static unsigned int next_queue()
++      {
++        CPU::finc(_next_queue);
++        return (_next_queue-1) % Machine::n_cpus();
++      }
++
++    private:
++      static volatile unsigned int _next_queue;
++    };
++
++    class CPU_Bound_RR: public RR, public CPU_Bound
++    {
++    public:
++      CPU_Bound_RR(int p = NORMAL, unsigned int queue = current_queue())
++        : RR(p), CPU_Bound(queue) {}
++    };
++
++    class CPU_Distribution_RR: public RR, public CPU_Distribution
++    {
++    public:
++      CPU_Distribution_RR(int p = NORMAL)
++        : RR(p), CPU_Distribution(p == MAIN || p == IDLE ? Machine::cpu_id() : next_queue()) {}
++    };
++
+     // First-Come, First-Served (FIFO)
+     class FCFS: public Priority
+     {
+@@ -81,7 +131,7 @@
+ 
+ // Scheduling_Queue
+ template<typename T, typename R = typename T::Criterion>
+-class Scheduling_Queue: public Scheduling_List<T> {};
++class Scheduling_Queue: public Scheduling_Multilist<T> {};
+ 
+ // Scheduler
+ // Objects subject to scheduling by Scheduler must declare a type "Criterion"
+Index: include/system/config.h
+===================================================================
+--- include/system/config.h	(revision 3782)
++++ include/system/config.h	(working copy)
+@@ -7,15 +7,15 @@
+ // ARCHITECTURE, MACHINE, AND APPLICATION SELECTION
+ // This section is generated automatically from makedefs by $EPOS/etc/makefile
+ //============================================================================
+-#define MODE xxx
+-#define ARCH xxx
+-#define MACH xxx
+-#define MMOD xxx
+-#define APPL xxx
+-#define __mode_xxx__
+-#define __arch_xxx__
+-#define __mach_xxx__
+-#define __mmod_xxx__
++#define MODE library
++#define ARCH ia32
++#define MACH pc
++#define MMOD legacy
++#define APPL phil_dinner
++#define __mode_library__
++#define __arch_ia32__
++#define __mach_pc__
++#define __mmod_legacy__
+ 
+ #if defined (__arch_avr__) || defined (__mmod_lm3s811__)
+ #define __no_networking__
+Index: include/system/traits.h
+===================================================================
+--- include/system/traits.h	(revision 3782)
++++ include/system/traits.h	(working copy)
+@@ -28,7 +28,7 @@
+     enum {Legacy};
+     static const unsigned int MODEL = Legacy;
+ 
+-    static const unsigned int CPUS = 1;
++    static const unsigned int CPUS = 4;
+     static const unsigned int NODES = 1; // > 1 => NETWORKING
+ };
+ 
+@@ -113,6 +113,8 @@
+ 
+     static const unsigned int STACK_SIZE = Traits<Machine>::STACK_SIZE;
+     static const unsigned int HEAP_SIZE = (Traits<Application>::MAX_THREADS + 1) * Traits<Application>::STACK_SIZE;
++
++    static const bool cpu_id_tagging = false;
+ };
+ 
+ template<> struct Traits<Thread>: public Traits<void>
+@@ -119,10 +121,10 @@
+ {
+     static const bool smp = Traits<System>::multicore;
+ 
+-    typedef Scheduling_Criteria::RR Criterion;
+-    static const unsigned int QUANTUM = 10000; // us
++    typedef Scheduling_Criteria::CPU_Distribution_RR Criterion;
++    static const unsigned int QUANTUM = 100000; // us
+ 
+-    static const bool trace_idle = hysterically_debugged;
++    static const bool trace_idle = false;
+ };
+ 
+ template<> struct Traits<Scheduler<Thread> >: public Traits<void>
+Index: include/system/types.h
+===================================================================
+--- include/system/types.h	(revision 3782)
++++ include/system/types.h	(working copy)
+@@ -90,6 +90,8 @@
+     class Priority;
+     class FCFS;
+     class RR;
++    class CPU_Bound_RR;
++    class CPU_Distribution_RR;
+ };
+ 
+ class Address_Space;
+Index: include/system.h
+===================================================================
+--- include/system.h	(revision 3782)
++++ include/system.h	(working copy)
+@@ -25,6 +25,7 @@
+ 
+ private:
+     static void init();
++    static void init_rescheduler();
+ 
+ private:
+     static System_Info<Machine> * _si;
+Index: include/thread.h
+===================================================================
+--- include/thread.h	(revision 3782)
++++ include/thread.h	(working copy)
+@@ -70,6 +70,8 @@
+     // Thread Queue
+     typedef Ordered_Queue<Thread, Criterion, Scheduler<Thread>::Element> Queue;
+ 
++    typedef Scheduler_Timer Timer;
++
+ public:
+     template<typename ... Tn>
+     Thread(int (* entry)(Tn ...), Tn ... an);
+@@ -87,6 +89,8 @@
+     void suspend() { suspend(false); }
+     void resume();
+ 
++    int total_tick(int cpu_id) { return _total_tick[cpu_id]; }
++
+     static Thread * volatile self() { return running(); }
+     static void yield();
+     static void exit(int status = 0);
+@@ -101,8 +105,18 @@
+ 
+     Criterion & criterion() { return const_cast<Criterion &>(_link.rank()); }
+ 
+-    static void lock() { CPU::int_disable(); }
+-    static void unlock() { CPU::int_enable(); }
++    static void lock()
++    {
++      CPU::int_disable();
++      spinLock();
++    }
++
++    static void unlock()
++    {
++      spinUnlock();
++      CPU::int_enable();
++    }
++
+     static bool locked() { return CPU::int_disabled(); }
+ 
+     void suspend(bool locked);
+@@ -112,6 +126,7 @@
+     static void wakeup_all(Queue * q);
+ 
+     static void reschedule();
++    static void reschedule_cpu(int cpu_id);
+     static void time_slicer(const IC::Interrupt_Id & interrupt);
+ 
+     static void dispatch(Thread * prev, Thread * next, bool charge = true);
+@@ -119,8 +134,18 @@
+     static int idle();
+ 
+ private:
++    void load()
++    {
++      _tick_count = Timer::tick_count();
++      _context->load();
++    }
++
+     static void init();
++    static void init_rescheduler();
+ 
++    static void spinLock() { if (smp) _spinLock.acquire(); }
++    static void spinUnlock() { if (smp) _spinLock.release(); }
++
+ protected:
+     char * _stack;
+     Context * volatile _context;
+@@ -128,10 +153,12 @@
+     Queue * _waiting;
+     Thread * volatile _joining;
+     Queue::Element _link;
++    Timer::Tick _tick_count, _total_tick[Traits<Build>::CPUS];
+ 
+     static volatile unsigned int _thread_count;
+     static Scheduler_Timer * _timer;
+     static Scheduler<Thread> _scheduler;
++    static Spin _spinLock;
+ };
+ 
+ 
+Index: include/utility/heap.h
+===================================================================
+--- include/utility/heap.h	(revision 3782)
++++ include/utility/heap.h	(working copy)
+@@ -143,8 +143,8 @@
+ 
+ private:
+     void enter() {
++        CPU::int_disable();
+         _lock.acquire();
+-        CPU::int_disable();
+     }
+ 
+     void leave() {
+Index: include/utility/ostream.h
+===================================================================
+--- include/utility/ostream.h	(revision 3782)
++++ include/utility/ostream.h	(working copy)
+@@ -24,13 +24,13 @@
+     OStream(): _base(10), _lock(-1), _error(false) {}
+ 
+     OStream & operator<<(const Begl & begl) {
+-        if(Traits<System>::multicore)
++        if(Traits<System>::multicore && Traits<System>::cpu_id_tagging)
+             preamble();
+         return *this;
+     }
+-    
++
+     OStream & operator<<(const Endl & endl) {
+-        if(Traits<System>::multicore)
++        if(Traits<System>::multicore && Traits<System>::cpu_id_tagging)
+             trailler();
+         print("\n");
+         _base = 10;
+@@ -67,7 +67,7 @@
+         print(buf);
+         return *this;
+     }
+-    OStream & operator<<(unsigned char c) { 
++    OStream & operator<<(unsigned char c) {
+         return operator<<(static_cast<unsigned int>(c));
+     }
+ 
+@@ -90,7 +90,7 @@
+         print(buf);
+         return *this;
+     }
+-    OStream & operator<<(unsigned short s) { 
++    OStream & operator<<(unsigned short s) {
+         return operator<<(static_cast<unsigned int>(s));
+     }
+     OStream & operator<<(unsigned long l) {
+@@ -118,9 +118,9 @@
+         return *this;
+     }
+ 
+-    OStream & operator<<(const char * s) { 
++    OStream & operator<<(const char * s) {
+         print(s);
+-        return *this; 
++        return *this;
+     }
+ 
+     OStream & operator<<(float f) {
+@@ -183,7 +183,7 @@
+     volatile bool _error;
+ 
+     static const char _digits[];
+-}; 
++};
+ 
+ extern OStream::Begl begl;
+ extern OStream::Endl endl;
+Index: include/utility/queue.h
+===================================================================
+--- include/utility/queue.h	(revision 3782)
++++ include/utility/queue.h	(working copy)
+@@ -179,7 +179,7 @@
+ 
+     void leave() {
+         _lock.release();
+-        CPU::int_disable();
++        CPU::int_enable();
+     }
+ 
+ private:
+Index: src/abstraction/system_init.cc
+===================================================================
+--- src/abstraction/system_init.cc	(revision 3782)
++++ src/abstraction/system_init.cc	(working copy)
+@@ -14,4 +14,13 @@
+         Thread::init();
+ }
+ 
++void System::init_rescheduler()
++{
++  // Deve ser chamado somente pelas APs.
++  assert(Machine::cpu_id() > 0);
++
++  if(Traits<Thread>::enabled)
++    Thread::init_rescheduler();
++}
++
+ __END_SYS
+Index: src/abstraction/thread.cc
+===================================================================
+--- src/abstraction/thread.cc	(revision 3782)
++++ src/abstraction/thread.cc	(working copy)
+@@ -16,6 +16,8 @@
+ volatile unsigned int Thread::_thread_count;
+ Scheduler_Timer * Thread::_timer;
+ Scheduler<Thread> Thread::_scheduler;
++Spin Thread::_spinLock;
++volatile unsigned int Scheduling_Criteria::CPU_Distribution::_next_queue;
+ 
+ // Methods
+ void Thread::constructor_prolog(unsigned int stack_size)
+@@ -22,6 +24,10 @@
+ {
+     lock();
+ 
++    for (unsigned int cpu_id = 0; cpu_id < Machine::n_cpus(); cpu_id++) {
++      _total_tick[cpu_id] = 0;
++    }
++
+     _thread_count++;
+     _scheduler.insert(this);
+ 
+@@ -42,10 +48,16 @@
+     if((_state != READY) && (_state != RUNNING))
+         _scheduler.suspend(this);
+ 
+-    if(preemptive && (_state == READY) && (_link.rank() != IDLE))
+-        reschedule();
+-    else
+-        unlock();
++    if(preemptive && (_state == READY) && (_link.rank() != IDLE)) {
++        if (_link.rank().queue() != Machine::cpu_id())
++          reschedule_cpu(_link.rank().queue());
++        else {
++          reschedule(); // implicit unlock
++          return;
++        }
++    }
++
++    unlock();
+ }
+ 
+ 
+@@ -289,6 +301,10 @@
+         unlock();
+ }
+ 
++void Thread::reschedule_cpu(int cpu_id)
++{
++  IC::ipi_send(cpu_id, IC::INT_RESCHEDULER);
++}
+ 
+ void Thread::reschedule()
+ {
+@@ -308,7 +324,24 @@
+ {
+     lock();
+ 
+-    reschedule();
++    static bool ack[Traits<Build>::CPUS];
++    if (i == IC::INT_RESCHEDULER && !ack[Machine::cpu_id()]) {
++      db<Thread>(TRC) << endl << 't' << Machine::cpu_id() << endl;
++      ack[Machine::cpu_id()] = true;
++    }
++
++    if (_scheduler.schedulables()) {
++      // Prevents switching from one idle to another one.
++      // That might occur while Init_First is running.
++      Thread * chosen = _scheduler.chosen();
++      Scheduler<Thread>::Element * head = _scheduler.head();
++      if (chosen->_link.rank() != Criterion::IDLE || head->rank() != Criterion::IDLE) {
++        reschedule(); // implicit unlock
++        return;
++      }
++    }
++
++    unlock();
+ }
+ 
+ 
+@@ -320,8 +353,14 @@
+     }
+ 
+     if(prev != next) {
+-        if(prev->_state == RUNNING)
++        next->_tick_count = Timer::tick_count();
++        if (prev->_state == RUNNING || prev->_state == FINISHING) {
++          prev->_total_tick[Machine::cpu_id()] += (next->_tick_count - prev->_tick_count);
++        }
++
++        if(prev->_state == RUNNING) {
+             prev->_state = READY;
++        }
+         next->_state = RUNNING;
+ 
+         db<Thread>(TRC) << "Thread::dispatch(prev=" << prev << ",next=" << next << ")" << endl;
+@@ -328,10 +367,14 @@
+         db<Thread>(INF) << "prev={" << prev << ",ctx=" << *prev->_context << "}" << endl;
+         db<Thread>(INF) << "next={" << next << ",ctx=" << *next->_context << "}" << endl;
+ 
++        spinUnlock();
++
+         CPU::switch_context(&prev->_context, next->_context);
++    } else {
++      spinUnlock();
+     }
+ 
+-    unlock();
++    CPU::int_enable();
+ }
+ 
+ 
+@@ -339,7 +382,7 @@
+ {
+     while(_thread_count > Machine::n_cpus()) { // someone else besides idles
+         if(Traits<Thread>::trace_idle)
+-            db<Thread>(TRC) << "Thread::idle(CPU=" << Machine::cpu_id() << ",this=" << running() << ")" << endl;
++          db<Thread>(WRN) << 'i' << Machine::cpu_id();
+ 
+         CPU::int_enable();
+         CPU::halt();
+Index: src/abstraction/thread_init.cc
+===================================================================
+--- src/abstraction/thread_init.cc	(revision 3782)
++++ src/abstraction/thread_init.cc	(working copy)
+@@ -8,6 +8,9 @@
+ 
+ void Thread::init()
+ {
++    // Thread::init() deve ser chamado somente pelo BSP.
++    assert(Machine::cpu_id() == 0);
++
+     // The installation of the scheduler timer handler must precede the
+     // creation of threads, since the constructor can induce a reschedule
+     // and this in turn can call timer->reset()
+@@ -14,8 +17,25 @@
+     // Letting reschedule() happen during thread creation is harmless, since
+     // MAIN is created first and dispatch won't replace it nor by itself
+     // neither by IDLE (which has a lower priority)
+-    if(Criterion::timed && (Machine::cpu_id() == 0))
++    if(Criterion::timed)
+         _timer = new (SYSTEM) Scheduler_Timer(QUANTUM, time_slicer);
++
++    Thread::init_rescheduler();
+ }
+ 
++// Deve ser chamado pelas APs via System::init_rescheduler()
++void Thread::init_rescheduler()
++{
++  CPU::int_disable();
++
++  // Habilita escalonamento para ipi_send(cpu_id, IC::INT_RESCHEDULER)
++  IC::int_vector(IC::INT_RESCHEDULER, time_slicer);
++
++  // Para x86 APIC, na verdade, não há necessidade de habilitar interrupções individualmente.
++  // Chamando aqui para manter o padrão e para suportar outras arquiteturas.
++  IC::enable(IC::INT_RESCHEDULER);
++
++  CPU::int_enable();
++}
++
+ __END_SYS
+Index: src/init/init_first.cc
+===================================================================
+--- src/init/init_first.cc	(revision 3782)
++++ src/init/init_first.cc	(working copy)
+@@ -38,7 +38,7 @@
+             // Idle thread creation must succeed main, thus avoiding implicit rescheduling.
+             new (SYSTEM) Thread(Thread::Configuration(Thread::READY, Thread::IDLE), &Thread::idle);
+         } else
+-            first = new (SYSTEM) Thread(Thread::Configuration(Thread::READY, Thread::IDLE), &Thread::idle);
++            first = new (SYSTEM) Thread(Thread::Configuration(Thread::RUNNING, Thread::IDLE), &Thread::idle);
+ 
+         Machine::smp_barrier();
+ 
+@@ -55,12 +55,12 @@
+         // available to user threads
+         Machine::smp_barrier();
+ 
+-        first->_context->load();
++        first->load();
+     }
+ };
+ 
+ // Global object "init_first" must be constructed last in the context of the
+-// OS, for it activates the first application thread (usually main()) 
++// OS, for it activates the first application thread (usually main())
+ Init_First init_first;
+ 
+ __END_SYS
+Index: src/init/init_system.cc
+===================================================================
+--- src/init/init_system.cc	(revision 3782)
++++ src/init/init_system.cc	(working copy)
+@@ -23,8 +23,13 @@
+         if(Machine::cpu_id() != 0) {
+             // Wait until the boot CPU has initialized the machine
+             Machine::smp_barrier();
++
+             // For IA-32, timer is CPU-local. What about other SMPs?
+             Timer::init();
++
++            if(Traits<Thread>::enabled)
++              System::init_rescheduler();
++
+             Machine::smp_barrier();
+             return;
+         }
+@@ -66,6 +71,8 @@
+             db<Init>(INF) << "done!" << endl;
+         }
+ 
++        Machine::smp_barrier();
++
+         // Initialization continues at init_first
+     }
+ };
+Index: src/machine/pc/timer.cc
+===================================================================
+--- src/machine/pc/timer.cc	(revision 3782)
++++ src/machine/pc/timer.cc	(working copy)
+@@ -8,10 +8,13 @@
+ 
+ // Class attributes
+ PC_Timer * PC_Timer::_channels[CHANNELS];
++volatile Timer::Tick PC_Timer::_tick_count[Traits<Build>::CPUS];
+ 
+ // Class methods
+ void PC_Timer::int_handler(const Interrupt_Id & i)
+ {
++    _tick_count[Machine::cpu_id()]++;
++
+     if(_channels[SCHEDULER] && (--_channels[SCHEDULER]->_current[Machine::cpu_id()] <= 0)) {
+         _channels[SCHEDULER]->_current[Machine::cpu_id()] = _channels[SCHEDULER]->_initial;
+         _channels[SCHEDULER]->_handler(i);
+Index: src/setup/pc_setup.cc
+===================================================================
+--- src/setup/pc_setup.cc	(revision 3782)
++++ src/setup/pc_setup.cc	(working copy)
+@@ -526,6 +526,7 @@
+         kout << "  APP code:     " << si->lm.app_code_size << " bytes"
+              << "\tdata: " << si->lm.app_data_size << " bytes" << endl;
+     }
++    kout << "  CPU count:    " << si->bm.n_cpus << endl;
+     if(si->lm.has_ext) {
+         kout << "  Extras:       " << si->lm.app_extra_size << " bytes" << endl;
+     }

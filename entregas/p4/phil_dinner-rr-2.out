@@ -1,0 +1,40 @@
+qemu-system-i386 -smp 4 -m 262144k -nographic -no-reboot -fda  phil_dinner.img | tee phil_dinner.out
+Setting up this machine as follows:
+  Processor:    IA32 at 4219 MHz (BUS clock = 125 MHz)
+  Memory:       262144 Kbytes [0x00000000:0x10000000]
+  User memory:  261752 Kbytes [0x00000000:0x0ff9e000]
+  PCI aperture: 44996 Kbytes [0xfc000000:0xfebf1000]
+  Node Id:      will get from the network!
+  Setup:        21344 bytes
+  APP code:     32608 bytes	data: 640 bytes
+  CPU count:    4
+
+The Philosopher's Dinner:
+Philosophers are alive and hungry!
+even numbers: 15000-2
+
+                                 done   0
+
+                          \                /
+
+
+                     done   2                done   2
+
+
+                          /                \
+
+
+                         done   1 |     done   3
+
+
+The dinner is served ...
+Philosopher 0 | 0:  2405 | 1:  1279 | 2:  389 | 3:  1341 | T:  5414
+Philosopher 1 | 0:  2621 | 1:  1526 | 2:  430 | 3:   963 | T:  5540
+Philosopher 2 | 0:   130 | 1:  2233 | 2: 1193 | 3:   611 | T:  4167
+Philosopher 3 | 0:   122 | 1:  2396 | 2: 1519 | 3:  1264 | T:  5301
+Philosopher 4 | 0:   114 | 1:  1753 | 2: 1106 | 3:  1422 | T:  4395
+CPU Totals    | 0:  5392 | 1:  9187 | 2: 4637 | 3:  5601 | T: 24817
+
+The end!
+The last thread has exited!
+Rebooting the machine ...
