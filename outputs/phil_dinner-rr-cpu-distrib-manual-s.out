@@ -1,6 +1,6 @@
 qemu-system-i386 -smp 4 -m 262144k -nographic -no-reboot -fda  phil_dinner.img | tee phil_dinner.out
 Setting up this machine as follows:
-  Processor:    IA32 at 1086 MHz (BUS clock = 125 MHz)
+  Processor:    IA32 at 926 MHz (BUS clock = 125 MHz)
   Memory:       262144 Kbytes [0x00000000:0x10000000]
   User memory:  261752 Kbytes [0x00000000:0x0ff9e000]
   PCI aperture: 44996 Kbytes [0xfc000000:0xfebf1000]
@@ -28,12 +28,12 @@ even numbers: 15000-3
 
 
 The dinner is served ...
-Philosopher 0 | 0:   791 | 1:     0 | 2:     0 | 3:     0 | T:   791 | S: 1
-Philosopher 1 | 0:     0 | 1:   805 | 2:     0 | 3:     0 | T:   805 | S: 95
-Philosopher 2 | 0:     0 | 1:     0 | 2:   755 | 3:     0 | T:   755 | S: 95
-Philosopher 3 | 0:     0 | 1:     0 | 2:     0 | 3:  4505 | T:  4505 | S: 95
-Philosopher 4 | 0:     0 | 1:     0 | 2:     0 | 3:  4449 | T:  4449 | S: 195
-CPU Totals    | 0:   791 | 1:   805 | 2:   755 | 3:  8954 | T: 11305
+Philosopher 0 | 0:   828 | 1:     0 | 2:     0 | 3:     0 | T:   828 | S: 3
+Philosopher 1 | 0:     0 | 1:   762 | 2:     0 | 3:     0 | T:   762 | S: 94
+Philosopher 2 | 0:     0 | 1:     0 | 2:   864 | 3:     0 | T:   864 | S: 95
+Philosopher 3 | 0:     0 | 1:     0 | 2:     0 | 3:  4635 | T:  4635 | S: 95
+Philosopher 4 | 0:     0 | 1:     0 | 2:     0 | 3:  4721 | T:  4721 | S: 98
+CPU Totals    | 0:   828 | 1:   762 | 2:   864 | 3:  9356 | T: 11810
 
 The end!
 The last thread has exited!
