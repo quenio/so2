@@ -122,7 +122,7 @@ template<> struct Traits<Thread>: public Traits<void>
     static const bool smp = Traits<System>::multicore;
 
     typedef Scheduling_Criteria::CPU_Bound_RR Criterion;
-    static const unsigned int QUANTUM = 10000; // us
+    static const unsigned int QUANTUM = 100000; // us
 
     static const bool trace_idle = false;
 };
