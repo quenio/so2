@@ -9,11 +9,13 @@
 
 using namespace EPOS;
 
+typedef RTC::Microsecond Microsecond;
+
 const int iterations = 4;
 
 Mutex table;
 
-volatile Timer::Tick s[5];
+TSC_Chronometer s[5];
 Thread * phil[5];
 Semaphore * chopstick[5];
 
@@ -55,7 +57,7 @@ int count_even_numbers()
 
 int philosopher(int n, int l, int c)
 {
-    s[n] = (Timer::tick_count() - s[n]);
+    s[n].stop();
 
     int first = (n < 4)? n : 0;
     int second = (n < 4)? n + 1 : 4;
@@ -102,17 +104,17 @@ int philosopher(int n, int l, int c)
 struct Spaced
 {
 public:
-  Spaced(const unsigned long & number): _number(number) {}
+  Spaced(const Microsecond & number): _number(number) {}
 
-  unsigned long number() const { return _number; }
+  Microsecond number() const { return _number; }
 
 private:
-  unsigned long _number;
+  Microsecond _number;
 };
 
-OStream & operator << (OStream & os, const Spaced & spaced)
+OStream & operator << (OStream & os, const Spaced & microsecond)
 {
-  unsigned long n = spaced.number();
+  Microsecond n = microsecond.number() / 1000; // to milisecond
   int space_count = (n >= 10000 ? 0 : (n >= 1000 ? 1 : (n >= 100 ? 2 : (n >= 10 ? 3 : 4))));
   for (int i = 0; i < space_count; i++) cout << " ";
   os << n;
@@ -128,19 +130,19 @@ int main()
     for(int i = 0; i < 5; i++)
         chopstick[i] = new Semaphore;
 
-    s[0] = Timer::tick_count(0);
+    s[0].start();
     phil[0] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 0,  5, 32);
 
-    s[1] = Timer::tick_count(1);
+    s[1].start();
     phil[1] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 1, 10, 44);
 
-    s[2] = Timer::tick_count(2);
+    s[2].start();
     phil[2] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 2, 16, 39);
 
-    s[3] = Timer::tick_count(3);
+    s[3].start();
     phil[3] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 3, 16, 24);
 
-    s[4] = Timer::tick_count(0);
+    s[4].start();
     phil[4] = new Thread(Thread::Configuration(Thread::READY, Thread::Criterion(Thread::NORMAL)), &philosopher, 4, 10, 20);
 
     cout << "Philosophers are alive and hungry!" << endl;
@@ -160,33 +162,33 @@ int main()
     cout << "The dinner is served ..." << endl;
     table.unlock();
 
-    Timer::Tick total_cpu_tick[Traits<Build>::CPUS];
+    Microsecond total_cpu_time[Traits<Build>::CPUS];
     for(int i = 0; i < 5; i++) {
         int ret = phil[i]->join();
         table.lock();
         Display::position(20 + i, 0);
         cout << "Philosopher " << i;
-        Timer::Tick total_thread_tick = 0;
+        Microsecond total_thread_time = 0;
         for (int cpu_id = 0; cpu_id < Machine::n_cpus(); cpu_id++) {
-          Timer::Tick tick_per_cpu = phil[i]->total_tick(cpu_id);
-          total_thread_tick += tick_per_cpu;
-          total_cpu_tick[cpu_id] += tick_per_cpu;
-          cout << " | " << cpu_id << ": " << Spaced(tick_per_cpu);
+          Microsecond time_per_cpu = phil[i]->exec_time(cpu_id);
+          total_thread_time += time_per_cpu;
+          total_cpu_time[cpu_id] += time_per_cpu;
+          cout << " | " << cpu_id << ": " << Spaced(time_per_cpu);
         }
-        cout << " | T: " << Spaced(total_thread_tick);
-        cout << " | S: " << s[i] << endl;
+        cout << " | T: " << Spaced(total_thread_time);
+        cout << " | S: " << Spaced(s[i].read()) << endl;
         table.unlock();
     }
     table.lock();
     Display::position(25, 0);
     cout << "CPU Totals   ";
-    Timer::Tick total_tick = 0;
+    Microsecond total_time = 0;
     for (int cpu_id = 0; cpu_id < Machine::n_cpus(); cpu_id++) {
-      Timer::Tick tick_per_cpu = total_cpu_tick[cpu_id];
-      total_tick += tick_per_cpu;
-      cout << " | " << cpu_id << ": " << Spaced(tick_per_cpu);
+      Microsecond time_per_cpu = total_cpu_time[cpu_id];
+      total_time += time_per_cpu;
+      cout << " | " << cpu_id << ": " << Spaced(time_per_cpu);
     }
-    cout << " | T: " << Spaced(total_tick) << endl << endl;
+    cout << " | T: " << Spaced(total_time) << endl << endl;
     table.unlock();
 
     for(int i = 0; i < 5; i++)

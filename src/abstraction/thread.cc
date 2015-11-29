@@ -25,7 +25,7 @@ void Thread::constructor_prolog(unsigned int stack_size)
     lock();
 
     for (unsigned int cpu_id = 0; cpu_id < Machine::n_cpus(); cpu_id++) {
-      _total_tick[cpu_id] = 0;
+      _exec_time[cpu_id] = 0;
     }
 
     _thread_count++;
@@ -353,9 +353,8 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
     }
 
     if(prev != next) {
-        next->_tick_count = Timer::tick_count();
         if (prev->_state == RUNNING || prev->_state == FINISHING) {
-          prev->_total_tick[Machine::cpu_id()] += (next->_tick_count - prev->_tick_count);
+          prev->stop_exec_time();
         }
 
         if(prev->_state == RUNNING) {
@@ -366,6 +365,8 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
         db<Thread>(TRC) << "Thread::dispatch(prev=" << prev << ",next=" << next << ")" << endl;
         db<Thread>(INF) << "prev={" << prev << ",ctx=" << *prev->_context << "}" << endl;
         db<Thread>(INF) << "next={" << next << ",ctx=" << *next->_context << "}" << endl;
+
+        next->start_exec_time();
 
         spinUnlock();
 
