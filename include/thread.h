@@ -9,7 +9,6 @@
 #include <machine.h>
 #include <system.h>
 #include <scheduler.h>
-#include <tsc_chronometer.h>
 
 extern "C" { void __exit(); }
 
@@ -73,8 +72,6 @@ public:
 
     typedef Scheduler_Timer Timer;
 
-    typedef RTC::Microsecond Microsecond;
-
 public:
     template<typename ... Tn>
     Thread(int (* entry)(Tn ...), Tn ... an);
@@ -92,7 +89,7 @@ public:
     void suspend() { suspend(false); }
     void resume();
 
-    Microsecond exec_time(int cpu_id) { return _exec_time[cpu_id]; }
+    int total_tick(int cpu_id) { return _total_tick[cpu_id]; }
 
     static Thread * volatile self() { return running(); }
     static void yield();
@@ -137,21 +134,9 @@ protected:
     static int idle();
 
 private:
-    void start_exec_time()
-    {
-      _chronometer.reset();
-      _chronometer.start();
-    }
-
-    void stop_exec_time()
-    {
-      _chronometer.stop();
-      _exec_time[Machine::cpu_id()] += _chronometer.read();
-    }
-
     void load()
     {
-      start_exec_time();
+      _tick_count = Timer::tick_count();
       _context->load();
     }
 
@@ -168,8 +153,7 @@ protected:
     Queue * _waiting;
     Thread * volatile _joining;
     Queue::Element _link;
-    Microsecond _exec_time[Traits<Build>::CPUS];
-    TSC_Chronometer _chronometer;
+    Timer::Tick _tick_count, _total_tick[Traits<Build>::CPUS];
 
     static volatile unsigned int _thread_count;
     static Scheduler_Timer * _timer;
