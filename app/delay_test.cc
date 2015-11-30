@@ -9,9 +9,13 @@ int main()
 {
     cout << endl << "Esperando na CPU " << Machine::cpu_id() << "..." << endl;
 
-    Alarm::delay(500000); // meio-segundo
+    Timer::Tick total_tick;
 
-    cout << "...TCHAU!" << endl;
+    total_tick = Timer::tick_count();
+    Alarm::delay(1000000 * 10); // um segundo
+    total_tick = (Timer::tick_count() - total_tick);
+
+    cout << "...TCHAU! " << total_tick << endl;
 
     return 0;
 }
