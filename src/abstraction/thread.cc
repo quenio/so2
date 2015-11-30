@@ -353,11 +353,6 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
     }
 
     if(prev != next) {
-        next->_tick_count = Timer::tick_count();
-        if (prev->_state == RUNNING || prev->_state == FINISHING) {
-          prev->_total_tick[Machine::cpu_id()] += (next->_tick_count - prev->_tick_count);
-        }
-
         if(prev->_state == RUNNING) {
             prev->_state = READY;
         }
@@ -366,6 +361,9 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
         db<Thread>(TRC) << "Thread::dispatch(prev=" << prev << ",next=" << next << ")" << endl;
         db<Thread>(INF) << "prev={" << prev << ",ctx=" << *prev->_context << "}" << endl;
         db<Thread>(INF) << "next={" << next << ",ctx=" << *next->_context << "}" << endl;
+
+        next->_tick_count = Timer::tick_count();
+        prev->_total_tick[Machine::cpu_id()] += (next->_tick_count - prev->_tick_count);
 
         spinUnlock();
 
