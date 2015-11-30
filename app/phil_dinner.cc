@@ -120,6 +120,8 @@ OStream & operator << (OStream & os, const Spaced & spaced)
 
 int main()
 {
+    Timer::Tick program_exec_time = Timer::tick_count();
+
     table.lock();
     Display::clear();
     Display::position(0, 0);
@@ -194,7 +196,9 @@ int main()
     for(int i = 0; i < 5; i++)
         delete phil[i];
 
-    cout << "The end!" << endl;
+    program_exec_time = (Timer::tick_count() - program_exec_time);
+    cout << "The end! Program Exec Time = " << program_exec_time
+         << " - CPU: " << Machine::cpu_id() << endl;
 
     return 0;
 }
