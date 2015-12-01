@@ -64,7 +64,8 @@ int philosopher(int n, int l, int c)
 
         table.lock();
         Display::position(l, c);
-        cout << "thinking " << Machine::cpu_id();
+        cout << "thinking " << Machine::cpu_id()
+             << " - " << Thread::self()->ready_time();
         table.unlock();
 
         int n = count_odd_numbers();
@@ -78,7 +79,8 @@ int philosopher(int n, int l, int c)
 
         table.lock();
         Display::position(l, c);
-        cout << " eating  " << Machine::cpu_id();
+        cout << " eating  " << Machine::cpu_id()
+             << " - " << Thread::self()->ready_time();
         table.unlock();
 
         n = count_even_numbers();
@@ -93,7 +95,8 @@ int philosopher(int n, int l, int c)
 
     table.lock();
     Display::position(l, c);
-    cout << "  done   " << Machine::cpu_id();
+    cout << "  done   " << Machine::cpu_id()
+         << " - " << Thread::self()->ready_time();
     table.unlock();
 
     return iterations;

@@ -89,7 +89,8 @@ public:
     void suspend() { suspend(false); }
     void resume();
 
-    int total_tick(int cpu_id) { return _total_tick[cpu_id]; }
+    Timer::Tick total_tick(int cpu_id) { return _total_tick[cpu_id]; }
+    Timer::Tick ready_time() { return _ready_time; }
 
     static Thread * volatile self() { return running(); }
     static void yield();
@@ -154,6 +155,7 @@ protected:
     Thread * volatile _joining;
     Queue::Element _link;
     Timer::Tick _tick_count, _total_tick[Traits<Build>::CPUS];
+    Timer::Tick _ready_starting_tick, _ready_time;
 
     static volatile unsigned int _thread_count;
     static Scheduler_Timer * _timer;

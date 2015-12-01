@@ -28,6 +28,9 @@ void Thread::constructor_prolog(unsigned int stack_size)
       _total_tick[cpu_id] = 0;
     }
 
+    _ready_starting_tick = _state == READY ? Timer::tick_count(_link.rank().queue()) : 0;
+    _ready_time = 0;
+
     _thread_count++;
     _scheduler.insert(this);
 
@@ -355,6 +358,9 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
     if(prev != next) {
         if(prev->_state == RUNNING) {
             prev->_state = READY;
+            prev->_ready_starting_tick = Timer::tick_count();
+        } else {
+            prev->_ready_starting_tick = 0;
         }
         next->_state = RUNNING;
 
@@ -362,8 +368,17 @@ void Thread::dispatch(Thread * prev, Thread * next, bool charge)
         db<Thread>(INF) << "prev={" << prev << ",ctx=" << *prev->_context << "}" << endl;
         db<Thread>(INF) << "next={" << next << ",ctx=" << *next->_context << "}" << endl;
 
+        // exec time
         next->_tick_count = Timer::tick_count();
         prev->_total_tick[Machine::cpu_id()] += (next->_tick_count - prev->_tick_count);
+
+        if (next->_ready_starting_tick > 0) {
+          next->_ready_time = Timer::tick_count() - next->_ready_starting_tick;
+          db<Thread>(TRC) << "Thread::dispatch(_ready_time=" << next->_ready_time
+                          << ",_ready_starting_tick=" << next->_ready_starting_tick << ")"
+                          << ",tick_count=" << Timer::tick_count() << ")"
+                          << endl;
+        }
 
         spinUnlock();
 
